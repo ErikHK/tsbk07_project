@@ -1,0 +1,27 @@
+ title: Lunar Lander
+ participants: Erik Håkansson Kjellman eriha181, Klara Wingstedt klawi021
+ description: A 3D lunar lander game, steer your ship to an island and make sure you don't land in the water or too hard on land. You also have a limited amount of fuel. This is not the Earth's moon, so we don't have any limitations regarding the landscape.
+
+ will do:
+ -lunar lander 3D model with textures
+ -1st person camera
+ -terrain
+ -light
+ -skybox
+ -goal position
+ -water
+
+ might do:
+ -particle system (fire, explosions?)
+ -auto-generated terrain
+ -trees
+ -sun(s)
+ -score
+ -highscore list
+ -welcome screen
+ -sound
+ -auto-generated textures (filtered perlin noise etc)
+ -3rd person camera (fixed on terrain)
+ -craters
+ -fishes!
+ -under 64Kb
