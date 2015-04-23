@@ -19,7 +19,6 @@ Point3D sphere_pos;
 
 GLfloat *vertexArray;
 int texwidth;
-//GLfloat trans[16];
 
 
 Point3D lightSourcesColorsArr[] = { { 1.0f, 0.0f, 1.0f },
@@ -214,15 +213,15 @@ vec3 lookAtPoint_tmp = {4, 0, 4};
 vec3 cam = {0, 5, 8};
 
 
-void mouse(int x, int y)
-{
-	float phi_m = ((float)x)/600*2*M_PI;
-	float theta_m = ((float)y)/600*M_PI;
-
-	lookAtPoint.x = -10*sin(theta_m)*sin(phi_m) + cam.x;
-	lookAtPoint.y = 10*cos(theta_m) + cam.y;
-	lookAtPoint.z = 10*sin(theta_m)*cos(phi_m) + cam.z;
-}
+//void mouse(int x, int y)
+//{
+//	float phi_m = ((float)x)/600*2*M_PI;
+//	float theta_m = ((float)y)/600*M_PI;
+//
+//	lookAtPoint.x = -10*sin(theta_m)*sin(phi_m) + cam.x;
+//	lookAtPoint.y = 10*cos(theta_m) + cam.y;
+//	lookAtPoint.z = 10*sin(theta_m)*cos(phi_m) + cam.z;
+//}
 
 
 void init(void)
@@ -370,7 +369,7 @@ int main(int argc, char **argv)
 	initKeymapManager();
 	glutTimerFunc(20, &timer, 0);
 
-	glutPassiveMotionFunc(mouse);
+	//glutPassiveMotionFunc(mouse);
 
 	glutMainLoop();
 	exit(0);
