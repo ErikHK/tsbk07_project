@@ -9,8 +9,8 @@
 #include "GL_utilities.h"
 #include "VectorUtils3.h"
 #include "loadobj.h"
+#include "objects.h"
 #include "LoadTGA.h"
-#include "lib3ds/file.h"
 
 #define SCALE 10.0
 
@@ -20,6 +20,8 @@ Point3D sphere_pos;
 
 GLfloat *vertexArray;
 int texwidth;
+
+spaceship s;
 
 
 Point3D lightSourcesColorsArr[] = { { 1.0f, 0.0f, 1.0f },
@@ -212,7 +214,7 @@ Model *m, *m2, *tm;
 Model *sphere;
 // Reference to shader program
 GLuint program;
-GLuint tex1, tex2;
+GLuint tex1, tex2, spaceshiptex;
 TextureData ttex; // terrain
 vec3 lookAtPoint = {4, 0, 4};
 vec3 lookAtPoint_tmp = {4, 0, 4};
@@ -232,6 +234,9 @@ vec3 cam = {0, 5, 8};
 
 void init(void)
 {
+	//init spaceship
+	create_spaceship(&s);
+
 	// GL inits
 	glClearColor(0.2,0.2,0.5,0);
 	glEnable(GL_DEPTH_TEST);
@@ -257,6 +262,7 @@ void init(void)
 // Load terrain data
 	
 	LoadTGATextureData("fft-terrain.tga", &ttex);
+	LoadTGATextureSimple("spaceship/spaceship_uvw_body.tga", &spaceshiptex);
 	tm = GenerateTerrain(&ttex);
 	printError("init terrain");
 
@@ -304,6 +310,7 @@ void display(void)
 	trans = Mult(S(.1,.1,.1),T(sphere_pos.x, sphere_pos.y, sphere_pos.z));
 	total = Mult(camMatrix, trans);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	glBindTexture(GL_TEXTURE_2D, spaceshiptex);		// Bind Our Texture tex1
 	DrawModel(sphere, program, "inPosition", "inNormal", "inTexCoord");
 
 	printError("display 2");

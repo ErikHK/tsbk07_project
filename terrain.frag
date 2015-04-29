@@ -102,11 +102,11 @@ void main(void)
 			outColor = vec4(colors.x*0, colors.y*0, colors.z, 1.0);
 		}else{
 			if((colors.y + colors.x + colors.z)/3 > 0.75)
-				outColor = vec4(1, 1+.3, 1, 1.0)*texture(tex, texCoord);
+				outColor = vec4(1, 1, 1, 1.0)*texture(tex, texCoord);
 			else if((colors.y + colors.x + colors.z)/3 > 0.5)
-				outColor = vec4(.4, .4+.3, .4, 1.0)*texture(tex, texCoord);
+				outColor = vec4(.4, .4, .4, 1.0)*texture(tex, texCoord);
 			else
-				outColor = vec4(0.1, 0.1+.2, 0.1, 1.0)*texture(tex, texCoord);
+				outColor = vec4(0.1, 0.1, 0.1, 1.0)*texture(tex, texCoord);
 		}
 		
 	}
