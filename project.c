@@ -100,9 +100,9 @@ float calc_height(GLfloat *vertexArray, float x, float z, int width)
 	D = -(A*corners[0].x + B*corners[0].y + C*corners[0].z);
 
 	float y = (-D-C*z-A*x)/B;
-	printf("%f %f %f %f\n", A,B,C, D);
-	printf("%f %f\n", x, z);
-	printf("%f\n", y);
+	//printf("%f %f %f %f\n", A,B,C, D);
+	//printf("%f %f\n", x, z);
+	//printf("%f\n", y);
 	return y;
 
 }
@@ -268,7 +268,7 @@ void init(void)
 
 	//sphere = LoadModelPlus("groundsphere.obj");
 
-	sphere = LoadModelPlus("spaceship/spaceship_body.obj");
+	//sphere = LoadModelPlus("spaceship/spaceship_body.obj");
 	//sphere = LoadModelPlus("spaceship/fin.obj");
 
 }
@@ -307,11 +307,12 @@ void display(void)
 	DrawModel(tm, program, "inPosition", "inNormal", "inTexCoord");
 
 
-	trans = Mult(S(.1,.1,.1),T(sphere_pos.x, sphere_pos.y, sphere_pos.z));
-	total = Mult(camMatrix, trans);
-	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
-	glBindTexture(GL_TEXTURE_2D, spaceshiptex);		// Bind Our Texture tex1
-	DrawModel(sphere, program, "inPosition", "inNormal", "inTexCoord");
+	//total = Mult(camMatrix, s.body_matrix);
+	//glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	//glBindTexture(GL_TEXTURE_2D, spaceshiptex);		// Bind Our Texture tex1
+	//DrawModel(s.body, program, "inPosition", "inNormal", "inTexCoord");
+
+	draw_spaceship(&s, &camMatrix, program);
 
 	printError("display 2");
 	

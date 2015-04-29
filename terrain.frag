@@ -106,7 +106,7 @@ void main(void)
 			else if((colors.y + colors.x + colors.z)/3 > 0.5)
 				outColor = vec4(.4, .4, .4, 1.0)*texture(tex, texCoord);
 			else
-				outColor = vec4(0.1, 0.1, 0.1, 1.0)*texture(tex, texCoord);
+				outColor = vec4(0.2, 0.2, 0.2, 1.0)*texture(tex, texCoord);
 		}
 		
 	}
