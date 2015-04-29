@@ -10,6 +10,7 @@
 #include "VectorUtils3.h"
 #include "loadobj.h"
 #include "LoadTGA.h"
+#include "lib3ds/file.h"
 
 #define SCALE 10.0
 
@@ -39,6 +40,11 @@ Point3D lightSourcesDirectionsPositions[] = { { 0.0f, 5.0f, 0.0f }, // Red light
 float phi=0, theta=0;
 mat4 total, modelView, camMatrix;
 mat4 trans;
+mat4 spaceship_body_mat;
+mat4 spaceship_fin_mat;
+
+Model * spaceship_body;
+Model * spaceship_fin;
 
 float calc_height(GLfloat *vertexArray, float x, float z, int width)
 {
@@ -233,7 +239,7 @@ void init(void)
 	printError("GL inits");
 
 	sphere_pos.x = 10;
-	sphere_pos.y = 0;
+	sphere_pos.y = 10;
 	sphere_pos.z = 10;
 
 	
@@ -254,7 +260,11 @@ void init(void)
 	tm = GenerateTerrain(&ttex);
 	printError("init terrain");
 
-	sphere = LoadModelPlus("groundsphere.obj");
+	//sphere = LoadModelPlus("groundsphere.obj");
+
+	sphere = LoadModelPlus("spaceship/spaceship_body.obj");
+	//sphere = LoadModelPlus("spaceship/fin.obj");
+
 }
 
 void display(void)
@@ -291,7 +301,7 @@ void display(void)
 	DrawModel(tm, program, "inPosition", "inNormal", "inTexCoord");
 
 
-	trans = T(sphere_pos.x, sphere_pos.y, sphere_pos.z);
+	trans = Mult(S(.1,.1,.1),T(sphere_pos.x, sphere_pos.y, sphere_pos.z));
 	total = Mult(camMatrix, trans);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	DrawModel(sphere, program, "inPosition", "inNormal", "inTexCoord");
