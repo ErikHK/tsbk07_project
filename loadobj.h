@@ -8,7 +8,9 @@ extern "C" {
 #ifdef __APPLE__
 	#include <OpenGL/gl3.h>
 #else
-	#include <GL/gl.h>
+	//#include <GL/gl.h>
+	#include "Dependencies\glew\glew.h"
+	#include "Dependencies\freeglut\freeglut.h"
 #endif
 
 typedef struct

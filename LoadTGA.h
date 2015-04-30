@@ -5,10 +5,14 @@
 extern "C" {
 #endif
 
+#include "windows.h"
+
 #ifdef __APPLE__
 	#include <OpenGL/gl3.h>
 #else
-	#include <GL/gl.h>
+	//#include <GL/gl.h>
+	#include "Dependencies\glew\glew.h"
+	#include "Dependencies\freeglut\freeglut.h"
 #endif
 #include <stdio.h>
 #include <stdlib.h>
