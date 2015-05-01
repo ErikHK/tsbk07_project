@@ -48,7 +48,7 @@ bool LoadTGATextureData(char *filename, TextureData *texture)	// Loads A TGA Fil
 	char flipped;
 	long step;
 	
-	FILE *file = fopen(filename, "r+");			// Open The TGA File
+	FILE *file = fopen(filename, "rb");			// Open The TGA File
 	err = 0;
 	if (file == NULL) err = 1;				// Does File Even Exist?
 	else if (fread(actualHeader, 1, sizeof(actualHeader), file) != sizeof(actualHeader)) err = 2; // Are There 12 Bytes To Read?

@@ -6,7 +6,7 @@
 #include "loadobj.h"
 #include "objects.h"
 #include "LoadTGA.h"
-
+#include <math.h>
 
 
 #define SCALE 10.0
@@ -232,7 +232,7 @@ vec3 cam = {0, 5, 8};
 void init(void)
 {
 	//init spaceship
-	create_spaceship(&s);
+	//create_spaceship(&s);
 
 	// GL inits
 	glClearColor(0.2,0.2,0.5,0);
@@ -309,7 +309,7 @@ void display(void)
 	//glBindTexture(GL_TEXTURE_2D, spaceshiptex);		// Bind Our Texture tex1
 	//DrawModel(s.body, program, "inPosition", "inNormal", "inTexCoord");
 
-	draw_spaceship(&s, &camMatrix, program);
+	//draw_spaceship(&s, &camMatrix, program);
 
 	printError("display 2");
 	
@@ -371,15 +371,27 @@ void timer(int i)
 
 int main(int argc, char **argv)
 {
+	
 
-
-
+	
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitContextVersion(3, 2);
 	glutInitWindowSize (600, 600);
 	glutCreateWindow ("TSBK07 Lab 4");
 	glutDisplayFunc(display);
+
+	glewExperimental = GL_TRUE;
+
+	GLenum err = glewInit();
+
+	if (GLEW_OK != err)
+	{
+		/* Problem: glewInit failed, something is seriously wrong. */
+		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+	}
+
+
 	init ();
 	initKeymapManager();
 	glutTimerFunc(20, &timer, 0);

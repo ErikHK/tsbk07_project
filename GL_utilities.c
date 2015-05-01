@@ -27,6 +27,9 @@ char* readFile(char *file)
 	long length;
 	char *buf;
 
+	if (file == NULL)
+		return NULL;
+
 	fptr = fopen(file, "rb"); /* Open file for reading */
 	if (!fptr) /* Return NULL on failure */
 		return NULL;
@@ -89,7 +92,7 @@ void printProgramInfoLog(GLuint obj, const char *vfn, const char *ffn,
 GLuint compileShaders(const char *vs, const char *fs, const char *gs, const char *tcs, const char *tes,
 								const char *vfn, const char *ffn, const char *gfn, const char *tcfn, const char *tefn)
 {
-	GLuint v,f,g,tc,te,p;
+	GLuint v, f, p;// , g, tc, te;
 	
 	v = glCreateShader(GL_VERTEX_SHADER);
 	f = glCreateShader(GL_FRAGMENT_SHADER);
@@ -97,6 +100,7 @@ GLuint compileShaders(const char *vs, const char *fs, const char *gs, const char
 	glShaderSource(f, 1, &fs, NULL);
 	glCompileShader(v);
 	glCompileShader(f);
+	/*
 	if (gs != NULL)
 	{
 		g = glCreateShader(GL_GEOMETRY_SHADER);
@@ -116,27 +120,31 @@ GLuint compileShaders(const char *vs, const char *fs, const char *gs, const char
 		glShaderSource(te, 1, &tes, NULL);
 		glCompileShader(te);
 	}
-#endif	
+#endif
+	*/
 	p = glCreateProgram();
 	glAttachShader(p,v);
 	glAttachShader(p,f);
+	/*
 	if (gs != NULL)
 		glAttachShader(p,g);
 	if (tcs != NULL)
 		glAttachShader(p,tc);
 	if (tes != NULL)
 		glAttachShader(p,te);
+	*/
 	glLinkProgram(p);
 	glUseProgram(p);
 	
 	printShaderInfoLog(v, vfn);
 	printShaderInfoLog(f, ffn);
+	/*
 	if (gs != NULL)	printShaderInfoLog(g, gfn);
 	if (tcs != NULL)	printShaderInfoLog(tc, tcfn);
 	if (tes != NULL)	printShaderInfoLog(te, tefn);
 	
 	printProgramInfoLog(p, vfn, ffn, gfn, tcfn, tefn);
-	
+	*/
 	return p;
 }
 
@@ -174,7 +182,8 @@ GLuint loadShadersGT(const char *vertFileName, const char *fragFileName, const c
 	if ((tes==NULL) && (teFileName != NULL))
 		fprintf(stderr, "Failed to read %s from disk.\n", teFileName);
 	if ((vs!=NULL)&&(fs!=NULL))
-		p = compileShaders(vs, fs, gs, tcs, tes, vertFileName, fragFileName, geomFileName, tcFileName, teFileName);
+		//p = compileShaders(vs, fs, gs, tcs, tes, vertFileName, fragFileName, geomFileName, tcFileName, teFileName);
+		p = compileShaders(vs, fs, NULL, NULL, NULL, vertFileName, fragFileName, geomFileName, tcFileName, teFileName);
 	if (vs != NULL) free(vs);
 	if (fs != NULL) free(fs);
 	if (gs != NULL) free(gs);

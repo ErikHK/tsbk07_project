@@ -481,7 +481,7 @@ static struct Mesh * LoadOBJ(const char *filename)
 	normalsCount=0;
 	coordCount=0;
 
-	fp = fopen(filename, "rw");
+	fp = fopen(filename, "r");
 	if (fp == NULL) return NULL;
 	ParseOBJ(theMesh);
 	fclose(fp);
@@ -500,7 +500,8 @@ static struct Mesh * LoadOBJ(const char *filename)
 void DecomposeToTriangles(struct Mesh *theMesh)
 {
 	int i, vertexCount, triangleCount;
-	int *newCoords, *newNormalsIndex, *newTextureIndex;
+	int *newCoords, *newNormalsIndex=NULL, *newTextureIndex=NULL;
+
 	
 	// 1. Bygg om hela modellen till trianglar
 	// 1.1 Calculate how big the list will become
