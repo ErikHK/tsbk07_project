@@ -215,9 +215,7 @@ GLuint tex1, tex2, spaceshiptex;
 TextureData ttex; // terrain
 vec3 lookAtPoint = {4, 0, 4};
 vec3 lookAtPoint_tmp = {4, 0, 4};
-vec3 cam = {0, 5, 8};
-
-
+vec3 cam = {0, 3, 9};
 //void mouse(int x, int y)
 //{
 //	float phi_m = ((float)x)/600*2*M_PI;
@@ -232,7 +230,7 @@ vec3 cam = {0, 5, 8};
 void init(void)
 {
 	//init spaceship
-	//create_spaceship(&s);
+	create_spaceship(&s);
 
 	// GL inits
 	glClearColor(0.2,0.2,0.5,0);
@@ -290,9 +288,12 @@ void display(void)
 	//mat4 roty = Ry(theta);
 	//lookAtPoint = MultVec3(roty, lookAtPoint_tmp);
 
+	/*
 	camMatrix =  lookAt(cam.x, cam.y, cam.z,
 				lookAtPoint.x, lookAtPoint.y, lookAtPoint.z,
 				0.0, 1.0, 0.0);
+				*/
+	
 
 	glUniformMatrix4fv(glGetUniformLocation(program, "camMatrix"), 1, GL_TRUE, camMatrix.m);
 
@@ -309,7 +310,8 @@ void display(void)
 	//glBindTexture(GL_TEXTURE_2D, spaceshiptex);		// Bind Our Texture tex1
 	//DrawModel(s.body, program, "inPosition", "inNormal", "inTexCoord");
 
-	//draw_spaceship(&s, &camMatrix, program);
+	move_spaceship(&s);
+	draw_spaceship(&s, &camMatrix, program);
 
 	printError("display 2");
 	
@@ -319,9 +321,8 @@ void display(void)
 void timer(int i)
 {
 
-	sphere_pos.x += .005;
-	sphere_pos.y = calc_height(vertexArray, sphere_pos.x, sphere_pos.z, texwidth);
-	
+	//sphere_pos.x += .005;
+	//sphere_pos.y = calc_height(vertexArray, sphere_pos.x, sphere_pos.z, texwidth);
 
 	vec3 test = VectorSub(cam, lookAtPoint);
 	float looknorm = sqrt(pow(test.x,2) + 
@@ -330,40 +331,46 @@ void timer(int i)
 	
 	if (keyIsDown('w'))
 	{
-		cam.x -= speed*test.x/(looknorm);
-		cam.y -= speed*test.y/(looknorm);
-		cam.z -= speed*test.z/(looknorm);
+		//cam.x -= speed*test.x/(looknorm);
+		//cam.y -= speed*test.y/(looknorm);
+		//cam.z -= speed*test.z/(looknorm);
+
+
 		
 	}
 
 	if (keyIsDown('s'))
 	{
-		cam.x += speed*test.x/(looknorm);
-		cam.y += speed*test.y/(looknorm);
-		cam.z += speed*test.z/(looknorm);	
+		//cam.x += speed*test.x/(looknorm);
+		//cam.y += speed*test.y/(looknorm);
+		//cam.z += speed*test.z/(looknorm);	
 	}
 
 	//strafe left
 	if (keyIsDown('a'))
 	{
-		cam.x -= speed*test.z/(looknorm);
-		cam.y -= speed*test.y/(looknorm);
-		cam.z += speed*test.x/(looknorm);
+		//cam.x -= speed*test.z/(looknorm);
+		//cam.y -= speed*test.y/(looknorm);
+		//cam.z += speed*test.x/(looknorm);
 		
 	}
 
 	//strafe right
 	if (keyIsDown('d'))
 	{
-		cam.x += speed*test.z/(looknorm);
-		cam.y -= speed*test.y/(looknorm);
-		cam.z -= speed*test.x/(looknorm);
+		//cam.x += speed*test.z/(looknorm);
+		//cam.y -= speed*test.y/(looknorm);
+		//cam.z -= speed*test.x/(looknorm);
 		
 	}
+	
 
+	//camMatrix = lookAt(cam.x, cam.y, cam.z,
+	//	s.pos[0], s.pos[1], s.pos[2],
+	//	0.0, 1.0, 0.0);
 
+	update_cam_matrix(&s, &camMatrix, &cam);
 
-		
 	glutTimerFunc(20, &timer, i);
 	glutPostRedisplay();
 }
@@ -378,7 +385,7 @@ int main(int argc, char **argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitContextVersion(3, 2);
 	glutInitWindowSize (600, 600);
-	glutCreateWindow ("TSBK07 Lab 4");
+	glutCreateWindow ("TSBK07 - Project");
 	glutDisplayFunc(display);
 
 	glewExperimental = GL_TRUE;

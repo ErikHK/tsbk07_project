@@ -6,6 +6,14 @@
 
 typedef struct spaceship_
 {
+  float speed[3];
+  float acc[3];
+  float pos[3];
+  float gravity;
+  float angle_acc[2];
+  float angle_speed[2];
+  float angle[2];
+
   Model *body;
   Model *fins[3];
   mat4 body_matrix;
@@ -24,3 +32,5 @@ void create_spaceship();
 void create_landing_point();
 //void draw_spaceship(spaceship * s, mat4 * cam_matrix, GLuint program);
 void draw_spaceship();
+void move_spaceship();
+void update_cam_matrix();
