@@ -66,7 +66,7 @@ void move_spaceship(spaceship * s)
 {
 	for (int i = 0; i < 3; i++)
 	{
-		if (s->speed[i] <= 0.005);
+		if (fabs(s->speed[i]) <= 0.005);
 		s->speed[i] += s->acc[i];
 
 		s->pos[i] += s->speed[i];
@@ -92,6 +92,12 @@ void move_spaceship(spaceship * s)
 		s->angle_speed[0] *= 0.99;
 
 	s->angle[0] += s->angle_speed[0];
+
+	//stabilize!
+	if (fabs(s->angle[0]) <= M_PI/12)
+		s->angle[0] *= .98;
+	else
+		s->angle[0] *= .995;
 
 	s->speed[2] *= 0.99;
 }
