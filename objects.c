@@ -9,14 +9,16 @@ void create_spaceship(spaceship * s)
 		s->acc[i] = 0;
 		s->speed[i] = 0;
 	}
-	s->angle_acc[0] = 0.0003;
-	s->angle_acc[1] = 0.0003;
+	s->angle_acc[0] = 0.0008;
+	s->angle_acc[1] = 0.0008;
 
 	s->angle_speed[0] = 0;
 	s->angle_speed[1] = 0;
 
 	s->angle[0] = 0;
 	s->angle[1] = 0;
+
+	s->thrust = 0.001;
 
 	s->pos[0] = 8;
 	s->pos[1] = 2;
@@ -62,25 +64,36 @@ void draw_spaceship(spaceship * s, mat4 * cam_matrix, GLuint program)
 
 void move_spaceship(spaceship * s)
 {
-	if (s->speed[1] <= 0.005);
-		s->speed[1] += s->acc[1];
+	for (int i = 0; i < 3; i++)
+	{
+		if (s->speed[i] <= 0.005);
+		s->speed[i] += s->acc[i];
 
-	s->pos[1] += s->speed[1];
-
+		s->pos[i] += s->speed[i];
+	}
 	s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), Mult(Rx(s->angle[0]), S(0.02, 0.02, 0.02)));
 
 	if (keyIsDown(VK_SPACE))
-		s->acc[1] = .0010;
+	{
+		s->acc[2] = s->thrust*sin(s->angle[0]);
+		s->acc[1] = s->thrust*cos(s->angle[0]);
+	}
 	else
 		s->acc[1] = s->gravity;
 
 	if (keyIsDown('a'))
 		s->angle_speed[0] -= s->angle_acc[0];
+	else
+		s->angle_speed[0] *= 0.99;
 
 	if (keyIsDown('d'))
 		s->angle_speed[0] += s->angle_acc[0];
+	else
+		s->angle_speed[0] *= 0.99;
 
 	s->angle[0] += s->angle_speed[0];
+
+	s->speed[2] *= 0.99;
 }
 
 void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)

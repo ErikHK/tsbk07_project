@@ -9,6 +9,7 @@ typedef struct spaceship_
   float speed[3];
   float acc[3];
   float pos[3];
+  float thrust;
   float gravity;
   float angle_acc[2];
   float angle_speed[2];
