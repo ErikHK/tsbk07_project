@@ -1,16 +1,13 @@
-// Lab 4, terrain generation
 
-#ifdef __APPLE__
-	#include <OpenGL/gl3.h>
-	#include "MicroGlut.h"
-	// Linking hint for Lightweight IDE
-	// uses framework Cocoa
-#endif
+#include "windows.h"
+
 #include "GL_utilities.h"
 #include "VectorUtils3.h"
 #include "loadobj.h"
 #include "objects.h"
 #include "LoadTGA.h"
+#include <math.h>
+
 
 #define SCALE 10.0
 
@@ -100,9 +97,9 @@ float calc_height(GLfloat *vertexArray, float x, float z, int width)
 	D = -(A*corners[0].x + B*corners[0].y + C*corners[0].z);
 
 	float y = (-D-C*z-A*x)/B;
-	printf("%f %f %f %f\n", A,B,C, D);
-	printf("%f %f\n", x, z);
-	printf("%f\n", y);
+	//printf("%f %f %f %f\n", A,B,C, D);
+	//printf("%f %f\n", x, z);
+	//printf("%f\n", y);
 	return y;
 
 }
@@ -218,9 +215,7 @@ GLuint tex1, tex2, spaceshiptex;
 TextureData ttex; // terrain
 vec3 lookAtPoint = {4, 0, 4};
 vec3 lookAtPoint_tmp = {4, 0, 4};
-vec3 cam = {0, 5, 8};
-
-
+vec3 cam = {0, 3, 9};
 //void mouse(int x, int y)
 //{
 //	float phi_m = ((float)x)/600*2*M_PI;
@@ -268,7 +263,7 @@ void init(void)
 
 	//sphere = LoadModelPlus("groundsphere.obj");
 
-	sphere = LoadModelPlus("spaceship/spaceship_body.obj");
+	//sphere = LoadModelPlus("spaceship/spaceship_body.obj");
 	//sphere = LoadModelPlus("spaceship/fin.obj");
 
 }
@@ -293,9 +288,12 @@ void display(void)
 	//mat4 roty = Ry(theta);
 	//lookAtPoint = MultVec3(roty, lookAtPoint_tmp);
 
+	/*
 	camMatrix =  lookAt(cam.x, cam.y, cam.z,
 				lookAtPoint.x, lookAtPoint.y, lookAtPoint.z,
 				0.0, 1.0, 0.0);
+				*/
+	
 
 	glUniformMatrix4fv(glGetUniformLocation(program, "camMatrix"), 1, GL_TRUE, camMatrix.m);
 
@@ -307,11 +305,13 @@ void display(void)
 	DrawModel(tm, program, "inPosition", "inNormal", "inTexCoord");
 
 
-	trans = Mult(S(.1,.1,.1),T(sphere_pos.x, sphere_pos.y, sphere_pos.z));
-	total = Mult(camMatrix, trans);
-	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
-	glBindTexture(GL_TEXTURE_2D, spaceshiptex);		// Bind Our Texture tex1
-	DrawModel(sphere, program, "inPosition", "inNormal", "inTexCoord");
+	//total = Mult(camMatrix, s.body_matrix);
+	//glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	//glBindTexture(GL_TEXTURE_2D, spaceshiptex);		// Bind Our Texture tex1
+	//DrawModel(s.body, program, "inPosition", "inNormal", "inTexCoord");
+
+	move_spaceship(&s);
+	draw_spaceship(&s, &camMatrix, program);
 
 	printError("display 2");
 	
@@ -321,9 +321,8 @@ void display(void)
 void timer(int i)
 {
 
-	sphere_pos.x += .005;
-	sphere_pos.y = calc_height(vertexArray, sphere_pos.x, sphere_pos.z, texwidth);
-	
+	//sphere_pos.x += .005;
+	//sphere_pos.y = calc_height(vertexArray, sphere_pos.x, sphere_pos.z, texwidth);
 
 	vec3 test = VectorSub(cam, lookAtPoint);
 	float looknorm = sqrt(pow(test.x,2) + 
@@ -332,40 +331,46 @@ void timer(int i)
 	
 	if (keyIsDown('w'))
 	{
-		cam.x -= speed*test.x/(looknorm);
-		cam.y -= speed*test.y/(looknorm);
-		cam.z -= speed*test.z/(looknorm);
+		//cam.x -= speed*test.x/(looknorm);
+		//cam.y -= speed*test.y/(looknorm);
+		//cam.z -= speed*test.z/(looknorm);
+
+
 		
 	}
 
 	if (keyIsDown('s'))
 	{
-		cam.x += speed*test.x/(looknorm);
-		cam.y += speed*test.y/(looknorm);
-		cam.z += speed*test.z/(looknorm);	
+		//cam.x += speed*test.x/(looknorm);
+		//cam.y += speed*test.y/(looknorm);
+		//cam.z += speed*test.z/(looknorm);	
 	}
 
 	//strafe left
 	if (keyIsDown('a'))
 	{
-		cam.x -= speed*test.z/(looknorm);
-		cam.y -= speed*test.y/(looknorm);
-		cam.z += speed*test.x/(looknorm);
+		//cam.x -= speed*test.z/(looknorm);
+		//cam.y -= speed*test.y/(looknorm);
+		//cam.z += speed*test.x/(looknorm);
 		
 	}
 
 	//strafe right
 	if (keyIsDown('d'))
 	{
-		cam.x += speed*test.z/(looknorm);
-		cam.y -= speed*test.y/(looknorm);
-		cam.z -= speed*test.x/(looknorm);
+		//cam.x += speed*test.z/(looknorm);
+		//cam.y -= speed*test.y/(looknorm);
+		//cam.z -= speed*test.x/(looknorm);
 		
 	}
+	
 
+	//camMatrix = lookAt(cam.x, cam.y, cam.z,
+	//	s.pos[0], s.pos[1], s.pos[2],
+	//	0.0, 1.0, 0.0);
 
+	update_cam_matrix(&s, &camMatrix, &cam);
 
-		
 	glutTimerFunc(20, &timer, i);
 	glutPostRedisplay();
 }
@@ -373,15 +378,27 @@ void timer(int i)
 
 int main(int argc, char **argv)
 {
+	
 
-
-
+	
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitContextVersion(3, 2);
 	glutInitWindowSize (600, 600);
-	glutCreateWindow ("TSBK07 Lab 4");
+	glutCreateWindow ("TSBK07 - Project");
 	glutDisplayFunc(display);
+
+	glewExperimental = GL_TRUE;
+
+	GLenum err = glewInit();
+
+	if (GLEW_OK != err)
+	{
+		/* Problem: glewInit failed, something is seriously wrong. */
+		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+	}
+
+
 	init ();
 	initKeymapManager();
 	glutTimerFunc(20, &timer, 0);

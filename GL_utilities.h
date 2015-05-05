@@ -5,12 +5,15 @@
 extern "C" {
 #endif
 
+
 #ifdef __APPLE__
-	#include <OpenGL/gl3.h>
-	#include "MicroGlut.h"
+#include <OpenGL/gl3.h>
+#include "MicroGlut.h"
 #else
-	#include "MicroGlut.h"
-	#include <GL/gl.h>
+	//#include "MicroGlut.h"
+	//#include <GL/gl.h>
+#include "Dependencies\glew\glew.h"
+#include "Dependencies\freeglut\freeglut.h"
 #endif
 
 void printError(const char *functionName);
