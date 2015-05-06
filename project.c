@@ -9,7 +9,7 @@
 #include <math.h>
 
 
-#define SCALE 10.0
+#define SCALE 1.0
 
 mat4 projectionMatrix;
 
@@ -49,6 +49,7 @@ float calc_height(GLfloat *vertexArray, float x, float z, int width)
 {
 	int quad = (floor(x) + floor(z)*width)*3;
 	int choose_upper = 0;
+	
 
 	Point3D corners[3];
 
@@ -158,7 +159,7 @@ Model* GenerateTerrain(TextureData *tex)
 		{
 		// Vertex array. You need to scale this properly
 			vertexArray[(x + z * tex->width)*3 + 0] = x / SCALE;
-			vertexArray[(x + z * tex->width)*3 + 1] = tex->imageData[(x + z * tex->width) * (tex->bpp/8)] / 100.0;
+			vertexArray[(x + z * tex->width)*3 + 1] = tex->imageData[(x + z * tex->width) * (tex->bpp/8)] / 10.0;
 			vertexArray[(x + z * tex->width)*3 + 2] = z / SCALE;
 		// Normal vectors. You need to calculate these.
 
@@ -215,7 +216,7 @@ GLuint tex1, tex2, spaceshiptex;
 TextureData ttex; // terrain
 vec3 lookAtPoint = {4, 0, 4};
 vec3 lookAtPoint_tmp = {4, 0, 4};
-vec3 cam = {0, 3, 9};
+vec3 cam = {0, 3+4+20, 90};
 //void mouse(int x, int y)
 //{
 //	float phi_m = ((float)x)/600*2*M_PI;
@@ -243,7 +244,7 @@ void init(void)
 	sphere_pos.z = 10;
 
 	
-	projectionMatrix = frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 75.0);
+	projectionMatrix = frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 750.0);
 
 	// Load and compile shader
 	program = loadShaders("terrain.vert", "terrain.frag");
@@ -323,7 +324,7 @@ void timer(int i)
 
 	//sphere_pos.x += .005;
 	//sphere_pos.y = calc_height(vertexArray, sphere_pos.x, sphere_pos.z, texwidth);
-
+	s.pos[1] = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
 	vec3 test = VectorSub(cam, lookAtPoint);
 	float looknorm = sqrt(pow(test.x,2) + 
 		pow(test.y,2) + pow(test.z,2));

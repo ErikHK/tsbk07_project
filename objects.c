@@ -18,12 +18,12 @@ void create_spaceship(spaceship * s)
 	s->angle[0] = 0;
 	s->angle[1] = 0;
 
-	s->thrust = 0.001;
+	s->thrust = 0.01;
 
-	s->pos[0] = 8;
-	s->pos[1] = 2;
-	s->pos[2] = 8;
-	s->gravity = -0.0006;
+	s->pos[0] = 80;
+	s->pos[1] = 20;
+	s->pos[2] = 80;
+	s->gravity = -0.006;
 
 	s->acc[1] = s->gravity;	//y acc, gravity
 
@@ -32,7 +32,7 @@ void create_spaceship(spaceship * s)
 	s->fins[1] = LoadModelPlus("spaceship/fin.obj");
 	s->fins[2] = LoadModelPlus("spaceship/fin.obj");
 
-	s->body_matrix = Mult(Rz(2), Mult(T(s->pos[0], s->pos[1], s->pos[2]), S(0.02, 0.02, 0.02)));
+	s->body_matrix = Mult(Rz(2), Mult(T(s->pos[0], s->pos[1], s->pos[2]), S(0.2, 0.2, 0.2)));
 	
 	s->fins_matrix[0] = Mult(T(0, -1, -2), s->body_matrix);
 	s->fins_matrix[1] = Mult(T(1, -1, -2), s->body_matrix);
@@ -75,7 +75,7 @@ void move_spaceship(spaceship * s)
 
 		s->pos[i] += s->speed[i];
 	}
-	s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), Mult(Rx(s->angle[0]), S(0.02, 0.02, 0.02)));
+	s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), Mult(Rx(s->angle[0]), S(0.2, 0.2, 0.2)));
 
 	if (keyIsDown(VK_SPACE))
 	{
