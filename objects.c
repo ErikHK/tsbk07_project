@@ -23,7 +23,7 @@ void create_spaceship(spaceship * s)
 	s->pos[0] = 8;
 	s->pos[1] = 2;
 	s->pos[2] = 8;
-	s->gravity = -0.0003;
+	s->gravity = -0.0006;
 
 	s->acc[1] = s->gravity;	//y acc, gravity
 
@@ -43,13 +43,17 @@ void create_spaceship(spaceship * s)
 
 void draw_spaceship(spaceship * s, mat4 * cam_matrix, GLuint program)
 {
+	s->fins_matrix[0] = Mult(s->body_matrix, T(0, -10, -15));
+	s->fins_matrix[1] = Mult(s->body_matrix, T(0, -10, -35));
+	s->fins_matrix[2] = Mult(s->body_matrix, T(0, -10, -15));
+
   mat4 total = Mult(*cam_matrix, s->body_matrix);
   glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
   glBindTexture(GL_TEXTURE_2D, s->body_tex);
   DrawModel(s->body, program, "inPosition", "inNormal", "inTexCoord");
   
   //draw fins
-  /*
+  
   for (int i = 0; i < 3;i++)
   {
 	  total = Mult(*cam_matrix, s->fins_matrix[i]);
@@ -58,7 +62,7 @@ void draw_spaceship(spaceship * s, mat4 * cam_matrix, GLuint program)
 	  DrawModel(s->fins[i], program, "inPosition", "inNormal", "inTexCoord");
 
   }
-  */
+  
   
 }
 
