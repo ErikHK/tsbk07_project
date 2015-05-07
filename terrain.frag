@@ -68,7 +68,7 @@ void main(void)
 
 	if(skybox==1)
 	{
-		outColor = vec4(0.7*(1-testpos.y)+.2,(1-testpos.y)+.2,1,1)*texture(tex,texCoord);
+		outColor = vec4(0.7*(1-testpos.y*.5)+.2,(1-testpos.y*.5)+.2,1,1);
 
 	}
 	else{

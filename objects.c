@@ -44,7 +44,7 @@ void create_spaceship(spaceship * s)
 	LoadTGATextureSimple("spaceship/spaceship_uvw_body.tga", &(s->body_tex));
 }
 
-void draw_spaceship(spaceship * s, mat4 * cam_matrix, GLuint program)
+void draw_spaceship(spaceship * s, GLuint program)
 {
 	s->fins_matrix[0] = Mult(s->body_matrix, T(0, -10, -15));
 	s->fins_matrix[1] = Mult(s->body_matrix, T(0, -10, -35));
@@ -78,7 +78,7 @@ void move_spaceship(spaceship * s)
 
 		s->pos[i] += s->speed[i];
 	}
-	s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), Mult(Rx(s->angle[0]), S(0.1, 0.1, 0.1)));
+	s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), Mult(Mult(Rx(s->angle[0]), Ry(2)), S(0.1, 0.1, 0.1)));
 
 	if (keyIsDown(VK_SPACE))
 	{
@@ -112,7 +112,7 @@ void move_spaceship(spaceship * s)
 void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 {
 	if (!(s && cam_matrix && cam_pos))
-		return NULL;
+		return;
 	//*cam_matrix = lookAt(cam_pos->x, cam_pos->y, cam_pos->z,
 	//	s->pos[0], s->pos[1], s->pos[2],
 	//	0.0, 1.0, 0.0);
@@ -130,24 +130,42 @@ void create_landing_point()
 
 }
 
-
-void create_cloud(cloud * c)
+double random()
 {
-	c->spheres[0] = LoadModelPlus("sphere.obj");
-	//memcpy(c->spheres[1], c->spheres[0], sizeof(c->spheres[0]));
-	vec3 tmp = { 1, 1.5, 1 };
-	c->sphere_scales[0] = tmp;
-	vec3 tmp2 = { .1, 1, 1 };
-	c->sphere_scales[1] = tmp2;
-	c->matrix[0] = Mult(T(80,50,80), S(0.2, 0.2, 0.2));
-
+	return (double)rand() / (double)RAND_MAX;
 }
 
-void draw_cloud(cloud *c, mat4 * cam_matrix, GLuint program)
+
+
+void create_cloud(cloud * c, vec3 init_pos)
 {
-	mat4 total = Mult(*cam_matrix, c->matrix[0]);
-	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
-	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
-	DrawModel(c->spheres[0], program, "inPosition", "inNormal", "inTexCoord");
+	c->spheres[0] = LoadModelPlus("sphere.obj");
+	memcpy(&(c->spheres[1]), &(c->spheres[0]), sizeof(c->spheres[0]));
+	memcpy(&(c->spheres[2]), &(c->spheres[0]), sizeof(c->spheres[0]));
+	//vec3 tmp = { 1, 1.5, 1 };
+	//memcpy(&(c->sphere_scales[0]), &tmp, sizeof(tmp));
+	//memcpy(&(c->sphere_scales[1]), &tmp, sizeof(tmp));
+	c->num_spheres = 10;
+
+	for (int i = 0; i < c->num_spheres; i++)
+	{
+		if (i>0)
+			memcpy(&(c->spheres[i]), &(c->spheres[0]), sizeof(c->spheres[0]));
+		c->matrix[i] = Mult(T(init_pos.x+(random()-.5)*i/3, init_pos.y+(random()-.5)*i/2, init_pos.z+(random()-.5)*i*2), 
+			S(.5+(random()-.2), .5+(random()-.3), .6+(random()-.3)));
+	}
+	
+}
+
+
+void draw_cloud(cloud *c, GLuint program)
+{
+	for (int i = 0; i < c->num_spheres; i++)
+	{
+		mat4 total = c->matrix[i];
+		glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+		//glBindTexture(GL_TEXTURE_2D, s->body_tex);
+		DrawModel(c->spheres[i], program, "inPosition", "inNormal", "inTexCoord");
+	}
 
 }

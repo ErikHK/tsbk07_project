@@ -8,6 +8,7 @@
 #include "objects.h"
 #include "LoadTGA.h"
 #include <math.h>
+#include <time.h>
 
 //scale for terrain, higher means higher mountains 
 #define SCALE 0.1
@@ -34,7 +35,7 @@ Model *ground;
 //spaceship object
 spaceship s;
 //test cloud object
-cloud c;
+cloud c[10];
 
 Point3D lightSourcesColorsArr[] = { { 1.0f, 1.0f, 1.0f },
 { 1.0f, 1.0f, 1.0f },
@@ -42,7 +43,7 @@ Point3D lightSourcesColorsArr[] = { { 1.0f, 1.0f, 1.0f },
 { 1.0f, 1.0f, 1.0f } };
 
 GLfloat specularExponent[] = { 1.0, 20.0, 30.0, 5.0 };
-GLint isDirectional[] = { 0,0,0,1};
+GLint isDirectional[] = { 1,1,1,1};
 
 Point3D lightSourcesDirectionsPositions[] = { { 0.0f, 50.0f, 0.0f }, // Red light, positional
 { 0.0f, 50.0f, 10.0f }, // Green light, positional
@@ -242,12 +243,19 @@ void init(void)
 	//init spaceship
 	create_spaceship(&s);
 	//init test cloud
-	create_cloud(&c);
+	vec3 init_pos = { 80+40, 49, 90 };
+	create_cloud(&c[0], init_pos);
+	vec3 init_pos2 = { 95, 49, 90+20 };
+	create_cloud(&c[1], init_pos2);
+
+	vec3 init_pos3 = { 65, 49, 90 - 30 };
+	create_cloud(&c[2], init_pos3);
 	ground = LoadModelPlus("ground.obj");
-	skybox = LoadModelPlus("skybox.obj");
+	skybox = LoadModelPlus("sphere.obj");
 
 	// GL inits
-	glClearColor(0.2,0.2,0.5,0);
+	//glClearColor(0.2,0.2,0.5,0);
+	glClearColor(0.9,  1, 1, 1);
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	//glEnable(GL_BLEND);
@@ -310,10 +318,12 @@ void display(void)
 	move_spaceship(&s);
 
 	//draw the spaceship
-	draw_spaceship(&s, &camMatrix, program);
+	draw_spaceship(&s, program);
 
 	//draw cloud c
-	draw_cloud(&c, &camMatrix, program);
+	draw_cloud(&c[0], program);
+	draw_cloud(&c[1], program);
+	draw_cloud(&c[2], program);
 
 	//dunno
 	printError("display 2");
@@ -358,7 +368,8 @@ int main(int argc, char **argv)
 			fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 		}
 	#endif
-
+	
+	srand(time(NULL));
 	init ();
 	initKeymapManager();
 	glutTimerFunc(20, &timer, 0);
