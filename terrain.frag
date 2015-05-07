@@ -115,7 +115,14 @@ void main(void)
 		
 	}
 
-	if((spaceship_pos.x-testpos.x)*(spaceship_pos.x-testpos.x) + (spaceship_pos.z-testpos.z)*(spaceship_pos.z-testpos.z) < 36)
-		outColor = vec4(0,0,0,0);
+	if((spaceship_pos.x-testpos.x)*(spaceship_pos.x-testpos.x) + (spaceship_pos.z-testpos.z)*(spaceship_pos.z-testpos.z) < 
+	min(100, spaceship_pos.y*6))
+	{
+		if(testpos.y > .2)
+			outColor = vec4(0.05,0.05,0.05,0)*texture(tex, texCoord);
+		else
+			outColor = vec4(0,0,0.1,0);
+	}
+
 	
 }

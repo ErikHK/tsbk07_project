@@ -22,7 +22,7 @@ void create_spaceship(spaceship * s)
 	s->angle[0] = 0;
 	s->angle[1] = 0;
 
-	s->thrust = 0.01;
+	s->thrust = 0.02;
 
 	s->pos[0] = 80;
 	s->pos[1] = 20;
@@ -84,7 +84,7 @@ void move_spaceship(spaceship * s)
 	if (keyIsDown(VK_SPACE))
 	{
 		s->acc[2] = s->thrust*sin(s->angle[0]);
-		s->acc[1] = s->thrust*cos(s->angle[0]);
+		s->acc[1] = s->thrust*cos(s->angle[0])+s->gravity;
 	}
 	else
 		s->acc[1] = s->gravity;
