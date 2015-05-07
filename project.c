@@ -9,27 +9,38 @@
 #include "LoadTGA.h"
 #include <math.h>
 
-
-#define SCALE 1.0
+//scale for terrain, higher means higher mountains 
+#define SCALE 0.1
 
 mat4 projectionMatrix;
+mat4 total, modelView, camMatrix;
+//cam position in world
+vec3 cam = { 0, 30, 90 };
 
-Point3D sphere_pos;
+// Reference to shader program
+GLuint program;
+
+//textures
+GLuint ground_tex;
+TextureData ttex; // terrain
 
 GLfloat *vertexArray;
 int texwidth;
 
+// terrain object
+Model *tm;
+//spaceship object
 spaceship s;
+//test cloud object
 cloud c;
 
-
-Point3D lightSourcesColorsArr[] = { { 1.0f, 0.0f, 1.0f },
-{ 0.0f, 0.0f, 1.0f },
-{ 1.0f, 0.0f, 0.0f },
+Point3D lightSourcesColorsArr[] = { { 1.0f, 1.0f, 1.0f },
+{ 1.0f, 1.0f, 1.0f },
+{ 1.0f, 1.0f, 1.0f },
 { 1.0f, 1.0f, 1.0f } };
 
 GLfloat specularExponent[] = { 1.0, 20.0, 60.0, 5.0 };
-GLint isDirectional[] = { 0, 0, 1, 1 };
+GLint isDirectional[] = { 0, 0, 0, 1 };
 
 Point3D lightSourcesDirectionsPositions[] = { { 0.0f, 5.0f, 0.0f }, // Red light, positional
 { 0.0f, 50.0f, 10.0f }, // Green light, positional
@@ -37,16 +48,7 @@ Point3D lightSourcesDirectionsPositions[] = { { 0.0f, 5.0f, 0.0f }, // Red light
 { 0.0f, 1.0f, -1.0f } }; // White light along Z
 
 
-//theta left right 360, phi up down 180
-float phi=0, theta=0;
-mat4 total, modelView, camMatrix;
-mat4 trans;
-mat4 spaceship_body_mat;
-mat4 spaceship_fin_mat;
-
-Model * spaceship_body;
-Model * spaceship_fin;
-
+//calculate height of terrain
 float calc_height(GLfloat *vertexArray, float x, float z, int width)
 {
 	int quad = (floor(x) + floor(z)*width)*3;
@@ -103,14 +105,11 @@ float calc_height(GLfloat *vertexArray, float x, float z, int width)
 	D = -(A*corners[0].x + B*corners[0].y + C*corners[0].z);
 
 	float y = (-D-C*z-A*x)/B;
-	//printf("%f %f %f %f\n", A,B,C, D);
-	//printf("%f %f\n", x, z);
-	//printf("%f\n", y);
 	return y;
 
 }
 
-
+//calculate normals of terrain
 void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 {
 	Point3D vec1, vec2;
@@ -143,7 +142,6 @@ void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 }
 
 
-
 Model* GenerateTerrain(TextureData *tex)
 {
 	texwidth = tex->width;
@@ -163,9 +161,9 @@ Model* GenerateTerrain(TextureData *tex)
 		for (z = 0; z < tex->height; z++)
 		{
 		// Vertex array. You need to scale this properly
-			vertexArray[(x + z * tex->width)*3 + 0] = x / SCALE;
-			vertexArray[(x + z * tex->width)*3 + 1] = tex->imageData[(x + z * tex->width) * (tex->bpp/8)] / 10.0;
-			vertexArray[(x + z * tex->width)*3 + 2] = z / SCALE;
+			vertexArray[(x + z * tex->width)*3 + 0] = x;
+			vertexArray[(x + z * tex->width)*3 + 1] = tex->imageData[(x + z * tex->width) * (tex->bpp/8)] * SCALE;
+			vertexArray[(x + z * tex->width)*3 + 2] = z;
 		// Normal vectors. You need to calculate these.
 
 			calc_normal(vertexArray, x, z, tex->width, &tmp_normal);
@@ -193,9 +191,6 @@ Model* GenerateTerrain(TextureData *tex)
 		}
 	
 	// End of terrain generation
-	//float test = calc_height(vertexArray, sphere_pos.x, sphere_pos.z, tex->width);
-	//sphere_pos.y = test;
-
 	
 	// Create Model and upload to GPU:
 
@@ -211,32 +206,11 @@ Model* GenerateTerrain(TextureData *tex)
 	return model;
 }
 
-
-// vertex array object
-Model *m, *m2, *tm;
-Model *sphere;
-// Reference to shader program
-GLuint program;
-GLuint tex1, tex2, spaceshiptex;
-TextureData ttex; // terrain
-vec3 lookAtPoint = {4, 0, 4};
-vec3 lookAtPoint_tmp = {4, 0, 4};
-vec3 cam = {0, 3+4+20, 90};
-//void mouse(int x, int y)
-//{
-//	float phi_m = ((float)x)/600*2*M_PI;
-//	float theta_m = ((float)y)/600*M_PI;
-//
-//	lookAtPoint.x = -10*sin(theta_m)*sin(phi_m) + cam.x;
-//	lookAtPoint.y = 10*cos(theta_m) + cam.y;
-//	lookAtPoint.z = 10*sin(theta_m)*cos(phi_m) + cam.z;
-//}
-
-
 void init(void)
 {
 	//init spaceship
 	create_spaceship(&s);
+	//init test cloud
 	create_cloud(&c);
 
 	// GL inits
@@ -245,11 +219,6 @@ void init(void)
 	glDisable(GL_CULL_FACE);
 	printError("GL inits");
 
-	sphere_pos.x = 10;
-	sphere_pos.y = 10;
-	sphere_pos.z = 10;
-
-	
 	projectionMatrix = frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 750.0);
 
 	// Load and compile shader
@@ -259,20 +228,12 @@ void init(void)
 	
 	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_TRUE, projectionMatrix.m);
 	glUniform1i(glGetUniformLocation(program, "tex"), 0); // Texture unit 0
-	LoadTGATextureSimple("maskros512.tga", &tex1);
+	LoadTGATextureSimple("maskros512.tga", &ground_tex);
 	
-// Load terrain data
-	
+	// Load terrain data
 	LoadTGATextureData("fft-terrain.tga", &ttex);
-	LoadTGATextureSimple("spaceship/spaceship_uvw_body.tga", &spaceshiptex);
 	tm = GenerateTerrain(&ttex);
 	printError("init terrain");
-
-	//sphere = LoadModelPlus("groundsphere.obj");
-
-	//sphere = LoadModelPlus("spaceship/spaceship_body.obj");
-	//sphere = LoadModelPlus("spaceship/fin.obj");
-
 }
 
 void display(void)
@@ -285,24 +246,14 @@ void display(void)
 	glUniform1fv(glGetUniformLocation(program, "specularExponent"), 4, specularExponent);
 	glUniform1iv(glGetUniformLocation(program, "isDirectional"), 4, isDirectional);
 	
-	
 	printError("pre display");
 	
 	glUseProgram(program);
-
-	// Build matrix
 	
-	//mat4 roty = Ry(theta);
-	//lookAtPoint = MultVec3(roty, lookAtPoint_tmp);
-
-	/*
-	camMatrix =  lookAt(cam.x, cam.y, cam.z,
-				lookAtPoint.x, lookAtPoint.y, lookAtPoint.z,
-				0.0, 1.0, 0.0);
-				*/
-	
+	//upload spaceship position to shader for shadow calculation
 	glUniform3f(glGetUniformLocation(program, "spaceship_pos"), s.pos[0], s.pos[1], s.pos[2]);
 
+	//upload cam matrix
 	glUniformMatrix4fv(glGetUniformLocation(program, "camMatrix"), 1, GL_TRUE, camMatrix.m);
 
 	modelView = IdentityMatrix();
@@ -311,20 +262,20 @@ void display(void)
 	
 	//draw terrain with water etc
 	glUniform1i(glGetUniformLocation(program, "water"), 1);
-	glBindTexture(GL_TEXTURE_2D, tex1);		// Bind Our Texture tex1
+	glBindTexture(GL_TEXTURE_2D, ground_tex);		// Bind Our Texture
 	DrawModel(tm, program, "inPosition", "inNormal", "inTexCoord");
 	glUniform1i(glGetUniformLocation(program, "water"), 0);
 
-	//total = Mult(camMatrix, s.body_matrix);
-	//glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
-	//glBindTexture(GL_TEXTURE_2D, spaceshiptex);		// Bind Our Texture tex1
-	//DrawModel(s.body, program, "inPosition", "inNormal", "inTexCoord");
-
+	//takes care of button presses and movement of spaceship
 	move_spaceship(&s);
+
+	//draw the spaceship
 	draw_spaceship(&s, &camMatrix, program);
 
+	//draw cloud c
 	draw_cloud(&c, &camMatrix, program);
 
+	//dunno
 	printError("display 2");
 	
 	glutSwapBuffers();
@@ -332,57 +283,12 @@ void display(void)
 
 void timer(int i)
 {
-	
-	//sphere_pos.x += .005;
-	//sphere_pos.y = calc_height(vertexArray, sphere_pos.x, sphere_pos.z, texwidth);
+	//will be collision detection in the future
 	float h = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
 	if (s.pos[1] <= h)
 		s.pos[1] = h;
-	vec3 test = VectorSub(cam, lookAtPoint);
-	float looknorm = sqrt(pow(test.x,2) + 
-		pow(test.y,2) + pow(test.z,2));
-	float speed = 0.1;
-	
-	if (keyIsDown('w'))
-	{
-		//cam.x -= speed*test.x/(looknorm);
-		//cam.y -= speed*test.y/(looknorm);
-		//cam.z -= speed*test.z/(looknorm);
 
-
-		
-	}
-
-	if (keyIsDown('s'))
-	{
-		//cam.x += speed*test.x/(looknorm);
-		//cam.y += speed*test.y/(looknorm);
-		//cam.z += speed*test.z/(looknorm);	
-	}
-
-	//strafe left
-	if (keyIsDown('a'))
-	{
-		//cam.x -= speed*test.z/(looknorm);
-		//cam.y -= speed*test.y/(looknorm);
-		//cam.z += speed*test.x/(looknorm);
-		
-	}
-
-	//strafe right
-	if (keyIsDown('d'))
-	{
-		//cam.x += speed*test.z/(looknorm);
-		//cam.y -= speed*test.y/(looknorm);
-		//cam.z -= speed*test.x/(looknorm);
-		
-	}
-	
-
-	//camMatrix = lookAt(cam.x, cam.y, cam.z,
-	//	s.pos[0], s.pos[1], s.pos[2],
-	//	0.0, 1.0, 0.0);
-
+	//looks at the spaceship
 	update_cam_matrix(&s, &camMatrix, &cam);
 
 	glutTimerFunc(20, &timer, i);
@@ -392,33 +298,30 @@ void timer(int i)
 
 int main(int argc, char **argv)
 {
-	
-
-	
 	glutInit(&argc, argv);
+	//init with antialiasing (multisample)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
 	glutInitContextVersion(3, 2);
 	glutInitWindowSize (600, 600);
 	glutCreateWindow ("TSBK07 - Project");
 	glutDisplayFunc(display);
 
+	//init GLEW if windows
 	#if defined(_WIN32)
-	glewExperimental = GL_TRUE;
+		glewExperimental = GL_TRUE;
 
-	GLenum err = glewInit();
+		GLenum err = glewInit();
 
-	if (GLEW_OK != err)
-	{
-		/* Problem: glewInit failed, something is seriously wrong. */
-		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-	}
+		if (GLEW_OK != err)
+		{
+			/* Problem: glewInit failed, something is seriously wrong. */
+			fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+		}
 	#endif
 
 	init ();
 	initKeymapManager();
 	glutTimerFunc(20, &timer, 0);
-
-	//glutPassiveMotionFunc(mouse);
 
 	glutMainLoop();
 	exit(0);
