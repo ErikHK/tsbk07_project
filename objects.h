@@ -4,7 +4,7 @@
 #include "GL_utilities.h"
 #include "LoadTGA.h"
 
-typedef struct spaceship_
+typedef struct spaceship_t
 {
   float speed[3];
   float acc[3];
@@ -23,15 +23,26 @@ typedef struct spaceship_
 
 } spaceship;
 
+typedef struct cloud_t
+{
+	Model * spheres[10];
+	int num_spheres;
+	vec3 sphere_scales[10];
+	mat4 matrix[10];
+
+} cloud;
+
 typedef struct landing_point
 {
   Model *landing_point_model;
 
 } landing_point;
 
+void create_cloud();
 void create_spaceship();
 void create_landing_point();
 //void draw_spaceship(spaceship * s, mat4 * cam_matrix, GLuint program);
 void draw_spaceship();
 void move_spaceship();
+void draw_cloud();
 void update_cam_matrix();

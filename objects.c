@@ -1,4 +1,7 @@
 #include "objects.h"
+#include <time.h>
+#include <stdlib.h>
+
 
 void create_spaceship(spaceship * s)
 {
@@ -120,5 +123,27 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 
 void create_landing_point()
 {
+
+}
+
+
+void create_cloud(cloud * c)
+{
+	c->spheres[0] = LoadModelPlus("sphere.obj");
+	//memcpy(c->spheres[1], c->spheres[0], sizeof(c->spheres[0]));
+	vec3 tmp = { 1, 1.5, 1 };
+	c->sphere_scales[0] = tmp;
+	vec3 tmp2 = { .1, 1, 1 };
+	c->sphere_scales[1] = tmp2;
+	c->matrix[0] = Mult(T(80,50,80), S(0.2, 0.2, 0.2));
+
+}
+
+void draw_cloud(cloud *c, mat4 * cam_matrix, GLuint program)
+{
+	mat4 total = Mult(*cam_matrix, c->matrix[0]);
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
+	DrawModel(c->spheres[0], program, "inPosition", "inNormal", "inTexCoord");
 
 }

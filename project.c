@@ -19,6 +19,7 @@ GLfloat *vertexArray;
 int texwidth;
 
 spaceship s;
+cloud c;
 
 
 Point3D lightSourcesColorsArr[] = { { 1.0f, 0.0f, 1.0f },
@@ -232,6 +233,7 @@ void init(void)
 {
 	//init spaceship
 	create_spaceship(&s);
+	create_cloud(&c);
 
 	// GL inits
 	glClearColor(0.2,0.2,0.5,0);
@@ -302,9 +304,11 @@ void display(void)
 	total = Mult(camMatrix, modelView);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	
+	//draw terrain with water etc
+	glUniform1i(glGetUniformLocation(program, "water"), 1);
 	glBindTexture(GL_TEXTURE_2D, tex1);		// Bind Our Texture tex1
 	DrawModel(tm, program, "inPosition", "inNormal", "inTexCoord");
-
+	glUniform1i(glGetUniformLocation(program, "water"), 0);
 
 	//total = Mult(camMatrix, s.body_matrix);
 	//glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
@@ -314,6 +318,8 @@ void display(void)
 	move_spaceship(&s);
 	draw_spaceship(&s, &camMatrix, program);
 
+	draw_cloud(&c, &camMatrix, program);
+
 	printError("display 2");
 	
 	glutSwapBuffers();
@@ -321,10 +327,12 @@ void display(void)
 
 void timer(int i)
 {
-
+	
 	//sphere_pos.x += .005;
 	//sphere_pos.y = calc_height(vertexArray, sphere_pos.x, sphere_pos.z, texwidth);
-	s.pos[1] = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
+	float h = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
+	if (s.pos[1] <= h)
+		s.pos[1] = h;
 	vec3 test = VectorSub(cam, lookAtPoint);
 	float looknorm = sqrt(pow(test.x,2) + 
 		pow(test.y,2) + pow(test.z,2));

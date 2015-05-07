@@ -87,6 +87,10 @@
     <ClInclude Include="objects.h" />
     <ClInclude Include="VectorUtils3.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="terrain.frag" />
+    <None Include="terrain.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

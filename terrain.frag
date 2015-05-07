@@ -17,6 +17,7 @@ uniform mat4 mdlMatrix;
 
 
 uniform int skybox;
+uniform int water;
 
 uniform bool multitex;
 
@@ -97,7 +98,7 @@ void main(void)
         	}
 		}
 
-		if(testpos.y < 0.2)
+		if(testpos.y < 0.2 && water==1)
 		{
 			outColor = vec4(colors.x*0, colors.y*0, colors.z, 1.0);
 		}else{
