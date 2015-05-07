@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="New document 1">
+  <defs
+     id="defs4">
+    <filter
+       id="filter3757"
+       inkscape:label="filter1">
+      <feTurbulence
+         id="feTurbulence3759"
+         baseFrequency="0.051528384279475981"
+         in="SourceGraphic"
+         type="fractalNoise"
+         numOctaves="2"
+         result="result1" />
+      <feDiffuseLighting
+         id="feDiffuseLighting3763"
+         kernelUnitLength="0.29355895196506548"
+         surfaceScale="10"
+         result="result2"
+         diffuseConstant="6"
+         lighting-color="rgb(60,53,8)">
+        <feDistantLight
+           id="feDistantLight3767"
+           azimuth="20"
+           elevation="30" />
+      </feDiffuseLighting>
+      <feFlood
+         id="feFlood3771"
+         in="SourceAlpha"
+         flood-color="rgb(255,232,99)"
+         result="result3" />
+      <feBlend
+         blend="normal"
+         id="feBlend3773"
+         in2="result3"
+         in="result2"
+         mode="screen"
+         result="result5" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="190.8273"
+     inkscape:cy="520"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="721"
+     inkscape:window-x="-4"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffe863;fill-opacity:1;fill-rule:nonzero;stroke:none;filter:url(#filter3757)"
+       id="rect2985"
+       width="668.57141"
+       height="668.57141"
+       x="-2.8571429"
+       y="-1.9235317" />
+    <rect
+       y="52.362183"
+       x="-920"
+       height="668.57141"
+       width="668.57141"
+       id="rect3755"
+       style="fill:#ffe863;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+  </g>
+</svg>

@@ -39,14 +39,13 @@ Point3D lightSourcesColorsArr[] = { { 1.0f, 1.0f, 1.0f },
 { 1.0f, 1.0f, 1.0f },
 { 1.0f, 1.0f, 1.0f } };
 
-GLfloat specularExponent[] = { 1.0, 20.0, 60.0, 5.0 };
-GLint isDirectional[] = { 0, 0, 0, 1 };
+GLfloat specularExponent[] = { 1.0, 20.0, 30.0, 5.0 };
+GLint isDirectional[] = { 0,0,0,1};
 
-Point3D lightSourcesDirectionsPositions[] = { { 0.0f, 5.0f, 0.0f }, // Red light, positional
+Point3D lightSourcesDirectionsPositions[] = { { 0.0f, 50.0f, 0.0f }, // Red light, positional
 { 0.0f, 50.0f, 10.0f }, // Green light, positional
 { -1.0f, 2.0f, 0.0f }, // Blue light along X
-{ 0.0f, 1.0f, -1.0f } }; // White light along Z
-
+{ 10.0f, 5.0f, 10.0f } }; // White light along Z
 
 //calculate height of terrain
 float calc_height(GLfloat *vertexArray, float x, float z, int width)
@@ -174,8 +173,8 @@ Model* GenerateTerrain(TextureData *tex)
 			normalArray[(x + z * tex->width)*3 + 1] = tmp_normal.y;
 			normalArray[(x + z * tex->width)*3 + 2] = tmp_normal.z;
 		// Texture coordinates. You may want to scale them.
-			texCoordArray[(x + z * tex->width)*2 + 0] = x; // (float)x / tex->width;
-			texCoordArray[(x + z * tex->width)*2 + 1] = z; // (float)z / tex->height;
+			texCoordArray[(x + z * tex->width)*2 + 0] = x/10.0; // (float)x / tex->width;
+			texCoordArray[(x + z * tex->width)*2 + 1] = z/10.0; // (float)z / tex->height;
 		}
 	for (x = 0; x < tex->width-1; x++)
 		for (z = 0; z < tex->height-1; z++)
@@ -228,7 +227,7 @@ void init(void)
 	
 	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_TRUE, projectionMatrix.m);
 	glUniform1i(glGetUniformLocation(program, "tex"), 0); // Texture unit 0
-	LoadTGATextureSimple("maskros512.tga", &ground_tex);
+	LoadTGATextureSimple("sand.tga", &ground_tex);
 	
 	// Load terrain data
 	LoadTGATextureData("fft-terrain.tga", &ttex);

@@ -9,7 +9,6 @@ void create_spaceship(spaceship * s)
 	//init to zero
 	for (int i = 0; i < 3; i++)
 	{
-		//s->pos[i] = 0;
 		s->acc[i] = 0;
 		s->speed[i] = 0;
 	}
