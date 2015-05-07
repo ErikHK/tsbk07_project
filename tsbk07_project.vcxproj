@@ -81,6 +81,7 @@
     <ClCompile Include="VectorUtils3.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="deps.h" />
     <ClInclude Include="GL_utilities.h" />
     <ClInclude Include="loadobj.h" />
     <ClInclude Include="LoadTGA.h" />

@@ -1,4 +1,4 @@
-#if defined(WIN32)
+#if defined(_WIN32)
     #include "windows.h"
 #endif
 
@@ -52,6 +52,9 @@ float calc_height(GLfloat *vertexArray, float x, float z, int width)
 	int quad = (floor(x) + floor(z)*width)*3;
 	int choose_upper = 0;
 	
+	if (x < 0 || x > width || z < 0 || z > width)
+		return 0;
+
 
 	Point3D corners[3];
 
@@ -398,7 +401,7 @@ int main(int argc, char **argv)
 	glutCreateWindow ("TSBK07 - Project");
 	glutDisplayFunc(display);
 
-	#if defined(WIN32)
+	#if defined(_WIN32)
 	glewExperimental = GL_TRUE;
 
 	GLenum err = glewInit();

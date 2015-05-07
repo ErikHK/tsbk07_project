@@ -19,6 +19,12 @@ uniform mat4 mdlMatrix;
 uniform int skybox;
 uniform int water;
 
+uniform int spaceship_x;
+uniform int spaceship_y;
+uniform int spaceship_z;
+
+uniform vec3 spaceship_pos;
+
 uniform bool multitex;
 
 in vec3 norm;
@@ -30,6 +36,8 @@ vec3 n;
 vec3 eye;
 
 float cos_angle;
+
+int xx, yy, zz;
 
 vec3 diffuse;
 vec3 specular;
@@ -48,6 +56,7 @@ mat3 lightCamMatrix = mat3(camMatrix);
 
 void main(void)
 {
+
 	vec4 test = (mdlMatrix)*vec4(outPosition.x, outPosition.y, outPosition.z, 1);
 	//colors = vec3(0,0,0);
 	colors = vec3(0.5, 0.5, 0.5);
@@ -112,6 +121,8 @@ void main(void)
 		
 	}
 
-
+	if((spaceship_x-testpos.x)*(spaceship_x-testpos.x) + (spaceship_z-testpos.z)*(spaceship_z-testpos.z) < 36)
+	//if((xx-testpos.x)*(xx-testpos.x) + (zz-testpos.z)*(zz-testpos.z) < 360)
+		outColor = vec4(0,0,0,0);
 	//outColor = texture(tex, texCoord);
 }
