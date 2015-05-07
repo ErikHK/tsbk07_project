@@ -301,6 +301,7 @@ void display(void)
 				0.0, 1.0, 0.0);
 				*/
 	
+	glUniform3f(glGetUniformLocation(program, "spaceship_pos"), s.pos[0], s.pos[1], s.pos[2]);
 
 	glUniformMatrix4fv(glGetUniformLocation(program, "camMatrix"), 1, GL_TRUE, camMatrix.m);
 

@@ -19,10 +19,6 @@ uniform mat4 mdlMatrix;
 uniform int skybox;
 uniform int water;
 
-uniform int spaceship_x;
-uniform int spaceship_y;
-uniform int spaceship_z;
-
 uniform vec3 spaceship_pos;
 
 uniform bool multitex;
@@ -36,8 +32,6 @@ vec3 n;
 vec3 eye;
 
 float cos_angle;
-
-int xx, yy, zz;
 
 vec3 diffuse;
 vec3 specular;
@@ -121,8 +115,7 @@ void main(void)
 		
 	}
 
-	if((spaceship_x-testpos.x)*(spaceship_x-testpos.x) + (spaceship_z-testpos.z)*(spaceship_z-testpos.z) < 36)
-	//if((xx-testpos.x)*(xx-testpos.x) + (zz-testpos.z)*(zz-testpos.z) < 360)
+	if((spaceship_pos.x-testpos.x)*(spaceship_pos.x-testpos.x) + (spaceship_pos.z-testpos.z)*(spaceship_pos.z-testpos.z) < 36)
 		outColor = vec4(0,0,0,0);
-	//outColor = texture(tex, texCoord);
+	
 }
