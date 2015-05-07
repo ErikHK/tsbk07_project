@@ -35,7 +35,7 @@ void create_spaceship(spaceship * s)
 	s->fins[1] = LoadModelPlus("spaceship/fin.obj");
 	s->fins[2] = LoadModelPlus("spaceship/fin.obj");
 
-	s->body_matrix = Mult(Rz(2), Mult(T(s->pos[0], s->pos[1], s->pos[2]), S(0.2, 0.2, 0.2)));
+	//s->body_matrix = Mult(Rz(2), Mult(T(s->pos[0], s->pos[1], s->pos[2]), S(0.1, 0.1, 0.1)));
 	
 	s->fins_matrix[0] = Mult(T(0, -1, -2), s->body_matrix);
 	s->fins_matrix[1] = Mult(T(1, -1, -2), s->body_matrix);
@@ -50,7 +50,7 @@ void draw_spaceship(spaceship * s, mat4 * cam_matrix, GLuint program)
 	s->fins_matrix[1] = Mult(s->body_matrix, T(0, -10, -35));
 	s->fins_matrix[2] = Mult(s->body_matrix, T(0, -10, -15));
 
-  mat4 total = Mult(*cam_matrix, s->body_matrix);
+  mat4 total = s->body_matrix;
   glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
   glBindTexture(GL_TEXTURE_2D, s->body_tex);
   DrawModel(s->body, program, "inPosition", "inNormal", "inTexCoord");
@@ -59,7 +59,7 @@ void draw_spaceship(spaceship * s, mat4 * cam_matrix, GLuint program)
   
   for (int i = 0; i < 3;i++)
   {
-	  total = Mult(*cam_matrix, s->fins_matrix[i]);
+	  total = s->fins_matrix[i];
 	  glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	  glBindTexture(GL_TEXTURE_2D, s->body_tex);
 	  DrawModel(s->fins[i], program, "inPosition", "inNormal", "inTexCoord");
@@ -78,7 +78,7 @@ void move_spaceship(spaceship * s)
 
 		s->pos[i] += s->speed[i];
 	}
-	s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), Mult(Rx(s->angle[0]), S(0.2, 0.2, 0.2)));
+	s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), Mult(Rx(s->angle[0]), S(0.1, 0.1, 0.1)));
 
 	if (keyIsDown(VK_SPACE))
 	{
@@ -113,6 +113,10 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 {
 	if (!(s && cam_matrix && cam_pos))
 		return NULL;
+	//*cam_matrix = lookAt(cam_pos->x, cam_pos->y, cam_pos->z,
+	//	s->pos[0], s->pos[1], s->pos[2],
+	//	0.0, 1.0, 0.0);
+
 	*cam_matrix = lookAt(cam_pos->x, cam_pos->y, cam_pos->z,
 		s->pos[0], s->pos[1], s->pos[2],
 		0.0, 1.0, 0.0);

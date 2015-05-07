@@ -15,13 +15,13 @@
 mat4 projectionMatrix;
 mat4 total, modelView, camMatrix;
 //cam position in world
-vec3 cam = { 0, 30, 90 };
+vec3 cam = { 20, 20, 100 };
 
 // Reference to shader program
 GLuint program;
 
 //textures
-GLuint ground_tex;
+GLuint ground_tex, tex1;
 TextureData ttex; // terrain
 
 GLfloat *vertexArray;
@@ -29,6 +29,8 @@ int texwidth;
 
 // terrain object
 Model *tm;
+Model *skybox;
+Model *ground;
 //spaceship object
 spaceship s;
 //test cloud object
@@ -140,7 +142,6 @@ void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 	}
 }
 
-
 Model* GenerateTerrain(TextureData *tex)
 {
 	texwidth = tex->width;
@@ -205,17 +206,51 @@ Model* GenerateTerrain(TextureData *tex)
 	return model;
 }
 
+void draw_skybox()
+{
+
+	glDisable(GL_DEPTH_TEST);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUniform1i(glGetUniformLocation(program, "skybox"), 1);
+
+	//curr_trans = &trans1;
+	//glUniformMatrix4fv(glGetUniformLocation(program, "myMatrix"), 1, GL_TRUE, myMatrix);
+	//glUniformMatrix4fv(glGetUniformLocation(program, "camMatrix"), 1, GL_TRUE, look.m);
+
+	GLfloat skyboxmat[16];
+	memcpy(skyboxmat, camMatrix.m, sizeof(skyboxmat));
+	skyboxmat[3] = 0;
+	skyboxmat[7] = 0;
+	skyboxmat[11] = 0;
+	skyboxmat[15] = 1;
+
+	//glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_TRUE, skyboxmat);
+	
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, IdentityMatrix().m);
+	glUniformMatrix4fv(glGetUniformLocation(program, "camMatrix"), 1, GL_TRUE, skyboxmat);
+	glBindTexture(GL_TEXTURE_2D, tex1);
+	DrawModel(skybox, program, "inPosition", "inNormal", "inTexCoord");
+
+	glEnable(GL_DEPTH_TEST);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUniform1i(glGetUniformLocation(program, "skybox"), 0);
+}
+
 void init(void)
 {
+	LoadTGATextureSimple("SkyBox512.tga", &tex1);
 	//init spaceship
 	create_spaceship(&s);
 	//init test cloud
 	create_cloud(&c);
+	ground = LoadModelPlus("ground.obj");
+	skybox = LoadModelPlus("skybox.obj");
 
 	// GL inits
 	glClearColor(0.2,0.2,0.5,0);
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
+	//glEnable(GL_BLEND);
 	printError("GL inits");
 
 	projectionMatrix = frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 750.0);
@@ -237,8 +272,11 @@ void init(void)
 
 void display(void)
 {
+
+	draw_skybox();
+
 	// clear the screen
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUniform1i(glGetUniformLocation(program, "skybox"), 0);
 	glUniform3fv(glGetUniformLocation(program, "lightSourcesDirPosArr"), 4, &lightSourcesDirectionsPositions[0].x);
 	glUniform3fv(glGetUniformLocation(program, "lightSourcesColorArr"), 4, &lightSourcesColorsArr[0].x);
@@ -257,12 +295,15 @@ void display(void)
 
 	modelView = IdentityMatrix();
 	total = Mult(camMatrix, modelView);
-	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
-	
+	//glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, IdentityMatrix().m);
+
 	//draw terrain with water etc
 	glUniform1i(glGetUniformLocation(program, "water"), 1);
 	glBindTexture(GL_TEXTURE_2D, ground_tex);		// Bind Our Texture
 	DrawModel(tm, program, "inPosition", "inNormal", "inTexCoord");
+	//glBindTexture(GL_TEXTURE_2D, ground_tex);		// Bind Our Texture
+	//DrawModel(ground, program, "inPosition", "inNormal", "inTexCoord");
 	glUniform1i(glGetUniformLocation(program, "water"), 0);
 
 	//takes care of button presses and movement of spaceship
@@ -299,7 +340,7 @@ int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 	//init with antialiasing (multisample)
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GL_MULTISAMPLE);
 	glutInitContextVersion(3, 2);
 	glutInitWindowSize (600, 600);
 	glutCreateWindow ("TSBK07 - Project");
