@@ -1,5 +1,6 @@
-
-#include "windows.h"
+#if defined(WIN32)
+    #include "windows.h"
+#endif
 
 #include "GL_utilities.h"
 #include "VectorUtils3.h"
@@ -397,6 +398,7 @@ int main(int argc, char **argv)
 	glutCreateWindow ("TSBK07 - Project");
 	glutDisplayFunc(display);
 
+	#if defined(WIN32)
 	glewExperimental = GL_TRUE;
 
 	GLenum err = glewInit();
@@ -406,7 +408,7 @@ int main(int argc, char **argv)
 		/* Problem: glewInit failed, something is seriously wrong. */
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 	}
-
+	#endif
 
 	init ();
 	initKeymapManager();

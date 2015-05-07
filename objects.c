@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 
+#define VK_SPACE 32
 
 void create_spaceship(spaceship * s)
 {

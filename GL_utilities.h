@@ -12,8 +12,8 @@ extern "C" {
 #else
 	//#include "MicroGlut.h"
 	//#include <GL/gl.h>
-#include "Dependencies\glew\glew.h"
-#include "Dependencies\freeglut\freeglut.h"
+	#include "deps.h"
+
 #endif
 
 void printError(const char *functionName);
