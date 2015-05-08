@@ -37,17 +37,17 @@ spaceship s;
 //test cloud object
 cloud c[10];
 
-Point3D lightSourcesColorsArr[] = { { 1.0f, 1.0f, 1.0f },
+Point3D lightSourcesColorsArr[] = { { 1.0f, 0.0f, 1.0f },
 { 1.0f, 1.0f, 1.0f },
 { 1.0f, 1.0f, 1.0f },
 { 1.0f, 1.0f, 1.0f } };
 
-GLfloat specularExponent[] = { 1.0, 20.0, 30.0, 5.0 };
-GLint isDirectional[] = { 0,0,1,1};
+GLfloat specularExponent[] = { 1.0, 5.0, 30.0, 5.0 };
+GLint isDirectional[] = { 1,1,1,1};
 
-Point3D lightSourcesDirectionsPositions[] = { { 0.0f, 50.0f, 0.0f }, // Red light, positional
-{ 0.0f, 50.0f, 10.0f }, // Green light, positional
-{ -1.0f, 2.0f, 0.0f }, // Blue light along X
+Point3D lightSourcesDirectionsPositions[] = { { 0.0f, 30.0f, 0.0f }, // Red light, positional
+{ 3.0f, 5.0f, 3.0f }, // Green light, positional
+{ 10.0f, 12.0f, 0.0f }, // Blue light along X
 { 10.0f, 5.0f, 10.0f } }; // White light along Z
 
 /*
@@ -355,10 +355,20 @@ void timer(int i)
 	glUniform1f(glGetUniformLocation(program, "randwater"), random());
 
 
-	//will be collision detection in the future
+	//will be collision detection in the future!
 	float h = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
-	if (s.pos[1] <= h)
-		s.pos[1] = h;
+	if (s.pos[1]-1.5 <= h)
+	{
+		s.pos[1] = h+1.5;
+		//s.gravity = 0;
+		s.speed[0] = 0;
+		s.speed[1] = 0;
+		s.speed[2] = 0;
+		s.landed = 1;
+	}
+	else{
+		s.landed = 0;
+	}
 
 	//looks at the spaceship
 	update_cam_matrix(&s, &camMatrix, &cam);

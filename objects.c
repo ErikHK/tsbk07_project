@@ -6,6 +6,9 @@
 
 void create_spaceship(spaceship * s)
 {
+	//has not yet landed
+	s->landed = 0;
+
 	//init to zero
 	for (int i = 0; i < 3; i++)
 	{
@@ -23,7 +26,7 @@ void create_spaceship(spaceship * s)
 
 	s->thrust = 0.02;
 
-	s->pos[0] = 80;
+	s->pos[0] = 90;
 	s->pos[1] = 20;
 	s->pos[2] = 80;
 	s->gravity = -0.006;
@@ -47,8 +50,8 @@ void create_spaceship(spaceship * s)
 void draw_spaceship(spaceship * s, GLuint program)
 {
 	s->fins_matrix[0] = Mult(s->body_matrix, T(0, -10, -15));
-	s->fins_matrix[1] = Mult(s->body_matrix, T(0, -10, -35));
-	s->fins_matrix[2] = Mult(s->body_matrix, T(0, -10, -15));
+	s->fins_matrix[1] = Mult(s->body_matrix, Mult(Ry(2.094),T(0, -10, -15)));
+	s->fins_matrix[2] = Mult(s->body_matrix, Mult(Ry(2.094*2), T(0, -10, -15)));
 
   mat4 total = s->body_matrix;
   glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
@@ -88,15 +91,18 @@ void move_spaceship(spaceship * s)
 	else
 		s->acc[1] = s->gravity;
 
-	if (keyIsDown('a'))
-		s->angle_speed[0] -= s->angle_acc[0];
-	else
-		s->angle_speed[0] *= 0.99;
+	if (!s->landed)
+	{
+		if (keyIsDown('a'))
+			s->angle_speed[0] -= s->angle_acc[0];
+		else
+			s->angle_speed[0] *= 0.99;
 
-	if (keyIsDown('d'))
-		s->angle_speed[0] += s->angle_acc[0];
-	else
-		s->angle_speed[0] *= 0.99;
+		if (keyIsDown('d'))
+			s->angle_speed[0] += s->angle_acc[0];
+		else
+			s->angle_speed[0] *= 0.99;
+	}
 
 	s->angle[0] += s->angle_speed[0];
 
@@ -152,7 +158,7 @@ void create_cloud(cloud * c, vec3 init_pos)
 		if (i>0)
 			memcpy(&(c->spheres[i]), &(c->spheres[0]), sizeof(c->spheres[0]));
 		c->matrix[i] = Mult(T(init_pos.x+(random()-.5)*i/3, init_pos.y+(random()-.5)*i/2, init_pos.z+(random()-.5)*i*2), 
-			S(.6+(random()/3-.2), .6+(random()/3-.3), .7+(random()/3-.3)));
+			S(.7+(random()/3-.2), .7+(random()/3-.3), .8+(random()/2.6-.3)));
 	}
 	
 }

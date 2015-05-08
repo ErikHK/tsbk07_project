@@ -14,6 +14,7 @@ typedef struct spaceship_t
   float angle_acc[2];
   float angle_speed[2];
   float angle[2];
+  int landed;
 
   Model *body;
   Model *fins[3];

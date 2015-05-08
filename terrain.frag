@@ -121,7 +121,7 @@ void main(void)
 	}
 
 	if((spaceship_pos.x-testpos.x)*(spaceship_pos.x-testpos.x) + (spaceship_pos.z-testpos.z)*(spaceship_pos.z-testpos.z) < 
-	min(100, spaceship_pos.y*6))
+	min(100, (spaceship_pos.y-testpos.y)*6))
 	{
 		if(testpos.y > .2)
 			outColor = vec4(0.2,0.2,0.2,1)*texture(tex, texCoord);
