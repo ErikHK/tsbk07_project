@@ -18,6 +18,8 @@ uniform mat4 mdlMatrix;
 
 uniform int skybox;
 uniform int water;
+uniform int exhaust;
+uniform int fire;
 
 uniform float time;
 uniform float randwater;
@@ -89,22 +91,26 @@ void main(void)
         	n = normalize(exNormal);
 
         	float lambert = dot(n,s)-.001;
-
-        	if(lambert > 0)
+        	
+        	float f = smoothstep(.1, .45, lambert);
+        	if(exhaust==0)
         	{
-				diffuse = (lightSourcesColorArr[i]*tmp_colors)*lambert;
-				colors += diffuse;
-
-				reflection = reflect(s, n);
-				eye = normalize(outPositionCam);
-
-				cos_angle = dot(reflection, eye);
-				cos_angle = max(0, cos_angle);
-
-				specular = (lightSourcesColorArr[i]*tmp_colors)*pow(cos_angle, specularExponent[i]);
-				colors += specular;
-
+        		vec4 pixcol1 = vec4(1,1,1,1)*texture(tex, texCoord);
+        		vec4 pixcol2 = vec4(.9,.9,.9,1)*texture(tex, texCoord);
+        		outColor = mix(pixcol1, pixcol2, f);
+        	
+        	}else
+        	{
+        		vec4 pixcol1 = vec4(.8,.8,.8,1);
+        		vec4 pixcol2 = vec4(.6,.6,.6,1);
+        		outColor = mix(pixcol1, pixcol2, f);
         	}
+        	
+        	if(fire==1)
+        	{
+        		outColor = vec4(1,0,0,1);
+        	}
+
 		}
 
 		if(testpos.y < 0.2 && water==1)
@@ -121,12 +127,10 @@ void main(void)
 			float f = smoothstep(.1,.8,testpos.y);
 			outColor = mix(vec4(1,1,1,1), vec4(1,.9,.3,1), f);
 		}else{
-			if((colors.y + colors.x + colors.z)/3 > 0.75)
-				outColor = vec4(1, 1, 1, 1)*texture(tex, texCoord);
-			else if((colors.y + colors.x + colors.z)/3 > 0.5)
-				outColor = vec4(.8, .8, .8, 1.0)*texture(tex, texCoord);
-			else
-				outColor = vec4(0.65, 0.65, 0.65, 1.0)*texture(tex, texCoord);
+			//if((colors.y + colors.x + colors.z)/3 > 0.5)
+			//	outColor = vec4(1, 1, 1, 1.0)*texture(tex, texCoord);
+			//else
+			//	outColor = vec4(0.9, 0.9, 0.9, 1.0)*texture(tex, texCoord);
 		}
 		
 	}

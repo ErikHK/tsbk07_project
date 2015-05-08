@@ -18,9 +18,15 @@ typedef struct spaceship_t
 
   Model *body;
   Model *fins[3];
+  Model *exhaust;
+  Model *fire;
+  mat4 exhaust_pos;
+  mat4 fire_pos;
+  int fire_visible;
   mat4 body_matrix;
   mat4 fins_matrix[3];
   GLuint body_tex;
+
 
 } spaceship;
 

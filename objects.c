@@ -15,6 +15,7 @@ void create_spaceship(spaceship * s)
 		s->acc[i] = 0;
 		s->speed[i] = 0;
 	}
+
 	s->angle_acc[0] = 0.0008;
 	s->angle_acc[1] = 0.0008;
 
@@ -34,6 +35,8 @@ void create_spaceship(spaceship * s)
 	s->acc[1] = s->gravity;	//y acc, gravity
 
 	s->body = LoadModelPlus("spaceship/spaceship_body.obj");
+	s->exhaust = LoadModelPlus("spaceship/exhaust.obj");
+	s->fire = LoadModelPlus("cone.obj");
 	s->fins[0] = LoadModelPlus("spaceship/fin.obj");
 	s->fins[1] = LoadModelPlus("spaceship/fin.obj");
 	s->fins[2] = LoadModelPlus("spaceship/fin.obj");
@@ -53,13 +56,36 @@ void draw_spaceship(spaceship * s, GLuint program)
 	s->fins_matrix[1] = Mult(s->body_matrix, Mult(Ry(2.094),T(0, -10, -15)));
 	s->fins_matrix[2] = Mult(s->body_matrix, Mult(Ry(2.094*2), T(0, -10, -15)));
 
+	s->exhaust_pos = Mult(s->body_matrix, S(1.3,1.3,1.3));
+	s->fire_pos = Mult(s->body_matrix, Mult(Rx(M_PI), T(0,15,0)));
+
   mat4 total = s->body_matrix;
   glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
   glBindTexture(GL_TEXTURE_2D, s->body_tex);
   DrawModel(s->body, program, "inPosition", "inNormal", "inTexCoord");
   
-  //draw fins
+  //draw exhaust
+  total = s->exhaust_pos;
+  glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+  glUniform1i(glGetUniformLocation(program, "exhaust"), 1);
+  glBindTexture(GL_TEXTURE_2D, s->body_tex);
+  DrawModel(s->exhaust, program, "inPosition", "inNormal", "inTexCoord");
+  glUniform1i(glGetUniformLocation(program, "exhaust"), 0);
+
+  //draw fire
+  total = s->fire_pos;
+  if(s->fire_visible)
+  {
+  glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+  glUniform1i(glGetUniformLocation(program, "fire"), 1);
+  glBindTexture(GL_TEXTURE_2D, s->body_tex);
+  DrawModel(s->fire, program, "inPosition", "inNormal", "inTexCoord");
+  glUniform1i(glGetUniformLocation(program, "fire"), 0);
+  }
   
+  
+
+  //draw fins
   for (int i = 0; i < 3;i++)
   {
 	  total = s->fins_matrix[i];
@@ -85,11 +111,15 @@ void move_spaceship(spaceship * s)
 
 	if (keyIsDown(VK_SPACE))
 	{
+		s->fire_visible = 1;
 		s->acc[2] = s->thrust*sin(s->angle[0]);
 		s->acc[1] = s->thrust*cos(s->angle[0])+s->gravity;
 	}
 	else
+	{
 		s->acc[1] = s->gravity;
+		s->fire_visible = 0;
+	}
 
 	if (!s->landed)
 	{

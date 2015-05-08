@@ -285,7 +285,7 @@ void init(void)
 	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_TRUE, projectionMatrix.m);
 	glUniform1i(glGetUniformLocation(program, "tex"), 0); // Texture unit 0
 	LoadTGATextureSimple("sand.tga", &ground_tex);
-	LoadTGATextureSimple("water_text.tga", &water_tex);
+	//LoadTGATextureSimple("water_text.tga", &water_tex);
 	
 	// Load terrain data
 	LoadTGATextureData("fft-terrain.tga", &ttex);
