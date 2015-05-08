@@ -107,11 +107,13 @@ void move_spaceship(spaceship * s)
 	s->angle[0] += s->angle_speed[0];
 
 	//stabilize!
-	if (fabs(s->angle[0]) <= M_PI/12)
-		s->angle[0] *= .98;
-	else
-		s->angle[0] *= .995;
-
+	if (!s->landed)
+	{
+		if (fabs(s->angle[0]) <= M_PI / 12)
+			s->angle[0] *= .98;
+		else
+			s->angle[0] *= .995;
+	}
 	s->speed[2] *= 0.99;
 }
 

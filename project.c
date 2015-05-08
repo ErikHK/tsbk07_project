@@ -364,6 +364,8 @@ void timer(int i)
 		s.speed[0] = 0;
 		s.speed[1] = 0;
 		s.speed[2] = 0;
+		s.angle_speed[0] = 0;
+		s.angle_speed[1] = 0;
 		s.landed = 1;
 	}
 	else{

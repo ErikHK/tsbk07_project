@@ -50,6 +50,9 @@ uniform bool isDirectional[4];
 
 mat3 lightCamMatrix = mat3(camMatrix);
 
+float rand(vec2 co){
+  return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
 
 void main(void)
 {
@@ -106,9 +109,14 @@ void main(void)
 
 		if(testpos.y < 0.2 && water==1)
 		{
-			outColor = vec4(colors.x*0, colors.y*0.2+sin(testpos.x/3+time)/30, colors.z, 0.9);
-		}else if(testpos.y < .35-randwater/1000000.0 && water==1){
-			outColor = vec4(1,1,1,1);
+			float f = smoothstep(.1,.3,testpos.y);
+			vec4 col1 = vec4(colors.x*0, colors.y*0.2+sin(testpos.x/3+time)/30.0, colors.z, 1)
+			+texture(tex, texCoord/30.0)/8.0;
+			vec4 col2 = vec4(1,1,1,1);
+			outColor = mix(col1,col2,f);
+		}else if(testpos.y < .35 && water==1){
+			float f = smoothstep(.1,.5,testpos.y);
+			outColor = mix(vec4(1,1,1,1), vec4(1,.9,.3,1), f);
 		}else{
 			if((colors.y + colors.x + colors.z)/3 > 0.75)
 				outColor = vec4(1, 1, 1, 1)*texture(tex, texCoord);
@@ -131,3 +139,4 @@ void main(void)
 
 	
 }
+
