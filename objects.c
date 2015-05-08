@@ -46,7 +46,7 @@ void create_spaceship(spaceship * s)
 	s->fins_matrix[0] = Mult(T(0, -1, -2), s->body_matrix);
 	s->fins_matrix[1] = Mult(T(1, -1, -2), s->body_matrix);
 	s->fins_matrix[2] = Mult(T(2, -1, -2), s->body_matrix);
-	
+
 	LoadTGATextureSimple("spaceship/spaceship_uvw_body.tga", &(s->body_tex));
 }
 
@@ -207,4 +207,10 @@ void draw_cloud(cloud *c, GLuint program)
 		DrawModel(c->spheres[i], program, "inPosition", "inNormal", "inTexCoord");
 	}
 
+}
+
+void create_spark(spark *s, GLuint program)
+{
+	s->model = LoadModelPlus("spark.obj");
+	
 }

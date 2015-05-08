@@ -43,7 +43,7 @@ void main(void)
 	else if(fire==1 )
 	{
 		gl_Position = projMatrix * camMatrix * mdlMatrix *
-		vec4(inPosition.x+sin(inPosition.x*time*20), inPosition.y*.8 +inPosition.y*.2*sin(60*time), 5*sin(inPosition.x*3+time)/2, 1.0);
+		vec4(inPosition.x+sin(inPosition.x*time*20), inPosition.y*.8 +inPosition.y*.2*sin(60*time), inPosition.z+sin(50*time), 1.0);
 	}else
 		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition, 1.0);
 

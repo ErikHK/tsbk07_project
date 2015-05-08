@@ -108,7 +108,7 @@ void main(void)
         	
         	if(fire==1)
         	{
-        		f = smoothstep(.1, .3, lambert);
+        		f = smoothstep(.1, .8, dot(n,-s));
         		vec4 pixcol1 = vec4(1,0,0,1);
         		vec4 pixcol2 = vec4(1,.7,0,1);
         		outColor = mix(pixcol1, pixcol2, f);

@@ -50,6 +50,16 @@ typedef struct cloud_t
 
 } cloud;
 
+typedef struct spark_t
+{
+  Model * model;
+  float speed[3];
+  float acc[3];
+  float pos[3];
+  mat4 matrix;
+
+} spark;
+
 typedef struct landing_point
 {
   Model *landing_point_model;
@@ -59,6 +69,7 @@ typedef struct landing_point
 void create_cloud();
 void create_spaceship();
 void create_landing_point();
+void create_spark();
 //void draw_spaceship(spaceship * s, mat4 * cam_matrix, GLuint program);
 void draw_spaceship();
 void move_spaceship();
