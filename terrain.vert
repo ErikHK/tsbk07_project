@@ -13,7 +13,10 @@ out vec2 texCoord;
 
 out vec3 testpos;
 
-// NY
+uniform int water;
+uniform float time;
+uniform float randwater;
+
 uniform mat4 projMatrix;
 uniform mat4 mdlMatrix;
 uniform mat4 viewMatrix;
@@ -32,13 +35,17 @@ void main(void)
 
 	mat3 normalMatrix1 = mat3(mdlMatrix);
 	texCoord = inTexCoord;
-	gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition, 1.0);
+	testpos = inPosition;
+
+	if(water==1 && inPosition.y < 0.2)
+		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, inPosition.y+sin(inPosition.x/3+time)/2, inPosition.z, 1.0);
+	else
+		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition, 1.0);
 
 
 	outPositionCam = vec3(camMatrix * mdlMatrix * vec4(inPosition, 1));
 	outPosition = mat3(camMatrix) * vec3(mdlMatrix * vec4(inPosition, 1));
 
-	testpos = inPosition;
-
+	
 
 }

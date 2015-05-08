@@ -130,9 +130,9 @@ void create_landing_point()
 
 }
 
-double random()
+float random()
 {
-	return (double)rand() / (double)RAND_MAX;
+	return (float)rand() / (float)RAND_MAX;
 }
 
 
@@ -152,7 +152,7 @@ void create_cloud(cloud * c, vec3 init_pos)
 		if (i>0)
 			memcpy(&(c->spheres[i]), &(c->spheres[0]), sizeof(c->spheres[0]));
 		c->matrix[i] = Mult(T(init_pos.x+(random()-.5)*i/3, init_pos.y+(random()-.5)*i/2, init_pos.z+(random()-.5)*i*2), 
-			S(.5+(random()-.2), .5+(random()-.3), .6+(random()-.3)));
+			S(.6+(random()/3-.2), .6+(random()/3-.3), .7+(random()/3-.3)));
 	}
 	
 }

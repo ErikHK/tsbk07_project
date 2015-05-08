@@ -19,6 +19,9 @@ uniform mat4 mdlMatrix;
 uniform int skybox;
 uniform int water;
 
+uniform float time;
+uniform float randwater;
+
 uniform vec3 spaceship_pos;
 
 uniform bool multitex;
@@ -103,10 +106,12 @@ void main(void)
 
 		if(testpos.y < 0.2 && water==1)
 		{
-			outColor = vec4(colors.x*0, colors.y*0, colors.z, 1.0);
+			outColor = vec4(colors.x*0, colors.y*0.2+sin(testpos.x/3+time)/30, colors.z, 0.9);
+		}else if(testpos.y < .35-randwater/1000000.0 && water==1){
+			outColor = vec4(1,1,1,1);
 		}else{
 			if((colors.y + colors.x + colors.z)/3 > 0.75)
-				outColor = vec4(1, 1, 1, 1.0)*texture(tex, texCoord);
+				outColor = vec4(1, 1, 1, 1)*texture(tex, texCoord);
 			else if((colors.y + colors.x + colors.z)/3 > 0.5)
 				outColor = vec4(.8, .8, .8, 1.0)*texture(tex, texCoord);
 			else
@@ -119,9 +124,9 @@ void main(void)
 	min(100, spaceship_pos.y*6))
 	{
 		if(testpos.y > .2)
-			outColor = vec4(0.2,0.2,0.2,0)*texture(tex, texCoord);
+			outColor = vec4(0.2,0.2,0.2,1)*texture(tex, texCoord);
 		else
-			outColor = vec4(0,0,0.1,0);
+			outColor = vec4(0,0,0.1,1);
 	}
 
 	

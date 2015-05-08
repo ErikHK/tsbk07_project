@@ -43,12 +43,24 @@ Point3D lightSourcesColorsArr[] = { { 1.0f, 1.0f, 1.0f },
 { 1.0f, 1.0f, 1.0f } };
 
 GLfloat specularExponent[] = { 1.0, 20.0, 30.0, 5.0 };
-GLint isDirectional[] = { 1,1,1,1};
+GLint isDirectional[] = { 0,0,1,1};
 
 Point3D lightSourcesDirectionsPositions[] = { { 0.0f, 50.0f, 0.0f }, // Red light, positional
 { 0.0f, 50.0f, 10.0f }, // Green light, positional
 { -1.0f, 2.0f, 0.0f }, // Blue light along X
 { 10.0f, 5.0f, 10.0f } }; // White light along Z
+
+/*
+GLfloat vertices[] =
+{
+	-0.5f, -0.5f, 0, //1
+	-0.5f, 0.5f, 0,
+	0.5f, 0.5f, 0,
+	-0.5f, -0.5f, 0, //2
+	0.5f, 0.5f, 0,
+	0.5f, -0.5f, 0
+};
+*/
 
 //calculate height of terrain
 float calc_height(GLfloat *vertexArray, float x, float z, int width)
@@ -247,7 +259,6 @@ void init(void)
 	create_cloud(&c[0], init_pos);
 	vec3 init_pos2 = { 95, 49, 90+20 };
 	create_cloud(&c[1], init_pos2);
-
 	vec3 init_pos3 = { 65, 49, 90 - 30 };
 	create_cloud(&c[2], init_pos3);
 	ground = LoadModelPlus("ground.obj");
@@ -258,6 +269,9 @@ void init(void)
 	glClearColor(0.9,  1, 1, 1);
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	//glEnable(GL_BLEND);
 	printError("GL inits");
 
@@ -333,6 +347,14 @@ void display(void)
 
 void timer(int i)
 {
+	//upload time to shaders
+	GLfloat t = (GLfloat)glutGet(GLUT_ELAPSED_TIME) / 1000;
+	glUniform1f(glGetUniformLocation(program, "time"), t);
+	//upload random variable for water noise
+	//glUniform1f(glGetUniformLocation(program, "randwater"), (GLfloat)random());
+	glUniform1f(glGetUniformLocation(program, "randwater"), random());
+
+
 	//will be collision detection in the future
 	float h = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
 	if (s.pos[1] <= h)
