@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="New document 1">
+   sodipodi:docname="sand.svg">
   <defs
      id="defs4">
     <filter
@@ -30,19 +30,19 @@
       <feDiffuseLighting
          id="feDiffuseLighting3763"
          kernelUnitLength="0.29355895196506548"
-         surfaceScale="10"
+         surfaceScale="4"
          result="result2"
-         diffuseConstant="6"
-         lighting-color="rgb(60,53,8)">
+         diffuseConstant="2"
+         lighting-color="rgb(164,129,73)">
         <feDistantLight
            id="feDistantLight3767"
            azimuth="20"
-           elevation="30" />
+           elevation="1" />
       </feDiffuseLighting>
       <feFlood
          id="feFlood3771"
          in="SourceAlpha"
-         flood-color="rgb(255,232,99)"
+         flood-color="rgb(233,213,181)"
          result="result3" />
       <feBlend
          blend="normal"
@@ -93,13 +93,23 @@
        width="668.57141"
        height="668.57141"
        x="-2.8571429"
-       y="-1.9235317" />
+       y="-1.9235317"
+       inkscape:export-filename="C:\Users\erikhk\skola\tsbk07\tsbk07_project\sand.png"
+       inkscape:export-xdpi="114.87"
+       inkscape:export-ydpi="114.87" />
     <rect
        y="52.362183"
        x="-920"
        height="668.57141"
        width="668.57141"
        id="rect3755"
-       style="fill:#ffe863;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+       style="fill:#e9d5b5;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+    <rect
+       style="fill:#ffe863;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="rect3781"
+       width="171.42857"
+       height="177.14285"
+       x="-900"
+       y="943.79077" />
   </g>
 </svg>

@@ -24,6 +24,17 @@ typedef struct spaceship_t
 
 } spaceship;
 
+/*typedef struct tree_t
+{
+	Model * spheres[6];
+	Model * cones[6];
+	int num_spheres;
+	int num_cones;
+	vec3 sphere_scales[6];
+	mat4 matrix[10];
+
+} tree;
+*/
 typedef struct cloud_t
 {
 	Model * spheres[10];

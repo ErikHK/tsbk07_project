@@ -110,12 +110,15 @@ void main(void)
 		if(testpos.y < 0.2 && water==1)
 		{
 			float f = smoothstep(.1,.3,testpos.y);
+			vec4 pixcol = texture2D(tex, texCoord/20.0);
+			pixcol.rgb = (pixcol.rgb-0.5)*max(pixcol.rgb*2,0)+.5;
+
 			vec4 col1 = vec4(colors.x*0, colors.y*0.2+sin(testpos.x/3+time)/30.0, colors.z, 1)
-			+texture(tex, texCoord/30.0)/8.0;
+			+pixcol/2.0;
 			vec4 col2 = vec4(1,1,1,1);
-			outColor = mix(col1,col2,f);
-		}else if(testpos.y < .35 && water==1){
-			float f = smoothstep(.1,.5,testpos.y);
+			outColor = mix(vec4(col1.x-.3,col1.y-.3,col1.z, 1),col2,f);
+		}else if(testpos.y < .5 && water==1){
+			float f = smoothstep(.1,.8,testpos.y);
 			outColor = mix(vec4(1,1,1,1), vec4(1,.9,.3,1), f);
 		}else{
 			if((colors.y + colors.x + colors.z)/3 > 0.75)

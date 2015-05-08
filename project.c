@@ -22,7 +22,7 @@ vec3 cam = { 20, 20, 100 };
 GLuint program;
 
 //textures
-GLuint ground_tex, tex1;
+GLuint ground_tex, tex1, water_tex;
 TextureData ttex; // terrain
 
 GLfloat *vertexArray;
@@ -140,13 +140,13 @@ void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 		vertexArray[(x + z * width)*3 + 2];
 
 
-		vec2.x = vertexArray[(x + (z+1) * width)*3 + 0] - 
+		vec2.x = vertexArray[(x + (z-1) * width)*3 + 0] - 
 		vertexArray[(x + z * width)*3 + 0];
 
-		vec2.y = vertexArray[(x + (z+1) * width)*3 + 1] - 
+		vec2.y = vertexArray[(x + (z-1) * width)*3 + 1] - 
 		vertexArray[(x + z * width)*3 + 1];
 
-		vec2.z = vertexArray[(x + (z+1) * width)*3 + 2] - 
+		vec2.z = vertexArray[(x + (z-1) * width)*3 + 2] - 
 		vertexArray[(x + z * width)*3 + 2];
 
 		
@@ -187,8 +187,8 @@ Model* GenerateTerrain(TextureData *tex)
 			normalArray[(x + z * tex->width)*3 + 1] = tmp_normal.y;
 			normalArray[(x + z * tex->width)*3 + 2] = tmp_normal.z;
 		// Texture coordinates. You may want to scale them.
-			texCoordArray[(x + z * tex->width)*2 + 0] = x/10.0; // (float)x / tex->width;
-			texCoordArray[(x + z * tex->width)*2 + 1] = z/10.0; // (float)z / tex->height;
+			texCoordArray[(x + z * tex->width)*2 + 0] = x/20.0; // (float)x / tex->width;
+			texCoordArray[(x + z * tex->width)*2 + 1] = z/20.0; // (float)z / tex->height;
 		}
 	for (x = 0; x < tex->width-1; x++)
 		for (z = 0; z < tex->height-1; z++)
@@ -285,6 +285,7 @@ void init(void)
 	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_TRUE, projectionMatrix.m);
 	glUniform1i(glGetUniformLocation(program, "tex"), 0); // Texture unit 0
 	LoadTGATextureSimple("sand.tga", &ground_tex);
+	LoadTGATextureSimple("water_text.tga", &water_tex);
 	
 	// Load terrain data
 	LoadTGATextureData("fft-terrain.tga", &ttex);

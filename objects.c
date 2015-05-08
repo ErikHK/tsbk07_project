@@ -115,6 +115,7 @@ void move_spaceship(spaceship * s)
 			s->angle[0] *= .995;
 	}
 	s->speed[2] *= 0.99;
+	s->speed[1] *= 0.99;
 }
 
 void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
