@@ -334,7 +334,7 @@ void display(void)
 	glUniform1i(glGetUniformLocation(program, "water"), 0);
 
 	//takes care of button presses and movement of spaceship
-	move_spaceship(&s);
+	move_spaceship(&s, program);
 
 	//draw the spaceship
 	draw_spaceship(&s, program);

@@ -77,6 +77,7 @@ void main(void)
 
 	if(skybox==1)
 	{
+		//color gradient, blue sky
 		outColor = vec4(0.7*(1-testpos.y*.5)+.2,(1-testpos.y*.5)+.2,1,1);
 
 	}
@@ -93,7 +94,7 @@ void main(void)
         	vec4 pixcol2 = vec4(.8,.8,.8,1)*texture(tex, texCoord);
         	outColor = mix(pixcol1, pixcol2, f);
         	
-        }else
+        }else //exhaust == 1, 
         {
         	vec4 pixcol1 = vec4(.8,.8,.8,1);
         	vec4 pixcol2 = vec4(.6,.6,.6,1);
@@ -102,10 +103,18 @@ void main(void)
         	
         if(fire==1)
         {
-        	f = smoothstep(.1, .8, dot(n,s));
+			//s = normalize(lightCamMatrix*cam_vector);
+			s = vec3(0,0,1);
+
+        	f = smoothstep(.6, .9, dot(n,s));
         	vec4 pixcol1 = vec4(1,0,0,1);
         	vec4 pixcol2 = vec4(1,.7,0,1);
-        	outColor = mix(pixcol1, pixcol2, f);
+			//vec4 pixcol2 = vec4(0,1,0,1);
+			outColor = mix(pixcol1, pixcol2, f);
+			//if(lambert > .8)
+        	//	outColor = vec4(1,0,0,1);
+			//else
+			//	outColor = vec4(0,1,0,1);
         }
 
 		if(testpos.y < 0.2 && water==1)

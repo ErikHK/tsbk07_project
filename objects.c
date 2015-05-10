@@ -98,7 +98,7 @@ void draw_spaceship(spaceship * s, GLuint program)
   
 }
 
-void move_spaceship(spaceship * s)
+void move_spaceship(spaceship * s, GLuint program)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -111,9 +111,11 @@ void move_spaceship(spaceship * s)
 
 	if (keyIsDown(VK_SPACE))
 	{
+		glUniform1i(glGetUniformLocation(program, "fire"), 1);
 		s->fire_visible = 1;
 		s->acc[2] = s->thrust*sin(s->angle[0]);
 		s->acc[1] = s->thrust*cos(s->angle[0])+s->gravity;
+		glUniform1i(glGetUniformLocation(program, "fire"), 0);
 	}
 	else
 	{
