@@ -18,7 +18,7 @@ void create_spaceship(spaceship * s)
 
 	s->angle_acc[0] = 0.0008;
 	s->angle_acc[1] = 0.0008;
-
+	
 	s->angle_speed[0] = 0;
 	s->angle_speed[1] = 0;
 
@@ -107,7 +107,8 @@ void move_spaceship(spaceship * s, GLuint program)
 
 		s->pos[i] += s->speed[i];
 	}
-	s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), Mult(Mult(Rx(s->angle[0]), Ry(2)), S(0.1, 0.1, 0.1)));
+	s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), 
+		Mult(Mult( Mult( Rx(s->angle[0]), Rz(s->angle[1])), Ry(2)), S(0.1, 0.1, 0.1)));
 
 	if (keyIsDown(VK_SPACE))
 	{
@@ -115,6 +116,8 @@ void move_spaceship(spaceship * s, GLuint program)
 		s->fire_visible = 1;
 		s->acc[2] = s->thrust*sin(s->angle[0]);
 		s->acc[1] = s->thrust*cos(s->angle[0])+s->gravity;
+
+		s->acc[0] = -s->thrust*sin(s->angle[1]);
 		glUniform1i(glGetUniformLocation(program, "fire"), 0);
 	}
 	else
@@ -134,20 +137,39 @@ void move_spaceship(spaceship * s, GLuint program)
 			s->angle_speed[0] += s->angle_acc[0];
 		else
 			s->angle_speed[0] *= 0.99;
+
+
+		if (keyIsDown('w'))
+			s->angle_speed[1] -= s->angle_acc[1];
+		else
+			s->angle_speed[1] *= 0.99;
+
+		if (keyIsDown('s'))
+			s->angle_speed[1] += s->angle_acc[1];
+		else
+			s->angle_speed[1] *= 0.99;
 	}
 
 	s->angle[0] += s->angle_speed[0];
+	s->angle[1] += s->angle_speed[1];
 
 	//stabilize!
 	if (!s->landed)
 	{
 		if (fabs(s->angle[0]) <= M_PI / 12)
-			s->angle[0] *= .98;
+			s->angle[0] *= .96;
 		else
 			s->angle[0] *= .995;
+
+		if (fabs(s->angle[1]) <= M_PI / 12)
+			s->angle[1] *= .96;
+		else
+			s->angle[1] *= .995;
 	}
-	s->speed[2] *= 0.99;
-	s->speed[1] *= 0.99;
+	s->speed[0] *= 0.95;
+	//s->speed[1] *= 0.9;
+	s->speed[2] *= 0.95;
+	
 }
 
 void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
