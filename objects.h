@@ -4,6 +4,8 @@
 #include "GL_utilities.h"
 #include "LoadTGA.h"
 
+float random();
+
 typedef struct spaceship_t
 {
   float speed[3];
@@ -30,7 +32,7 @@ typedef struct spaceship_t
 
 } spaceship;
 
-/*typedef struct tree_t
+typedef struct tree_t
 {
 	Model * spheres[6];
 	Model * cones[6];
@@ -40,7 +42,7 @@ typedef struct spaceship_t
 	mat4 matrix[10];
 
 } tree;
-*/
+
 typedef struct cloud_t
 {
 	Model * spheres[10];

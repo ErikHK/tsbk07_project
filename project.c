@@ -9,6 +9,8 @@
 #include "LoadTGA.h"
 #include <math.h>
 #include <time.h>
+#include "perlin.h"
+
 
 //scale for terrain, higher means higher mountains 
 #define SCALE 0.1
@@ -16,7 +18,8 @@
 mat4 projectionMatrix;
 mat4 total, modelView, camMatrix;
 //cam position in world
-vec3 cam = { 20, 20, 100 };
+//vec3 cam = { 20, 20, 100 };
+vec3 cam = { 0, 40, 128 };
 
 // Reference to shader program
 GLuint program;
@@ -140,13 +143,13 @@ void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 		vertexArray[(x + z * width)*3 + 2];
 
 
-		vec2.x = vertexArray[(x + (z-1) * width)*3 + 0] - 
+		vec2.x = vertexArray[(x + (z+1) * width)*3 + 0] - 
 		vertexArray[(x + z * width)*3 + 0];
 
-		vec2.y = vertexArray[(x + (z-1) * width)*3 + 1] - 
+		vec2.y = vertexArray[(x + (z+1) * width)*3 + 1] - 
 		vertexArray[(x + z * width)*3 + 1];
 
-		vec2.z = vertexArray[(x + (z-1) * width)*3 + 2] - 
+		vec2.z = vertexArray[(x + (z+1) * width)*3 + 2] - 
 		vertexArray[(x + z * width)*3 + 2];
 
 		
@@ -175,13 +178,14 @@ Model* GenerateTerrain(TextureData *tex)
 		{
 		// Vertex array. You need to scale this properly
 			vertexArray[(x + z * tex->width)*3 + 0] = x;
-			vertexArray[(x + z * tex->width)*3 + 1] = tex->imageData[(x + z * tex->width) * (tex->bpp/8)] * SCALE;
+			//vertexArray[(x + z * tex->width)*3 + 1] = tex->imageData[(x + z * tex->width) * (tex->bpp/8)] * SCALE;
+			vertexArray[(x + z * tex->width) * 3 + 1] = 100 * OctavePerlin(x / (256.0 * 16 * 4 * 4), z / (256.0 * 16 * 4 * 4), 0, 10, 10.0) - 50;
+			//vertexArray[(x + z * tex->width) * 3 + 1] = OctavePerlin(x / (256.0), z / (256.0), 1, 10, 1.0);
 			vertexArray[(x + z * tex->width)*3 + 2] = z;
-		// Normal vectors. You need to calculate these.
 
+			// Normal vectors. You need to calculate these.
 			calc_normal(vertexArray, x, z, tex->width, &tmp_normal);
 			//printf("%f %f %f\n", tmp_normal.x, tmp_normal.y, tmp_normal.z);
-
 
 			normalArray[(x + z * tex->width)*3 + 0] = tmp_normal.x;
 			normalArray[(x + z * tex->width)*3 + 1] = tmp_normal.y;
@@ -295,7 +299,7 @@ void init(void)
 
 void display(void)
 {
-
+	glUniform3f(glGetUniformLocation(program, "cam_vector"), s.pos[0] - cam.x, s.pos[1] - cam.y, s.pos[2] - cam.z);
 	draw_skybox();
 
 	// clear the screen
@@ -383,11 +387,13 @@ void timer(int i)
 
 int main(int argc, char **argv)
 {
+	srand(time(NULL));
+	init_perlin();
 	glutInit(&argc, argv);
 	//init with antialiasing (multisample)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GL_MULTISAMPLE);
 	glutInitContextVersion(3, 2);
-	glutInitWindowSize (800, 800);
+	glutInitWindowSize (600, 600);
 	glutCreateWindow ("TSBK07 - Project");
 	glutDisplayFunc(display);
 

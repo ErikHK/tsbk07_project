@@ -49,6 +49,7 @@ uniform vec3 lightSourcesColorArr[4];
 uniform float specularExponent[4];
 uniform bool isDirectional[4];
 
+uniform vec3 cam_vector;
 
 mat3 lightCamMatrix = mat3(camMatrix);
 
@@ -80,41 +81,32 @@ void main(void)
 
 	}
 	else{
+        n = normalize(exNormal);
+		s = normalize(lightCamMatrix*cam_vector);
 
-        for(int i=0;i<4;i++){
-        	if(isDirectional[i])
-        	{
-        		s = normalize(lightCamMatrix * lightSourcesDirPosArr[i]);
-        	}else{
-                s = normalize(lightCamMatrix * lightSourcesDirPosArr[i]-outPosition);
-        	}
-        	n = normalize(exNormal);
-
-        	float lambert = dot(n,s)-.001;
+        float lambert = dot(n,s)-.001;
         	
-        	float f = smoothstep(.1, .45, lambert);
-        	if(exhaust==0)
-        	{
-        		vec4 pixcol1 = vec4(1,1,1,1)*texture(tex, texCoord);
-        		vec4 pixcol2 = vec4(.9,.9,.9,1)*texture(tex, texCoord);
-        		outColor = mix(pixcol1, pixcol2, f);
+		float f = smoothstep(.45, 0, lambert);
+        if(exhaust==0)
+        {
+        	vec4 pixcol1 = vec4(1,1,1,1)*texture(tex, texCoord);
+        	vec4 pixcol2 = vec4(.8,.8,.8,1)*texture(tex, texCoord);
+        	outColor = mix(pixcol1, pixcol2, f);
         	
-        	}else
-        	{
-        		vec4 pixcol1 = vec4(.8,.8,.8,1);
-        		vec4 pixcol2 = vec4(.6,.6,.6,1);
-        		outColor = mix(pixcol1, pixcol2, f);
-        	}
+        }else
+        {
+        	vec4 pixcol1 = vec4(.8,.8,.8,1);
+        	vec4 pixcol2 = vec4(.6,.6,.6,1);
+        	outColor = mix(pixcol1, pixcol2, f);
+        }
         	
-        	if(fire==1)
-        	{
-        		f = smoothstep(.1, .8, dot(n,-s));
-        		vec4 pixcol1 = vec4(1,0,0,1);
-        		vec4 pixcol2 = vec4(1,.7,0,1);
-        		outColor = mix(pixcol1, pixcol2, f);
-        	}
-
-		}
+        if(fire==1)
+        {
+        	f = smoothstep(.1, .8, dot(n,s));
+        	vec4 pixcol1 = vec4(1,0,0,1);
+        	vec4 pixcol2 = vec4(1,.7,0,1);
+        	outColor = mix(pixcol1, pixcol2, f);
+        }
 
 		if(testpos.y < 0.2 && water==1)
 		{

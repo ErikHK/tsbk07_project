@@ -39,7 +39,7 @@ void main(void)
 	testpos = inPosition;
 
 	if(water==1 && inPosition.y < 0.2)
-		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, inPosition.y+sin(inPosition.x/3+time)/2, inPosition.z, 1.0);
+		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, sin(inPosition.x/3+time)/2, inPosition.z, 1.0);
 	else if(fire==1 )
 	{
 		gl_Position = projMatrix * camMatrix * mdlMatrix *

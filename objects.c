@@ -209,6 +209,19 @@ void draw_cloud(cloud *c, GLuint program)
 
 }
 
+
+void create_tree(tree *t, vec3 init_pos)
+{
+	t->cones[0] = LoadModelPlus("cone.obj");
+}
+
+void draw_tree(tree *t, GLuint program)
+{
+	mat4 total = T(90, 20, 80);
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	DrawModel(t->cones[0], program, "inPosition", "inNormal", "inTexCoord");
+}
+
 void create_spark(spark *s, GLuint program)
 {
 	s->model = LoadModelPlus("spark.obj");
