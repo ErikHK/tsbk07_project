@@ -352,6 +352,8 @@ void display(void)
 
 void timer(int i)
 {
+
+	cam.x = s.pos[0] - 80;
 	//upload time to shaders
 	GLfloat t = (GLfloat)glutGet(GLUT_ELAPSED_TIME) / 1000;
 	glUniform1f(glGetUniformLocation(program, "time"), t);
