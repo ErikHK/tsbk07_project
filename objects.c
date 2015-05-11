@@ -38,7 +38,9 @@ void create_spaceship(spaceship * s)
 	s->body = LoadModelPlus("spaceship/spaceship_body.obj");
 	s->exhaust = LoadModelPlus("spaceship/exhaust.obj");
 	s->fire = LoadModelPlus("cone.obj");
+	//s->fire = LoadModelPlus("game_over.obj");
 	s->fuel_bar = LoadModelPlus("cube.obj");
+	s->fuel_bar_full = LoadModelPlus("cube.obj");
 	s->fins[0] = LoadModelPlus("spaceship/fin.obj");
 	s->fins[1] = LoadModelPlus("spaceship/fin.obj");
 	s->fins[2] = LoadModelPlus("spaceship/fin.obj");
@@ -111,9 +113,17 @@ void draw_hud(spaceship *s, GLuint program)
 	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
 	if (s->fuel >= 1)
 		DrawModel(s->fuel_bar, program, "inPosition", "inNormal", "inTexCoord");
+	glUniform1i(glGetUniformLocation(program, "fuel_full"), 1);
+
+	scale = S(.2, .04, .05);
+	trans = T(.5, .9, -2);
+	total = Mult(trans, Mult(scale, T(1, 0, 0)));
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
+	DrawModel(s->fuel_bar, program, "inPosition", "inNormal", "inTexCoord");
+	glUniform1i(glGetUniformLocation(program, "fuel_full"), 0);
+	
 	glUniform1i(glGetUniformLocation(program, "hud"), 0);
-
-
 }
 
 void move_spaceship(spaceship * s, GLuint program)

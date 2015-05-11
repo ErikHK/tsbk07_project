@@ -17,6 +17,8 @@ uniform mat4 mdlMatrix;
 
 
 uniform int skybox;
+uniform int hud;
+uniform int fuel_full;
 uniform int water;
 uniform int exhaust;
 uniform int fire;
@@ -65,6 +67,11 @@ void main(void)
 	//colors = vec3(0,0,0);
 	colors = vec3(0.5, 0.5, 0.5);
 
+	n = normalize(exNormal);
+	s = normalize(lightCamMatrix*cam_vector);
+
+    float lambert = dot(n,s)-.001;
+
 
 	if(multitex)
 	{
@@ -82,11 +89,15 @@ void main(void)
 		outColor = vec4(0.7*(1-testpos.y*.5)+.2,(1-testpos.y*.5)+.2,1,1);
 
 	}
+	else if(hud==1)
+	{
+		if(fuel_full==1)
+			outColor = vec4(.1,.1,.1,.4);
+		else
+			outColor = vec4(.7,.1,.1,1);
+	}
 	else{
-        n = normalize(exNormal);
-		s = normalize(lightCamMatrix*cam_vector);
-
-        float lambert = dot(n,s)-.001;
+        
         	
 		float f = smoothstep(.45, 0, lambert);
         if(exhaust==0)

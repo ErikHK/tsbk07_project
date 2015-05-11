@@ -24,6 +24,7 @@ typedef struct spaceship_t
   Model *exhaust;
   Model *fire;
   Model *fuel_bar;
+  Model *fuel_bar_full;
   mat4 exhaust_pos;
   mat4 fire_pos;
   int fire_visible;
