@@ -24,6 +24,10 @@ vec3 cam = { 0, 40, 128 };
 // Reference to shader program
 GLuint program;
 
+//highest point on the map
+//float highest[3];
+vec3 highest = {0,0,0};
+
 //textures
 GLuint ground_tex, tex1, water_tex;
 TextureData ttex; // terrain
@@ -160,7 +164,10 @@ void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 
 Model* GenerateTerrain(TextureData *tex)
 {
+	//tex->width = 512;
+	//tex->height = 512;
 	texwidth = tex->width;
+	
 	int vertexCount = tex->width * tex->height;
 	int triangleCount = (tex->width-1) * (tex->height-1) * 2;
 	int x, z;
@@ -179,7 +186,15 @@ Model* GenerateTerrain(TextureData *tex)
 		// Vertex array. You need to scale this properly
 			vertexArray[(x + z * tex->width)*3 + 0] = x;
 			//vertexArray[(x + z * tex->width)*3 + 1] = tex->imageData[(x + z * tex->width) * (tex->bpp/8)] * SCALE;
-			vertexArray[(x + z * tex->width) * 3 + 1] = 100 * OctavePerlin(x / (256.0 * 16 * 4 * 4), z / (256.0 * 16 * 4 * 4), 0, 10, 10.0) - 50;
+			float height = 100 * OctavePerlin(x / (256.0 * 16 * 4 * 4), z / (256.0 * 16 * 4 * 4), 0, 10, 10.0) - 50;
+			if (height > highest.y)
+			{
+				highest.x = x;
+				highest.z = z;
+				highest.y = height;
+			}
+			vertexArray[(x + z * tex->width) * 3 + 1] = height;
+			//vertexArray[(x + z * tex->width) * 3 + 1] = 1;
 			//vertexArray[(x + z * tex->width) * 3 + 1] = OctavePerlin(x / (256.0), z / (256.0), 1, 10, 1.0);
 			vertexArray[(x + z * tex->width)*3 + 2] = z;
 
@@ -293,13 +308,18 @@ void init(void)
 	
 	// Load terrain data
 	LoadTGATextureData("fft-terrain.tga", &ttex);
+	//LoadTGATextureData("SkyBox512.tga", &ttex);
 	tm = GenerateTerrain(&ttex);
 	printError("init terrain");
+
+	//upload highest point to shader
+	glUniform3f(glGetUniformLocation(program, "highest"), highest.x, highest.y, highest.z);
 }
 
 void display(void)
 {
 	glUniform3f(glGetUniformLocation(program, "cam_vector"), s.pos[0] - cam.x, s.pos[1] - cam.y, s.pos[2] - cam.z);
+	
 	draw_skybox();
 
 	// clear the screen

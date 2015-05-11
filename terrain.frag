@@ -20,6 +20,7 @@ uniform int skybox;
 uniform int water;
 uniform int exhaust;
 uniform int fire;
+uniform vec3 highest;
 
 uniform float time;
 uniform float randwater;
@@ -149,5 +150,10 @@ void main(void)
 	}
 
 	
+	if((highest.x-testpos.x)*(highest.x-testpos.x) + (highest.z-testpos.z)*(highest.z-testpos.z) < 100)
+	{
+		outColor = vec4(1,0,0,1)*texture(tex, texCoord);
+	}
+
 }
 

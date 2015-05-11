@@ -115,7 +115,8 @@ void move_spaceship(spaceship * s, GLuint program)
 		glUniform1i(glGetUniformLocation(program, "fire"), 1);
 		s->fire_visible = 1;
 		s->acc[2] = s->thrust*sin(s->angle[0]);
-		s->acc[1] = s->thrust*cos(s->angle[0])+s->gravity;
+
+		s->acc[1] = s->thrust*cos(s->angle[0])*cos(s->angle[1]) + s->gravity;
 
 		s->acc[0] = -s->thrust*sin(s->angle[1]);
 		glUniform1i(glGetUniformLocation(program, "fire"), 0);
