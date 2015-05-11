@@ -8,6 +8,7 @@ void create_spaceship(spaceship * s)
 {
 	//has not yet landed
 	s->landed = 0;
+	s->fuel = 100.0;
 
 	//init to zero
 	for (int i = 0; i < 3; i++)
@@ -37,6 +38,7 @@ void create_spaceship(spaceship * s)
 	s->body = LoadModelPlus("spaceship/spaceship_body.obj");
 	s->exhaust = LoadModelPlus("spaceship/exhaust.obj");
 	s->fire = LoadModelPlus("cone.obj");
+	s->fuel_bar = LoadModelPlus("cube.obj");
 	s->fins[0] = LoadModelPlus("spaceship/fin.obj");
 	s->fins[1] = LoadModelPlus("spaceship/fin.obj");
 	s->fins[2] = LoadModelPlus("spaceship/fin.obj");
@@ -98,20 +100,37 @@ void draw_spaceship(spaceship * s, GLuint program)
   
 }
 
+void draw_hud(spaceship *s, GLuint program)
+{
+	float fuel_scale = s->fuel / 1000.0;
+	mat4 scale = S(fuel_scale*2, .04, .05);
+	mat4 trans = T(.5, .9, -2);
+	mat4 total = Mult(trans, Mult(scale, T(1,0,0)));
+	glUniform1i(glGetUniformLocation(program, "hud"), 1);
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
+	if (s->fuel >= 1)
+		DrawModel(s->fuel_bar, program, "inPosition", "inNormal", "inTexCoord");
+	glUniform1i(glGetUniformLocation(program, "hud"), 0);
+
+
+}
+
 void move_spaceship(spaceship * s, GLuint program)
 {
 	for (int i = 0; i < 3; i++)
 	{
-		if (fabs(s->speed[i]) <= 0.005);
-		s->speed[i] += s->acc[i];
+		if (fabs(s->speed[i]) <= 0.05);
+			s->speed[i] += s->acc[i];
 
 		s->pos[i] += s->speed[i];
 	}
 	s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), 
 		Mult(Mult( Mult( Rx(s->angle[0]), Rz(s->angle[1])), Ry(2)), S(0.1, 0.1, 0.1)));
 
-	if (keyIsDown(VK_SPACE))
+	if (keyIsDown(VK_SPACE) && s->fuel >= 0)
 	{
+		s->fuel -= .2;
 		glUniform1i(glGetUniformLocation(program, "fire"), 1);
 		s->fire_visible = 1;
 		s->acc[2] = s->thrust*sin(s->angle[0]);

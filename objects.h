@@ -17,11 +17,13 @@ typedef struct spaceship_t
   float angle_speed[2];
   float angle[2];
   int landed;
+  float fuel;
 
   Model *body;
   Model *fins[3];
   Model *exhaust;
   Model *fire;
+  Model *fuel_bar;
   mat4 exhaust_pos;
   mat4 fire_pos;
   int fire_visible;
@@ -77,3 +79,4 @@ void draw_spaceship();
 void move_spaceship();
 void draw_cloud();
 void update_cam_matrix();
+void draw_hud();

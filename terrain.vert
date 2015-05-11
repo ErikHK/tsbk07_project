@@ -17,6 +17,7 @@ uniform int water;
 uniform int fire;
 uniform float time;
 uniform float randwater;
+uniform int hud;
 
 uniform mat4 projMatrix;
 uniform mat4 mdlMatrix;
@@ -38,6 +39,11 @@ void main(void)
 	texCoord = inTexCoord;
 	testpos = inPosition;
 
+	if(hud==1)
+	{
+		gl_Position = projMatrix * mdlMatrix * vec4(inPosition, 1.0);
+	}else{
+
 	if(water==1 && inPosition.y < 0.2)
 		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, 2*sin(inPosition.x/6+time)/2, inPosition.z, 1.0);
 	else if(fire==1 )
@@ -47,6 +53,7 @@ void main(void)
 	}else
 		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition, 1.0);
 
+	}
 
 	outPositionCam = vec3(camMatrix * mdlMatrix * vec4(inPosition, 1));
 	outPosition = mat3(camMatrix) * vec3(mdlMatrix * vec4(inPosition, 1));

@@ -359,6 +359,8 @@ void display(void)
 	//draw the spaceship
 	draw_spaceship(&s, program);
 
+	draw_hud(&s, program);
+
 	//draw cloud c
 	draw_cloud(&c[0], program);
 	draw_cloud(&c[1], program);
