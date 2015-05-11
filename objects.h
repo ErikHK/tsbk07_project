@@ -93,3 +93,4 @@ void create_hud();
 void draw_hud();
 void draw_game_over();
 float spaceship_total_speed();
+float distance_to_target();

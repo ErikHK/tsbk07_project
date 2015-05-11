@@ -19,7 +19,7 @@ mat4 projectionMatrix;
 mat4 total, modelView, camMatrix;
 //cam position in world
 //vec3 cam = { 20, 20, 100 };
-vec3 cam = { 0, 40, 128 };
+vec3 cam = { 0, 60, 128 };
 
 int game_over = 0;
 
@@ -320,7 +320,7 @@ void init(void)
 	//glEnable(GL_BLEND);
 	printError("GL inits");
 
-	projectionMatrix = frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 750.0);
+	projectionMatrix = frustum(-0.15, 0.15, -0.1, 0.1, 0.2, 750.0);
 
 	// Load and compile shader
 	program = loadShaders("terrain.vert", "terrain.frag");
@@ -405,6 +405,12 @@ void display(void)
 void timer(int i)
 {
 
+	if (game_over)
+	{
+		//run game over handler here!
+		return;
+	}
+
 	//upload time to shaders
 	GLfloat t = (GLfloat)glutGet(GLUT_ELAPSED_TIME) / 1000;
 	glUniform1f(glGetUniformLocation(program, "time"), t);
@@ -425,9 +431,12 @@ void timer(int i)
 		if (tot_speed > .3)
 			game_over = 1;
 
+		if (distance_to_target(&s, &highest) > 12)
+			game_over = 1;
+
 
 		//check if the spaceship is not straight!
-		if (s.angle[0] > .03 || s.angle[1] > .03)
+		if (fabs(s.angle[0]) > .15 || fabs(s.angle[1]) > .15)
 			game_over = 1;
 		s.speed[0] = 0;
 		s.speed[1] = 0;
@@ -456,7 +465,7 @@ int main(int argc, char **argv)
 	//init with antialiasing (multisample)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GL_MULTISAMPLE);
 	glutInitContextVersion(3, 2);
-	glutInitWindowSize (600, 600);
+	glutInitWindowSize (900, 600);
 	glutCreateWindow ("TSBK07 - Project");
 	glutDisplayFunc(display);
 

@@ -30,10 +30,10 @@ void create_spaceship(spaceship * s)
 	s->thrust = 0.02;
 
 	s->pos[0] = 90;
-	s->pos[1] = 20;
+	s->pos[1] = 40;
 	s->pos[2] = 80;
 	s->gravity = -0.006;
-
+	
 	s->acc[1] = s->gravity;	//y acc, gravity
 
 	s->body = LoadModelPlus("spaceship/spaceship_body.obj");
@@ -134,15 +134,20 @@ void draw_fuel_bar(hud * h, float * fuel, GLuint program)
 
 void draw_game_over(hud * h, GLuint program)
 {
-
-	mat4 total = Mult(Mult(T(0, 0, -8),S(.1, .1, .1)), Ry(.3));
+	
 	glUniform1i(glGetUniformLocation(program, "hud"), 1);
+
+	
+	mat4 total = Mult(Mult(T(0, 1, -8),S(.1, .1, .1)), Ry(.3));
+	
 	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 1);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
 	DrawModel(h->game_over_sign, program, "inPosition", "inNormal", "inTexCoord");
 	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 0);
 	glUniform1i(glGetUniformLocation(program, "hud"), 0);
+
+	
 }
 
 void move_spaceship(spaceship * s, GLuint program)
@@ -325,4 +330,11 @@ float spaceship_total_speed(spaceship * s)
 
 	return sqrt(xx + yy + zz);
 
+}
+
+float distance_to_target(spaceship *s, vec3 *target_pos)
+{
+	float xx = pow(s->pos[0] - target_pos->x, 2);
+	float zz = pow(s->pos[2] - target_pos->z, 2);
+	return sqrt(xx + zz);
 }
