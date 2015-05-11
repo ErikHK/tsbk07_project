@@ -137,9 +137,10 @@ float calc_height(GLfloat *vertexArray, float x, float z, int width)
 //calculate normals of terrain
 void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 {
-	Point3D vec1, vec2;
+	//Point3D vec1, vec2;
+	vec3 vec1, vec2;
 
-	if(x > 0 && z > 0 && x < width && z < width)
+	if(x > 0 && z > 0 && x < width-1 && z < width-1)
 	{
 		vec1.x = vertexArray[(x-1 + z * width)*3 + 0] - 
 		vertexArray[(x + z * width)*3 + 0];
@@ -161,13 +162,14 @@ void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 		vertexArray[(x + z * width)*3 + 2];
 
 		
-		*normal = Normalize(CrossProduct(vec1, vec2));
+		*normal = Normalize(CrossProduct(vec2, vec1));
 
 	}
 }
 
 Model* GenerateTerrain(TextureData *tex)
 {
+	//init_perlin();
 	//tex->width = 512;
 	//tex->height = 512;
 	texwidth = tex->width;
@@ -180,7 +182,8 @@ Model* GenerateTerrain(TextureData *tex)
 	GLfloat *normalArray = malloc(sizeof(GLfloat) * 3 * vertexCount);
 	GLfloat *texCoordArray = malloc(sizeof(GLfloat) * 2 * vertexCount);
 	GLuint *indexArray = malloc(sizeof(GLuint) * triangleCount*3);
-	Point3D tmp_normal;
+	//Point3D tmp_normal;
+	vec3 tmp_normal;
 
 
 	printf("bpp %d\n", tex->bpp);
@@ -191,12 +194,14 @@ Model* GenerateTerrain(TextureData *tex)
 			vertexArray[(x + z * tex->width)*3 + 0] = x;
 			//vertexArray[(x + z * tex->width)*3 + 1] = tex->imageData[(x + z * tex->width) * (tex->bpp/8)] * SCALE;
 			float height = 100 * OctavePerlin(x / (256.0 * 16 * 4 * 4), z / (256.0 * 16 * 4 * 4), 0, 10, 10.0) - 50;
+			
 			if (height > highest.y)
 			{
 				highest.x = x;
 				highest.z = z;
 				highest.y = height;
 			}
+
 			vertexArray[(x + z * tex->width) * 3 + 1] = height;
 			//vertexArray[(x + z * tex->width) * 3 + 1] = 1;
 			//vertexArray[(x + z * tex->width) * 3 + 1] = OctavePerlin(x / (256.0), z / (256.0), 1, 10, 1.0);
@@ -209,6 +214,21 @@ Model* GenerateTerrain(TextureData *tex)
 			normalArray[(x + z * tex->width)*3 + 0] = tmp_normal.x;
 			normalArray[(x + z * tex->width)*3 + 1] = tmp_normal.y;
 			normalArray[(x + z * tex->width)*3 + 2] = tmp_normal.z;
+			
+			/*
+			vec3 up = { 0, -1, 0 };
+			float dot;
+			
+			dot = DotProduct(tmp_normal, up);
+			if (fabs(dot) < .1 && height > 0.0 && x > 2 && z > 2 && x < tex->width-2 && z < tex->width-2)
+			//if (fabs(dot) < .1 && fabs(dot) <= 1)
+			{
+				highest.x = x;
+				highest.z = z;
+				highest.y = height;
+			}*/
+			
+
 		// Texture coordinates. You may want to scale them.
 			texCoordArray[(x + z * tex->width)*2 + 0] = x/20.0; // (float)x / tex->width;
 			texCoordArray[(x + z * tex->width)*2 + 1] = z/20.0; // (float)z / tex->height;
@@ -274,7 +294,7 @@ void draw_skybox()
 
 void init(void)
 {
-	LoadTGATextureSimple("SkyBox512.tga", &tex1);
+	//LoadTGATextureSimple("SkyBox512.tga", &tex1);
 	//init spaceship
 	create_spaceship(&s);
 	//init hud;
@@ -395,12 +415,19 @@ void timer(int i)
 
 	//will be collision detection in the future!
 	float h = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
+	if (s.pos[1] < 0.0)
+		game_over = 1;
 	if (s.pos[1]-1.5 <= h)
 	{
-		s.pos[1] = h+1.5;
+  		s.pos[1] = h+1.5;
 		//s.gravity = 0;
 		float tot_speed = fabs(spaceship_total_speed(&s));
 		if (tot_speed > .3)
+			game_over = 1;
+
+
+		//check if the spaceship is not straight!
+		if (s.angle[0] > .03 || s.angle[1] > .03)
 			game_over = 1;
 		s.speed[0] = 0;
 		s.speed[1] = 0;
