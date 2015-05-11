@@ -19,6 +19,7 @@ uniform mat4 mdlMatrix;
 uniform int skybox;
 uniform int hud;
 uniform int fuel_full;
+uniform int game_over_sign;
 uniform int water;
 uniform int exhaust;
 uniform int fire;
@@ -70,7 +71,7 @@ void main(void)
 	n = normalize(exNormal);
 	s = normalize(lightCamMatrix*cam_vector);
 
-    float lambert = dot(n,s)-.001;
+    float lambert = pow(dot(n,s),2)-.001;
 
 
 	if(multitex)
@@ -93,6 +94,14 @@ void main(void)
 	{
 		if(fuel_full==1)
 			outColor = vec4(.1,.1,.1,.4);
+		else if(game_over_sign==1)
+		{
+			float lambert = dot(n,vec3(0,0,1));
+			float f = smoothstep(.1, .8, lambert);
+			vec4  pixcolor1 = vec4(.2, .2, .2, 1);
+			vec4  pixcolor2 = vec4(.7,.7,.7,1);
+			outColor = mix(pixcolor1, pixcolor2, f);
+		}
 		else
 			outColor = vec4(.7,.1,.1,1);
 	}

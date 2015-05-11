@@ -56,6 +56,7 @@ void create_hud(hud *h)
 {
 	h->fuel_bar = LoadModelPlus("cube.obj");
 	h->game_over_sign = LoadModelPlus("game_over.obj");
+	LoadTGATextureSimple("spaceship/spaceship_uvw_body.tga", &(h->game_over_sign_tex));
 }
 
 void draw_spaceship(spaceship * s, GLuint program)
@@ -130,10 +131,17 @@ void draw_fuel_bar(hud * h, float * fuel, GLuint program)
 	glUniform1i(glGetUniformLocation(program, "hud"), 0);
 }
 
-void draw_game_over()
+void draw_game_over(hud * h, GLuint program)
 {
 
-
+	mat4 total = Mult(Mult(T(0, 0, -8),S(.1, .1, .1)), Ry(.3));
+	glUniform1i(glGetUniformLocation(program, "hud"), 1);
+	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 1);
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
+	DrawModel(h->game_over_sign, program, "inPosition", "inNormal", "inTexCoord");
+	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 0);
+	glUniform1i(glGetUniformLocation(program, "hud"), 0);
 }
 
 void move_spaceship(spaceship * s, GLuint program)
@@ -216,11 +224,27 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 {
 	if (!(s && cam_matrix && cam_pos))
 		return;
+
+	
+
+	if (keyIsDown('c') || keyIsDown('C'))
+	{
+
+		*cam_matrix = lookAt(0, 300, 0,
+			128, 0, 128,
+			0.0, 1.0, 0.0);
+		return;
+	}
+
+	//*cam_matrix = lookAt(cam_pos->x, cam_pos->y, cam_pos->z,
+	//	s->pos[0], s->pos[1], s->pos[2],
+	//	0.0, 1.0, 0.0);
+	//cam.x = s.pos[0] - 80;
 	//*cam_matrix = lookAt(cam_pos->x, cam_pos->y, cam_pos->z,
 	//	s->pos[0], s->pos[1], s->pos[2],
 	//	0.0, 1.0, 0.0);
 
-	*cam_matrix = lookAt(cam_pos->x, cam_pos->y, cam_pos->z,
+	*cam_matrix = lookAt(s->pos[0]-80, cam_pos->y, s->pos[2],
 		s->pos[0], s->pos[1], s->pos[2],
 		0.0, 1.0, 0.0);
 
@@ -290,4 +314,14 @@ void create_spark(spark *s, GLuint program)
 {
 	s->model = LoadModelPlus("spark.obj");
 	
+}
+
+float spaceship_total_speed(spaceship * s)
+{
+	float xx = pow(s->speed[0], 2);
+	float yy = pow(s->speed[1], 2);
+	float zz = pow(s->speed[2], 2);
+
+	return sqrt(xx + yy + zz);
+
 }

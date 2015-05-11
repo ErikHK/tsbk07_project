@@ -21,6 +21,8 @@ mat4 total, modelView, camMatrix;
 //vec3 cam = { 20, 20, 100 };
 vec3 cam = { 0, 40, 128 };
 
+int game_over = 0;
+
 // Reference to shader program
 GLuint program;
 
@@ -273,10 +275,10 @@ void draw_skybox()
 void init(void)
 {
 	LoadTGATextureSimple("SkyBox512.tga", &tex1);
-	//init hud;
-	create_hud(&h);
 	//init spaceship
 	create_spaceship(&s);
+	//init hud;
+	create_hud(&h);
 	//init test cloud
 	vec3 init_pos = { 80+40, 49, 90 };
 	create_cloud(&c[0], init_pos);
@@ -360,10 +362,14 @@ void display(void)
 	//takes care of button presses and movement of spaceship
 	move_spaceship(&s, program);
 
+
 	//draw the spaceship
 	draw_spaceship(&s, program);
 
 	draw_fuel_bar(&h, &s.fuel, program);
+
+	if (game_over)
+		draw_game_over(&h, program);
 
 	//draw cloud c
 	draw_cloud(&c[0], program);
@@ -379,7 +385,6 @@ void display(void)
 void timer(int i)
 {
 
-	cam.x = s.pos[0] - 80;
 	//upload time to shaders
 	GLfloat t = (GLfloat)glutGet(GLUT_ELAPSED_TIME) / 1000;
 	glUniform1f(glGetUniformLocation(program, "time"), t);
@@ -394,6 +399,9 @@ void timer(int i)
 	{
 		s.pos[1] = h+1.5;
 		//s.gravity = 0;
+		float tot_speed = fabs(spaceship_total_speed(&s));
+		if (tot_speed > .3)
+			game_over = 1;
 		s.speed[0] = 0;
 		s.speed[1] = 0;
 		s.speed[2] = 0;
