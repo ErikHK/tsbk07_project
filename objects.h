@@ -23,8 +23,7 @@ typedef struct spaceship_t
   Model *fins[3];
   Model *exhaust;
   Model *fire;
-  Model *fuel_bar;
-  Model *fuel_bar_full;
+
   mat4 exhaust_pos;
   mat4 fire_pos;
   int fire_visible;
@@ -34,6 +33,15 @@ typedef struct spaceship_t
 
 
 } spaceship;
+
+
+typedef struct hud_t
+{
+	Model *fuel_bar;
+	Model *game_over_sign;
+
+
+} hud;
 
 typedef struct tree_t
 {
@@ -65,7 +73,7 @@ typedef struct spark_t
 
 } spark;
 
-typedef struct landing_point
+typedef struct landing_point_t
 {
   Model *landing_point_model;
 
@@ -80,4 +88,8 @@ void draw_spaceship();
 void move_spaceship();
 void draw_cloud();
 void update_cam_matrix();
+void create_hud();
 void draw_hud();
+void draw_game_over();
+
+

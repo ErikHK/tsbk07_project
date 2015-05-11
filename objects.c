@@ -38,9 +38,7 @@ void create_spaceship(spaceship * s)
 	s->body = LoadModelPlus("spaceship/spaceship_body.obj");
 	s->exhaust = LoadModelPlus("spaceship/exhaust.obj");
 	s->fire = LoadModelPlus("cone.obj");
-	//s->fire = LoadModelPlus("game_over.obj");
-	s->fuel_bar = LoadModelPlus("cube.obj");
-	s->fuel_bar_full = LoadModelPlus("cube.obj");
+	
 	s->fins[0] = LoadModelPlus("spaceship/fin.obj");
 	s->fins[1] = LoadModelPlus("spaceship/fin.obj");
 	s->fins[2] = LoadModelPlus("spaceship/fin.obj");
@@ -52,6 +50,12 @@ void create_spaceship(spaceship * s)
 	s->fins_matrix[2] = Mult(T(2, -1, -2), s->body_matrix);
 
 	LoadTGATextureSimple("spaceship/spaceship_uvw_body.tga", &(s->body_tex));
+}
+
+void create_hud(hud *h)
+{
+	h->fuel_bar = LoadModelPlus("cube.obj");
+	h->game_over_sign = LoadModelPlus("game_over.obj");
 }
 
 void draw_spaceship(spaceship * s, GLuint program)
@@ -102,17 +106,17 @@ void draw_spaceship(spaceship * s, GLuint program)
   
 }
 
-void draw_hud(spaceship *s, GLuint program)
+void draw_fuel_bar(hud * h, float * fuel, GLuint program)
 {
-	float fuel_scale = s->fuel / 1000.0;
+	float fuel_scale = *fuel / 1000.0;
 	mat4 scale = S(fuel_scale*2, .04, .05);
 	mat4 trans = T(.5, .9, -2);
 	mat4 total = Mult(trans, Mult(scale, T(1,0,0)));
 	glUniform1i(glGetUniformLocation(program, "hud"), 1);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
-	if (s->fuel >= 1)
-		DrawModel(s->fuel_bar, program, "inPosition", "inNormal", "inTexCoord");
+	if (*fuel >= 1)
+		DrawModel(h->fuel_bar, program, "inPosition", "inNormal", "inTexCoord");
 	glUniform1i(glGetUniformLocation(program, "fuel_full"), 1);
 
 	scale = S(.2, .04, .05);
@@ -120,10 +124,16 @@ void draw_hud(spaceship *s, GLuint program)
 	total = Mult(trans, Mult(scale, T(1, 0, 0)));
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
-	DrawModel(s->fuel_bar, program, "inPosition", "inNormal", "inTexCoord");
+	DrawModel(h->fuel_bar, program, "inPosition", "inNormal", "inTexCoord");
 	glUniform1i(glGetUniformLocation(program, "fuel_full"), 0);
 	
 	glUniform1i(glGetUniformLocation(program, "hud"), 0);
+}
+
+void draw_game_over()
+{
+
+
 }
 
 void move_spaceship(spaceship * s, GLuint program)

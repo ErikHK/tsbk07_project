@@ -43,6 +43,8 @@ Model *ground;
 spaceship s;
 //test cloud object
 cloud c[10];
+//hud object
+hud h;
 
 Point3D lightSourcesColorsArr[] = { { 1.0f, 0.0f, 1.0f },
 { 1.0f, 1.0f, 1.0f },
@@ -271,6 +273,8 @@ void draw_skybox()
 void init(void)
 {
 	LoadTGATextureSimple("SkyBox512.tga", &tex1);
+	//init hud;
+	create_hud(&h);
 	//init spaceship
 	create_spaceship(&s);
 	//init test cloud
@@ -359,7 +363,7 @@ void display(void)
 	//draw the spaceship
 	draw_spaceship(&s, program);
 
-	draw_hud(&s, program);
+	draw_fuel_bar(&h, &s.fuel, program);
 
 	//draw cloud c
 	draw_cloud(&c[0], program);
