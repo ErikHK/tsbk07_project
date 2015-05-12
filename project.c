@@ -460,7 +460,7 @@ void handle_collisions()
 			return;
 		}
 	}
-	if (s.pos[1] - 10 <= h)
+	if (s.pos[1] <= lp.pos.y+1)
 	{
 		//s.gravity = 0;
 		
@@ -470,7 +470,7 @@ void handle_collisions()
 			//check if the spaceship is not straight!
 			if (fabs(s.angle[0]) < .15 || fabs(s.angle[1]) < .15)
 			{
-				s.pos[1] = h + 10;
+				//s.pos[1] = lp.pos.y;
 				finished = 1;
 				return;
 			}
