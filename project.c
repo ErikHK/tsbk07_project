@@ -207,37 +207,19 @@ Model* GenerateTerrain(TextureData *tex, int side)
 			
 			//trying out spherical mapping
 			float nx = x - 128;
-			float ny = x - 128;
 			float nz = z - 128;
 
 			float r = 128;
+			float b1 = atan(nx / r);
+			float a1 = M_PI / 2 - b1;
+
+			float b2 = atan(nz / r);
+			float a2 = M_PI / 2 - b2;
 			
-			if (side == 0)
-			{
-
-				float b1 = atan(nx / r);
-				float a1 = M_PI / 2 - b1;
-
-				float b2 = atan(nz / r);
-				float a2 = M_PI / 2 - b2;
-
-				vertexArray[(x + z * tex->width) * 3 + 0] = r*cos(a1);// + height*cos(a1);
-				vertexArray[(x + z * tex->width) * 3 + 1] = r*(sin(a2)*sin(a1) - 1);// +height*sin(a2)*sin(a1);
-
-				vertexArray[(x + z * tex->width) * 3 + 2] = r*cos(a2);// + height*cos(a2);
-			}
-			else if(side == 1){
-				float b1 = atan(ny / r);
-				float a1 = M_PI / 2 - b1;
-
-				float b2 = atan(nz / r);
-				float a2 = M_PI / 2 - b2;
-
-
-				vertexArray[(x + z * tex->width) * 3 + 0] = -r*(sin(a2)*sin(a1) - 1)-128;// +height*sin(a2)*sin(a1);
-				vertexArray[(x + z * tex->width) * 3 + 1] = r*cos(a1)-128;// + height*cos(a1);
-				vertexArray[(x + z * tex->width) * 3 + 2] = r*cos(a2);// + height*cos(a2);
-			}
+			
+			vertexArray[(x + z * tex->width) * 3 + 0] = r*cos(a1)*sin(a2);// + height*cos(a1);
+			vertexArray[(x + z * tex->width) * 3 + 1] = r*(sin(a2)*sin(a1) - 1);// +height*sin(a2)*sin(a1);
+			vertexArray[(x + z * tex->width) * 3 + 2] = r*cos(a2);// + height*cos(a2);	
 
 			// Normal vectors. You need to calculate these.
 			calc_normal(vertexArray, x, z, tex->width, &tmp_normal);
@@ -379,7 +361,7 @@ void init(void)
 	LoadTGATextureData("fft-terrain.tga", &ttex);
 	//LoadTGATextureData("SkyBox512.tga", &ttex);
 	tm = GenerateTerrain(&ttex, 0);
-	tm2 = GenerateTerrain(&ttex, 1);
+	tm2 = GenerateTerrain(&ttex, 0);
 	printError("init terrain");
 
 	vec3 rand_pos = { random() * 256, 0, random() * 256 };
@@ -432,6 +414,9 @@ void display(void)
 	glUniform1i(glGetUniformLocation(program, "water"), 1);
 	glBindTexture(GL_TEXTURE_2D, ground_tex);		// Bind Our Texture
 	DrawModel(tm, program, "inPosition", "inNormal", "inTexCoord");
+
+	mat4 total = Mult(T(0,-128,128), Rx(M_PI / 2));
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	DrawModel(tm2, program, "inPosition", "inNormal", "inTexCoord");
 	//glBindTexture(GL_TEXTURE_2D, ground_tex);		// Bind Our Texture
 	//DrawModel(ground, program, "inPosition", "inNormal", "inTexCoord");
@@ -556,7 +541,7 @@ void timer(int i)
 
 	
 	//handle_collisions();
-
+	
 	//looks at the spaceship
 	update_cam_matrix(&s, &camMatrix, &cam);
 

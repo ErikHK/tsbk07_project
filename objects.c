@@ -277,7 +277,6 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 	//	0.0, 1.0, 0.0);
 
 	*cam_matrix = lookAt(-400, -128, 0,
-		//s->pos[0], s->pos[1], s->pos[2],
 		0,-128,0,
 		0.0, 1.0, 0.0);
 
