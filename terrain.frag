@@ -63,6 +63,20 @@ float rand(vec2 co){
   return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
+void draw_shadow()
+{
+	if((spaceship_pos.x-testpos.x)*(spaceship_pos.x-testpos.x) +
+	(spaceship_pos.z-testpos.z)*(spaceship_pos.z-testpos.z) < 
+	min(100, (spaceship_pos.y-testpos.y)*6))
+	{
+		//if(testpos.y > .2)
+			colors -= vec4(0.5,0.5,0.5,0)*texture(tex, texCoord);
+		//else
+			//outColor = vec4(0,0,0.1,1);
+			//colors -= vec4(0,0,0.1,0);
+	}
+}
+
 void main(void)
 {
 
@@ -132,9 +146,9 @@ void main(void)
         	vec4 pixcol2 = vec4(.6,.3,.3,1);
 			
 			if((landing_point_pos.x-testpos.x)*(landing_point_pos.x-testpos.x) + 
-			(landing_point_pos.z-testpos.z)*(landing_point_pos.z-testpos.z) < 30000)
+			(landing_point_pos.z-testpos.z)*(landing_point_pos.z-testpos.z) < 1000)
 			{
-				//colors = vec4(1,0,0,1)*texture(tex, texCoord);
+				colors = vec4(1,0,0,1)*texture(tex, texCoord);
 			}else{
 				colors = mix(pixcol1, pixcol2, f)*texture(tex,texCoord);
 			}
@@ -148,23 +162,12 @@ void main(void)
 			vec4 col1 = vec4(0, 0.2+sin(testpos.x/3+time)/30.0, 0.5, 1)
 			+pixcol/2.0;
 			vec4 col2 = vec4(1,1,1,1);
-			//outColor = mix(vec4(col1.x-.3,col1.y-.3,col1.z, 1),col2,f);
 			colors = mix(vec4(col1.x-.3,col1.y-.3,col1.z, 1),col2,f);
 		}else if(testpos.y < .5 && water==1){
 			float f = smoothstep(.1,.8,testpos.y);
-			//outColor = mix(vec4(1,1,1,1), vec4(1,1,1,.1), f);
 			colors = mix(vec4(1,1,1,1), vec4(1,1,1,.1), f);
 		}else{ //ground
-		if((spaceship_pos.x-testpos.x)*(spaceship_pos.x-testpos.x) + (spaceship_pos.z-testpos.z)*(spaceship_pos.z-testpos.z) < 
-	min(100, (spaceship_pos.y-testpos.y)*6))
-	{
-		if(testpos.y > .2)
-			//outColor = vec4(0.2,0.2,0.2,1)*texture(tex, texCoord);
-			colors += vec4(0.2,0.2,0.2,1)*texture(tex, texCoord);
-		else
-			//outColor = vec4(0,0,0.1,1);
-			colors += vec4(0,0,0.1,1);
-	}
+			
 		
 		}
 		
@@ -173,7 +176,7 @@ void main(void)
 	
 
 	
-
+	draw_shadow();
 	outColor = colors;
 
 }

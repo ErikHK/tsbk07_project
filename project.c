@@ -356,7 +356,15 @@ void init(void)
 	printError("init terrain");
 
 	vec3 rand_pos = { random() * 256, 0, random() * 256 };
-	rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth)+3;
+	rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth) + 8;
+	
+	while (!(rand_pos.x > 20 && rand_pos.z > 20 && rand_pos.z < texwidth - 20 && rand_pos.x < texwidth - 20 && rand_pos.y > 1))
+	{
+		rand_pos.x = random() * 256;
+		rand_pos.z = random() * 256;
+		rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth) + 8;
+	}
+	
 	set_landing_point(&lp, rand_pos);
 
 	//upload highest point to shader
@@ -372,10 +380,10 @@ void display(void)
 	// clear the screen
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUniform1i(glGetUniformLocation(program, "skybox"), 0);
-	glUniform3fv(glGetUniformLocation(program, "lightSourcesDirPosArr"), 4, &lightSourcesDirectionsPositions[0].x);
-	glUniform3fv(glGetUniformLocation(program, "lightSourcesColorArr"), 4, &lightSourcesColorsArr[0].x);
-	glUniform1fv(glGetUniformLocation(program, "specularExponent"), 4, specularExponent);
-	glUniform1iv(glGetUniformLocation(program, "isDirectional"), 4, isDirectional);
+	//glUniform3fv(glGetUniformLocation(program, "lightSourcesDirPosArr"), 4, &lightSourcesDirectionsPositions[0].x);
+	//glUniform3fv(glGetUniformLocation(program, "lightSourcesColorArr"), 4, &lightSourcesColorsArr[0].x);
+	//glUniform1fv(glGetUniformLocation(program, "specularExponent"), 4, specularExponent);
+	//glUniform1iv(glGetUniformLocation(program, "isDirectional"), 4, isDirectional);
 	
 	printError("pre display");
 	
@@ -453,7 +461,7 @@ void handle_collisions()
 			return;
 		}
 
-		if (distance_to_target(&s, &lp.pos) > 12)
+		if (distance_to_target(&s, &lp.pos) > 15)
 		{
  			game_over = 1;
 			return;
