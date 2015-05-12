@@ -300,11 +300,11 @@ void init(void)
 	//init hud;
 	create_hud(&h);
 	//init test cloud
-	vec3 init_pos = { 80+40, 49, 90 };
+	vec3 init_pos = { 80+40, 69, 90 };
 	create_cloud(&c[0], init_pos);
-	vec3 init_pos2 = { 95, 49, 90+20 };
+	vec3 init_pos2 = { 95, 69, 90+20 };
 	create_cloud(&c[1], init_pos2);
-	vec3 init_pos3 = { 65, 49, 90 - 30 };
+	vec3 init_pos3 = { 65, 79, 90 - 30 };
 	create_cloud(&c[2], init_pos3);
 	ground = LoadModelPlus("ground.obj");
 	skybox = LoadModelPlus("sphere.obj");
