@@ -383,6 +383,7 @@ void display(void)
 	
 	//upload spaceship position to shader for shadow calculation
 	glUniform3f(glGetUniformLocation(program, "spaceship_pos"), s.pos[0], s.pos[1], s.pos[2]);
+	glUniform3f(glGetUniformLocation(program, "landing_point_pos"), lp.pos.x, lp.pos.y, lp.pos.z);
 
 	//upload cam matrix
 	glUniformMatrix4fv(glGetUniformLocation(program, "camMatrix"), 1, GL_TRUE, camMatrix.m);
@@ -438,9 +439,10 @@ void handle_collisions()
 	float h = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
 	if (s.pos[1] < 0.0)
 		game_over = 1;
-	if (s.pos[1] - 1.5 <= h)
+	//if (s.pos[1] - 1.5 <= h)
+	if (s.pos[1] - 10 <= h)
 	{
-		s.pos[1] = h + 1.5;
+		s.pos[1] = h + 10;
 		//s.gravity = 0;
 		float tot_speed = fabs(spaceship_total_speed(&s));
 		if (tot_speed > .3)
@@ -449,9 +451,9 @@ void handle_collisions()
 			return;
 		}
 
-		if (distance_to_target(&s, &highest) > 12)
+		if (distance_to_target(&s, &lp.pos) > 12)
 		{
-			game_over = 1;
+ 			game_over = 1;
 			return;
 		}
 

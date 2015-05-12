@@ -30,6 +30,7 @@ uniform float time;
 uniform float randwater;
 
 uniform vec3 spaceship_pos;
+uniform vec3 landing_point_pos;
 
 uniform bool multitex;
 
@@ -179,7 +180,8 @@ void main(void)
 	}
 
 	
-	if((highest.x-testpos.x)*(highest.x-testpos.x) + (highest.z-testpos.z)*(highest.z-testpos.z) < 100)
+	if((landing_point_pos.x-testpos.x)*(landing_point_pos.x-testpos.x) + 
+	(landing_point_pos.z-testpos.z)*(landing_point_pos.z-testpos.z) < 100)
 	{
 		outColor = vec4(1,0,0,1)*texture(tex, texCoord);
 	}
