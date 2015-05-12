@@ -449,40 +449,47 @@ void handle_collisions()
 		game_over = 1;
 
 
-	//if (s.pos[1] - 1.5 <= h)
-	if (s.pos[1] - 10 <= h)
+	if (s.pos[1] - 1.5 <= h)
 	{
-		s.pos[1] = h + 10;
-		//s.gravity = 0;
+		s.pos[1] = h + 1.5;
+
 		float tot_speed = fabs(spaceship_total_speed(&s));
 		if (tot_speed > .3)
 		{
 			game_over = 1;
 			return;
 		}
+	}
+	if (s.pos[1] - 10 <= h)
+	{
+		//s.gravity = 0;
+		
 
-		if (distance_to_target(&s, &lp.pos) > 15)
+		if (distance_to_target(&s, &lp.pos) < 15)
 		{
- 			game_over = 1;
-			return;
-		}
-
-
-		//check if the spaceship is not straight!
-		if (fabs(s.angle[0]) > .15 || fabs(s.angle[1]) > .15)
-		{
+			//check if the spaceship is not straight!
+			if (fabs(s.angle[0]) < .15 || fabs(s.angle[1]) < .15)
+			{
+				s.pos[1] = h + 10;
+				finished = 1;
+				return;
+			}
+			//too skewed
 			game_over = 1;
 			return;
-		}
-		//else, finished!
-		finished = 1;
 
+		}
+		
+		//else, game over!
+		//finished = 1;
+		/*
 		s.speed[0] = 0;
 		s.speed[1] = 0;
 		s.speed[2] = 0;
 		s.angle_speed[0] = 0;
 		s.angle_speed[1] = 0;
 		s.landed = 1;
+		*/
 	}
 	else{
 		s.landed = 0;
