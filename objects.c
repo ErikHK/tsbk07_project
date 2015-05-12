@@ -280,8 +280,26 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 }
 
 
-void create_landing_point()
+void create_landing_point(landing_point * lp)
 {
+	lp->landing_point_model = LoadModelPlus("landing_point.obj");
+
+}
+
+void set_landing_point(landing_point * lp, vec3 pos)
+{
+	lp->pos = pos;
+}
+
+void draw_landing_point(landing_point * lp, GLuint program)
+{
+	glUniform1i(glGetUniformLocation(program, "landing_point"), 1);
+	mat4 total = Mult(T(lp->pos.x, lp->pos.y, lp->pos.z), S(.2,.2,.2));
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
+	DrawModel(lp->landing_point_model, program, "inPosition", "inNormal", "inTexCoord");
+	glUniform1i(glGetUniformLocation(program, "landing_point"), 0);
+
 
 }
 

@@ -51,6 +51,8 @@ spaceship s;
 cloud c[NUM_CLOUDS];
 //hud object
 hud h;
+//landing point
+landing_point lp;
 
 Point3D lightSourcesColorsArr[] = { { 1.0f, 0.0f, 1.0f },
 { 1.0f, 1.0f, 1.0f },
@@ -303,6 +305,9 @@ void init(void)
 	create_spaceship(&s);
 	//init hud;
 	create_hud(&h);
+	//init landing point
+	create_landing_point(&lp);
+
 	//init clouds
 	for (int i = 0; i < NUM_CLOUDS; i++)
 	{
@@ -350,6 +355,10 @@ void init(void)
 	tm = GenerateTerrain(&ttex);
 	printError("init terrain");
 
+	vec3 rand_pos = { random() * 256, 0, random() * 256 };
+	rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth)+3;
+	set_landing_point(&lp, rand_pos);
+
 	//upload highest point to shader
 	glUniform3f(glGetUniformLocation(program, "highest"), highest.x, highest.y, highest.z);
 }
@@ -394,6 +403,8 @@ void display(void)
 	//takes care of button presses and movement of spaceship
 	move_spaceship(&s, program);
 
+	//draw the landing point
+	draw_landing_point(&lp, program);
 
 	//draw the spaceship
 	draw_spaceship(&s, program);

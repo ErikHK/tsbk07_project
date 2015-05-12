@@ -16,6 +16,7 @@ uniform mat4 camMatrix;
 uniform mat4 mdlMatrix;
 
 
+uniform int landing_point;
 uniform int skybox;
 uniform int hud;
 uniform int fuel_full;
@@ -137,6 +138,13 @@ void main(void)
 			//else
 			//	outColor = vec4(0,1,0,1);
         }
+
+		if(landing_point==1)
+		{
+			vec4 pixcol1 = vec4(.8,.5,.5,1);
+        	vec4 pixcol2 = vec4(.6,.3,.3,1);
+			outColor = mix(pixcol1, pixcol2, f)*texture(tex,texCoord);
+		}
 
 		if(testpos.y < 0.2 && water==1)
 		{

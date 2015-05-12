@@ -35,13 +35,20 @@ typedef struct spaceship_t
 } spaceship;
 
 
+typedef struct landing_point_t
+{
+	Model * landing_point_model;
+	vec3 pos;
+
+} landing_point;
+
+
 typedef struct hud_t
 {
 	Model *fuel_bar;
 	Model *game_over_sign;
 	Model *you_win_sign;
 	GLuint game_over_sign_tex;
-
 
 } hud;
 
@@ -75,12 +82,6 @@ typedef struct spark_t
 
 } spark;
 
-typedef struct landing_point_t
-{
-  Model *landing_point_model;
-
-} landing_point;
-
 void create_cloud();
 void create_spaceship();
 void create_landing_point();
@@ -92,7 +93,9 @@ void draw_cloud();
 void update_cam_matrix();
 void create_hud();
 void draw_hud();
+void draw_landing_point();
 void draw_game_over();
 void draw_you_win();
+void set_landing_point();
 float spaceship_total_speed();
 float distance_to_target();
