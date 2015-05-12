@@ -11,6 +11,8 @@
 #include <time.h>
 #include "perlin.h"
 
+#define NUM_CLOUDS 8
+
 
 //scale for terrain, higher means higher mountains 
 #define SCALE 0.1
@@ -22,6 +24,7 @@ mat4 total, modelView, camMatrix;
 vec3 cam = { 0, 60, 128 };
 
 int game_over = 0;
+int finished = 0;
 
 // Reference to shader program
 GLuint program;
@@ -44,7 +47,7 @@ Model *ground;
 //spaceship object
 spaceship s;
 //test cloud object
-cloud c[10];
+cloud c[NUM_CLOUDS];
 //hud object
 hud h;
 
@@ -299,13 +302,21 @@ void init(void)
 	create_spaceship(&s);
 	//init hud;
 	create_hud(&h);
-	//init test cloud
+	//init clouds
+	for (int i = 0; i < NUM_CLOUDS; i++)
+	{
+		vec3 init_pos = { random()*256, 70+random()*15, random()*256 };
+		create_cloud(&c[i], init_pos);
+	}
+
+	/*
 	vec3 init_pos = { 80+40, 69, 90 };
 	create_cloud(&c[0], init_pos);
 	vec3 init_pos2 = { 95, 69, 90+20 };
 	create_cloud(&c[1], init_pos2);
 	vec3 init_pos3 = { 65, 79, 90 - 30 };
 	create_cloud(&c[2], init_pos3);
+	*/
 	ground = LoadModelPlus("ground.obj");
 	skybox = LoadModelPlus("sphere.obj");
 
@@ -391,15 +402,68 @@ void display(void)
 	if (game_over)
 		draw_game_over(&h, program);
 
-	//draw cloud c
-	draw_cloud(&c[0], program);
-	draw_cloud(&c[1], program);
-	draw_cloud(&c[2], program);
+	if (finished)
+		draw_you_win(&h, program);
+
+	//draw clouds c
+	for (int i = 0; i < NUM_CLOUDS; i++)
+	{
+		draw_cloud(&c[i], program);
+	}
+	//draw_cloud(&c[0], program);
+	//draw_cloud(&c[1], program);
+	//draw_cloud(&c[2], program);
 
 	//dunno
 	printError("display 2");
 	
 	glutSwapBuffers();
+}
+
+void handle_collisions()
+{
+
+	float h = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
+	if (s.pos[1] < 0.0)
+		game_over = 1;
+	if (s.pos[1] - 1.5 <= h)
+	{
+		s.pos[1] = h + 1.5;
+		//s.gravity = 0;
+		float tot_speed = fabs(spaceship_total_speed(&s));
+		if (tot_speed > .3)
+		{
+			game_over = 1;
+			return;
+		}
+
+		if (distance_to_target(&s, &highest) > 12)
+		{
+			game_over = 1;
+			return;
+		}
+
+
+		//check if the spaceship is not straight!
+		if (fabs(s.angle[0]) > .15 || fabs(s.angle[1]) > .15)
+		{
+			game_over = 1;
+			return;
+		}
+		//else, finished!
+		finished = 1;
+
+		s.speed[0] = 0;
+		s.speed[1] = 0;
+		s.speed[2] = 0;
+		s.angle_speed[0] = 0;
+		s.angle_speed[1] = 0;
+		s.landed = 1;
+	}
+	else{
+		s.landed = 0;
+	}
+
 }
 
 void timer(int i)
@@ -408,6 +472,12 @@ void timer(int i)
 	if (game_over)
 	{
 		//run game over handler here!
+		return;
+	}
+
+	if (finished)
+	{
+		//run finished handler here!
 		return;
 	}
 
@@ -420,34 +490,7 @@ void timer(int i)
 
 
 	//will be collision detection in the future!
-	float h = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
-	if (s.pos[1] < 0.0)
-		game_over = 1;
-	if (s.pos[1]-1.5 <= h)
-	{
-  		s.pos[1] = h+1.5;
-		//s.gravity = 0;
-		float tot_speed = fabs(spaceship_total_speed(&s));
-		if (tot_speed > .3)
-			game_over = 1;
-
-		if (distance_to_target(&s, &highest) > 12)
-			game_over = 1;
-
-
-		//check if the spaceship is not straight!
-		if (fabs(s.angle[0]) > .15 || fabs(s.angle[1]) > .15)
-			game_over = 1;
-		s.speed[0] = 0;
-		s.speed[1] = 0;
-		s.speed[2] = 0;
-		s.angle_speed[0] = 0;
-		s.angle_speed[1] = 0;
-		s.landed = 1;
-	}
-	else{
-		s.landed = 0;
-	}
+	handle_collisions();
 
 	//looks at the spaceship
 	update_cam_matrix(&s, &camMatrix, &cam);

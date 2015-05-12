@@ -57,6 +57,7 @@ void create_hud(hud *h)
 {
 	h->fuel_bar = LoadModelPlus("cube.obj");
 	h->game_over_sign = LoadModelPlus("game_over.obj");
+	h->you_win_sign = LoadModelPlus("you_win.obj");
 	LoadTGATextureSimple("spaceship/spaceship_uvw_body.tga", &(h->game_over_sign_tex));
 }
 
@@ -112,7 +113,7 @@ void draw_fuel_bar(hud * h, float * fuel, GLuint program)
 {
 	float fuel_scale = *fuel / 1000.0;
 	mat4 scale = S(fuel_scale*2, .04, .05);
-	mat4 trans = T(.5, .9, -2);
+	mat4 trans = T(1, .9, -2);
 	mat4 total = Mult(trans, Mult(scale, T(1,0,0)));
 	glUniform1i(glGetUniformLocation(program, "hud"), 1);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
@@ -122,7 +123,7 @@ void draw_fuel_bar(hud * h, float * fuel, GLuint program)
 	glUniform1i(glGetUniformLocation(program, "fuel_full"), 1);
 
 	scale = S(.2, .04, .05);
-	trans = T(.5, .9, -2);
+	trans = T(1, .9, -2);
 	total = Mult(trans, Mult(scale, T(1, 0, 0)));
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
@@ -149,6 +150,27 @@ void draw_game_over(hud * h, GLuint program)
 
 	
 }
+
+
+
+void draw_you_win(hud * h, GLuint program)
+{
+
+	glUniform1i(glGetUniformLocation(program, "hud"), 1);
+
+
+	mat4 total = Mult(Mult(T(0, 1, -8), S(.1, .1, .1)), Ry(.3));
+
+	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 1);
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
+	DrawModel(h->you_win_sign, program, "inPosition", "inNormal", "inTexCoord");
+	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 0);
+	glUniform1i(glGetUniformLocation(program, "hud"), 0);
+
+
+}
+
 
 void move_spaceship(spaceship * s, GLuint program)
 {

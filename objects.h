@@ -39,6 +39,7 @@ typedef struct hud_t
 {
 	Model *fuel_bar;
 	Model *game_over_sign;
+	Model *you_win_sign;
 	GLuint game_over_sign_tex;
 
 
@@ -92,5 +93,6 @@ void update_cam_matrix();
 void create_hud();
 void draw_hud();
 void draw_game_over();
+void draw_you_win();
 float spaceship_total_speed();
 float distance_to_target();
