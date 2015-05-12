@@ -204,10 +204,22 @@ Model* GenerateTerrain(TextureData *tex)
 				highest.z = z;
 				highest.y = height;
 			}
-			// Vertex array. You need to scale this properly
-			vertexArray[(x + z * tex->width)*3 + 0] = x;
-			vertexArray[(x + z * tex->width) * 3 + 1] = height;
-			vertexArray[(x + z * tex->width)*3 + 2] = z;
+			
+			float nx = x - 128;
+			float nz = z - 128;
+			//trying out spherical mapping
+			float r = 128;
+			float b1 = atan(nx/r);
+			float a1 = M_PI / 2 - b1;
+			
+			float b2 = atan(nz / r);
+			float a2 = M_PI / 2 - b2;
+
+
+			vertexArray[(x + z * tex->width) * 3 + 0] = r*cos(a1);// + height*cos(a1);
+			vertexArray[(x + z * tex->width) * 3 + 1] = r*(sin(a2)*sin(a1)-1);// +height*sin(a2)*sin(a1);
+			
+			vertexArray[(x + z * tex->width) * 3 + 2] = r*cos(a2);// + height*cos(a2);
 
 			// Normal vectors. You need to calculate these.
 			calc_normal(vertexArray, x, z, tex->width, &tmp_normal);
@@ -522,9 +534,8 @@ void timer(int i)
 	//glUniform1f(glGetUniformLocation(program, "randwater"), (GLfloat)random());
 	glUniform1f(glGetUniformLocation(program, "randwater"), random());
 
-
-	//will be collision detection in the future!
-	handle_collisions();
+	
+	//handle_collisions();
 
 	//looks at the spaceship
 	update_cam_matrix(&s, &camMatrix, &cam);

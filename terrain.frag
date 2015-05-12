@@ -154,6 +154,7 @@ void main(void)
 			}
 		}
 
+		/*
 		if(testpos.y < 0.2 && water==1)
 		{
 			float f = smoothstep(.1,.3,testpos.y);
@@ -166,7 +167,8 @@ void main(void)
 		}else if(testpos.y < .5 && water==1){
 			float f = smoothstep(.1,.8,testpos.y);
 			colors = mix(vec4(1,1,1,1), vec4(1,1,1,.1), f);
-		}else{ //ground
+		}*/
+		else{ //ground
 			
 		
 		}

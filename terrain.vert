@@ -42,11 +42,12 @@ void main(void)
 	if(hud==1)
 	{
 		gl_Position = projMatrix * mdlMatrix * vec4(inPosition, 1.0);
-	}else{
+	}
+	else{
 
-	if(water==1 && inPosition.y < 0.2)
-		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, 2*sin(inPosition.x/6+time)/2, inPosition.z, 1.0);
-	else if(fire==1 )
+	//if(water==1 && inPosition.y < 0.2)
+	//	gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, 2*sin(inPosition.x/6+time)/2, inPosition.z, 1.0);
+	if(fire==1 )
 	{
 		gl_Position = projMatrix * camMatrix * mdlMatrix *
 		vec4(inPosition.x+sin(inPosition.x*time*20), inPosition.y*.8 +inPosition.y*.2*sin(60*time), inPosition.z+sin(50*time), 1.0);
