@@ -12,7 +12,7 @@
 #include "perlin.h"
 
 #define NUM_CLOUDS 8
-
+#define VK_RETURN 0x0D
 
 //scale for terrain, higher means higher mountains 
 #define SCALE 0.1
@@ -439,6 +439,8 @@ void handle_collisions()
 	float h = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
 	if (s.pos[1] < 0.0)
 		game_over = 1;
+
+
 	//if (s.pos[1] - 1.5 <= h)
 	if (s.pos[1] - 10 <= h)
 	{

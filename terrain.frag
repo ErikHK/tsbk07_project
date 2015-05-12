@@ -36,7 +36,7 @@ uniform bool multitex;
 
 in vec3 norm;
 in vec3 vec;
-vec3 colors;
+vec4 colors;
 
 vec3 s;
 vec3 n;
@@ -66,9 +66,9 @@ float rand(vec2 co){
 void main(void)
 {
 
-	vec4 test = (mdlMatrix)*vec4(outPosition.x, outPosition.y, outPosition.z, 1);
+	//vec4 test = (mdlMatrix)*vec4(outPosition.x, outPosition.y, outPosition.z, 1);
 	//colors = vec3(0,0,0);
-	colors = vec3(0.5, 0.5, 0.5);
+	colors = vec4(0, 0, 0, 0);
 
 	n = normalize(exNormal);
 	s = normalize(lightCamMatrix*cam_vector);
@@ -76,36 +76,26 @@ void main(void)
     float lambert = pow(dot(n,s),2)-.001;
 
 
-	if(multitex)
-	{
-    	tmp_colors = vec3(texture(tex, texCoord));
-    }
-    else{
-    	tmp_colors = vec3(texture(tex2, texCoord));
-    }
-
-
-
 	if(skybox==1)
 	{
 		//color gradient, blue sky
-		outColor = vec4(0.7*(1-testpos.y*.5)+.2,(1-testpos.y*.5)+.2,1,1);
+		colors += vec4(0.7*(1-testpos.y*.5)+.2,(1-testpos.y*.5)+.2,1,1);
 
 	}
 	else if(hud==1)
 	{
 		if(fuel_full==1)
-			outColor = vec4(.1,.1,.1,.4);
+			colors += vec4(.1,.1,.1,.6);
 		else if(game_over_sign==1)
 		{
 			float lambert = dot(n,vec3(0,0,1));
 			float f = smoothstep(.1, .8, lambert);
 			vec4  pixcolor1 = vec4(.2, .2, .2, 1);
 			vec4  pixcolor2 = vec4(.7,.7,.7,1);
-			outColor = mix(pixcolor1, pixcolor2, f);
+			colors += mix(pixcolor1, pixcolor2, f);
 		}
 		else
-			outColor = vec4(.7,.1,.1,1);
+			colors += vec4(.7,.1,.1,1);
 	}
 	else{
         
@@ -115,13 +105,13 @@ void main(void)
         {
         	vec4 pixcol1 = vec4(1,1,1,1)*texture(tex, texCoord);
         	vec4 pixcol2 = vec4(.8,.8,.8,1)*texture(tex, texCoord);
-        	outColor = mix(pixcol1, pixcol2, f);
+        	colors += mix(pixcol1, pixcol2, f);
         	
         }else //exhaust == 1, 
         {
         	vec4 pixcol1 = vec4(.8,.8,.8,1);
         	vec4 pixcol2 = vec4(.6,.6,.6,1);
-        	outColor = mix(pixcol1, pixcol2, f);
+        	colors += mix(pixcol1, pixcol2, f);
         }
         	
         if(fire==1)
@@ -132,19 +122,22 @@ void main(void)
         	f = smoothstep(.6, .9, dot(n,s));
         	vec4 pixcol1 = vec4(1,0,0,1);
         	vec4 pixcol2 = vec4(1,.7,0,1);
-			//vec4 pixcol2 = vec4(0,1,0,1);
-			outColor = mix(pixcol1, pixcol2, f);
-			//if(lambert > .8)
-        	//	outColor = vec4(1,0,0,1);
-			//else
-			//	outColor = vec4(0,1,0,1);
+			
+			colors = mix(pixcol1, pixcol2, f);
         }
 
 		if(landing_point==1)
 		{
 			vec4 pixcol1 = vec4(.8,.5,.5,1);
         	vec4 pixcol2 = vec4(.6,.3,.3,1);
-			outColor = mix(pixcol1, pixcol2, f)*texture(tex,texCoord);
+			
+			if((landing_point_pos.x-testpos.x)*(landing_point_pos.x-testpos.x) + 
+			(landing_point_pos.z-testpos.z)*(landing_point_pos.z-testpos.z) < 30000)
+			{
+				//colors = vec4(1,0,0,1)*texture(tex, texCoord);
+			}else{
+				colors = mix(pixcol1, pixcol2, f)*texture(tex,texCoord);
+			}
 		}
 
 		if(testpos.y < 0.2 && water==1)
@@ -152,39 +145,36 @@ void main(void)
 			float f = smoothstep(.1,.3,testpos.y);
 			vec4 pixcol = texture2D(tex, texCoord/20.0);
 			pixcol.rgb = (pixcol.rgb-0.5)*max(pixcol.rgb*2,0)+.5;
-
-			vec4 col1 = vec4(colors.x*0, colors.y*0.2+sin(testpos.x/3+time)/30.0, colors.z, 1)
+			vec4 col1 = vec4(0, 0.2+sin(testpos.x/3+time)/30.0, 0.5, 1)
 			+pixcol/2.0;
 			vec4 col2 = vec4(1,1,1,1);
-			outColor = mix(vec4(col1.x-.3,col1.y-.3,col1.z, 1),col2,f);
+			//outColor = mix(vec4(col1.x-.3,col1.y-.3,col1.z, 1),col2,f);
+			colors = mix(vec4(col1.x-.3,col1.y-.3,col1.z, 1),col2,f);
 		}else if(testpos.y < .5 && water==1){
 			float f = smoothstep(.1,.8,testpos.y);
-			//outColor = mix(vec4(1,1,1,1), vec4(1,.9,.3,1), f);
-			outColor = mix(vec4(1,1,1,1), vec4(1,1,1,.1), f);
-		}else{
-			//if((colors.y + colors.x + colors.z)/3 > 0.5)
-			//	outColor = vec4(1, 1, 1, 1.0)*texture(tex, texCoord);
-			//else
-			//	outColor = vec4(0.9, 0.9, 0.9, 1.0)*texture(tex, texCoord);
+			//outColor = mix(vec4(1,1,1,1), vec4(1,1,1,.1), f);
+			colors = mix(vec4(1,1,1,1), vec4(1,1,1,.1), f);
+		}else{ //ground
+		if((spaceship_pos.x-testpos.x)*(spaceship_pos.x-testpos.x) + (spaceship_pos.z-testpos.z)*(spaceship_pos.z-testpos.z) < 
+	min(100, (spaceship_pos.y-testpos.y)*6))
+	{
+		if(testpos.y > .2)
+			//outColor = vec4(0.2,0.2,0.2,1)*texture(tex, texCoord);
+			colors += vec4(0.2,0.2,0.2,1)*texture(tex, texCoord);
+		else
+			//outColor = vec4(0,0,0.1,1);
+			colors += vec4(0,0,0.1,1);
+	}
+		
 		}
 		
 	}
 
-	if((spaceship_pos.x-testpos.x)*(spaceship_pos.x-testpos.x) + (spaceship_pos.z-testpos.z)*(spaceship_pos.z-testpos.z) < 
-	min(100, (spaceship_pos.y-testpos.y)*6))
-	{
-		if(testpos.y > .2)
-			outColor = vec4(0.2,0.2,0.2,1)*texture(tex, texCoord);
-		else
-			outColor = vec4(0,0,0.1,1);
-	}
+	
 
 	
-	if((landing_point_pos.x-testpos.x)*(landing_point_pos.x-testpos.x) + 
-	(landing_point_pos.z-testpos.z)*(landing_point_pos.z-testpos.z) < 100)
-	{
-		outColor = vec4(1,0,0,1)*texture(tex, texCoord);
-	}
+
+	outColor = colors;
 
 }
 
