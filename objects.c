@@ -186,7 +186,7 @@ void move_spaceship(spaceship * s, GLuint program)
 
 	if (keyIsDown(VK_SPACE) && s->fuel >= 0)
 	{
-		s->fuel -= .2;
+		//s->fuel -= .2;
 		glUniform1i(glGetUniformLocation(program, "fire"), 1);
 		s->fire_visible = 1;
 		s->acc[2] = s->thrust*sin(s->angle[0]);
@@ -272,9 +272,18 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 	//	s->pos[0], s->pos[1], s->pos[2],
 	//	0.0, 1.0, 0.0);
 
-	*cam_matrix = lookAt(s->pos[0]-80, cam_pos->y, s->pos[2],
-		s->pos[0], s->pos[1], s->pos[2],
+	//*cam_matrix = lookAt(s->pos[0]-80, cam_pos->y, s->pos[2],
+	//	s->pos[0], s->pos[1], s->pos[2],
+	//	0.0, 1.0, 0.0);
+
+	*cam_matrix = lookAt(-400, -128, 0,
+		//s->pos[0], s->pos[1], s->pos[2],
+		0,-128,0,
 		0.0, 1.0, 0.0);
+
+	float angle = atan2(s->pos[2] / 256.0, (s->pos[1]+128) / 256.0);
+	float angle2 = atan(s->pos[0] / 256.0);
+	*cam_matrix =  Mult(Rz(angle), *cam_matrix);
 
 
 }
@@ -307,7 +316,6 @@ float random()
 {
 	return (float)rand() / (float)RAND_MAX;
 }
-
 
 
 void create_cloud(cloud * c, vec3 init_pos)
