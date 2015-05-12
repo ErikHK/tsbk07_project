@@ -145,8 +145,8 @@ void main(void)
 			vec4 pixcol1 = vec4(.8,.5,.5,1);
         	vec4 pixcol2 = vec4(.6,.3,.3,1);
 			
-			if((landing_point_pos.x-testpos.x)*(landing_point_pos.x-testpos.x) + 
-			(landing_point_pos.z-testpos.z)*(landing_point_pos.z-testpos.z) < 1000)
+			if((landing_point_pos.x-testpos.x-10)*(landing_point_pos.x-testpos.x-10) + 
+			(landing_point_pos.z-testpos.z-10)*(landing_point_pos.z-testpos.z-10) < 1000)
 			{
 				colors = vec4(1,0,0,1)*texture(tex, texCoord);
 			}else{

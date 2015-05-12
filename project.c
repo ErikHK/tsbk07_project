@@ -196,21 +196,17 @@ Model* GenerateTerrain(TextureData *tex)
 	for (x = 0; x < tex->width; x++)
 		for (z = 0; z < tex->height; z++)
 		{
-		// Vertex array. You need to scale this properly
-			vertexArray[(x + z * tex->width)*3 + 0] = x;
-			//vertexArray[(x + z * tex->width)*3 + 1] = tex->imageData[(x + z * tex->width) * (tex->bpp/8)] * SCALE;
 			float height = 100 * OctavePerlin(x / (256.0 * 16 * 4 * 4), z / (256.0 * 16 * 4 * 4), 0, 10, 10.0) - 50;
-			
+
 			if (height > highest.y)
 			{
 				highest.x = x;
 				highest.z = z;
 				highest.y = height;
 			}
-
+			// Vertex array. You need to scale this properly
+			vertexArray[(x + z * tex->width)*3 + 0] = x;
 			vertexArray[(x + z * tex->width) * 3 + 1] = height;
-			//vertexArray[(x + z * tex->width) * 3 + 1] = 1;
-			//vertexArray[(x + z * tex->width) * 3 + 1] = OctavePerlin(x / (256.0), z / (256.0), 1, 10, 1.0);
 			vertexArray[(x + z * tex->width)*3 + 2] = z;
 
 			// Normal vectors. You need to calculate these.
@@ -460,7 +456,7 @@ void handle_collisions()
 			return;
 		}
 	}
-	if (s.pos[1] <= lp.pos.y+1)
+	if (s.pos[1] <= lp.pos.y+2)
 	{
 		//s.gravity = 0;
 		
