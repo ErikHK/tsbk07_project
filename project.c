@@ -25,6 +25,7 @@ vec3 cam = { 0, 60, 128 };
 
 int game_over = 0;
 int finished = 0;
+int start = 0;
 
 // Reference to shader program
 GLuint program;
@@ -468,6 +469,13 @@ void handle_collisions()
 
 void timer(int i)
 {
+	glutTimerFunc(20, &timer, i);
+
+	if (keyIsDown(VK_RETURN))
+		start = 1;
+
+	if (!start)
+		return;
 
 	if (game_over)
 	{
@@ -495,8 +503,10 @@ void timer(int i)
 	//looks at the spaceship
 	update_cam_matrix(&s, &camMatrix, &cam);
 
-	glutTimerFunc(20, &timer, i);
+	
 	glutPostRedisplay();
+
+	
 }
 
 
@@ -525,11 +535,10 @@ int main(int argc, char **argv)
 		}
 	#endif
 	
-	srand(time(NULL));
+		glutTimerFunc(20, &timer, 0);
 	init ();
 	initKeymapManager();
-	glutTimerFunc(20, &timer, 0);
-
+	
 	glutMainLoop();
 	exit(0);
 }

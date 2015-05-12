@@ -150,7 +150,8 @@ void main(void)
 			outColor = mix(vec4(col1.x-.3,col1.y-.3,col1.z, 1),col2,f);
 		}else if(testpos.y < .5 && water==1){
 			float f = smoothstep(.1,.8,testpos.y);
-			outColor = mix(vec4(1,1,1,1), vec4(1,.9,.3,1), f);
+			//outColor = mix(vec4(1,1,1,1), vec4(1,.9,.3,1), f);
+			outColor = mix(vec4(1,1,1,1), vec4(1,1,1,.1), f);
 		}else{
 			//if((colors.y + colors.x + colors.z)/3 > 0.5)
 			//	outColor = vec4(1, 1, 1, 1.0)*texture(tex, texCoord);
