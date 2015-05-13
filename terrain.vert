@@ -50,7 +50,10 @@ void main(void)
 	else{
 
 	//if(water==1 && inPosition.y < 0.2)
-	//	gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, 2*sin(inPosition.x/6+time)/2, inPosition.z, 1.0);
+	//if(water==1 && length(inPosition-vec3(0,12800,0)) < 20000)
+		//gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, 200*sin(inPosition.x/60+time)/2, inPosition.z, 1.0);
+		//gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, 200*sin(inPosition.x/60+time)/2, inPosition.z, 1.0);
+	//else 
 	if(fire==1 )
 	{
 		gl_Position = projMatrix * camMatrix * mdlMatrix *

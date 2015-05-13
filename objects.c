@@ -27,12 +27,12 @@ void create_spaceship(spaceship * s)
 	s->angle[0] = 0;
 	s->angle[1] = 0;
 
-	s->thrust = 0.02;
+	s->thrust = 0.2;
 
 	s->pos[0] = 0;
-	s->pos[1] = 40+150;
-	s->pos[2] = 80;
-	s->gravity = -0.006;
+	s->pos[1] = 40+15000;
+	s->pos[2] = 0;
+	s->gravity = -0.06;
 	
 	s->acc[1] = s->gravity;	//y acc, gravity
 
@@ -175,7 +175,7 @@ void draw_you_win(hud * h, GLuint program)
 void move_spaceship(spaceship * s, GLuint program)
 {
 	s->world_angle[0] = atan2(s->pos[2] / 256.0, (s->pos[1] ) / 256.0);
-	s->world_angle[1] = atan2(s->pos[2] / 256.0, (s->pos[0]) / 256.0);
+	s->world_angle[1] = atan2(s->pos[2] / 25600.0, (s->pos[0]) / 25600.0);
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -185,7 +185,7 @@ void move_spaceship(spaceship * s, GLuint program)
 		s->pos[i] += s->speed[i];
 	}
 	s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), 
-		Mult(Mult( Mult( Rx(s->angle[0]), Rz(s->angle[1])), Ry(2)), S(0.1, 0.1, 0.1)));
+		Mult(Mult( Mult( Rx(s->angle[0]), Rz(s->angle[1])), Ry(2)), S(1, 1, 1)));
 
 	if (keyIsDown(VK_SPACE) && s->fuel >= 0)
 	{
@@ -249,9 +249,9 @@ void move_spaceship(spaceship * s, GLuint program)
 	}
 	*/
 
-	s->speed[0] *= 0.995;
-	s->speed[1] *= 0.995;
-	s->speed[2] *= 0.995;
+	s->speed[0] *= 0.98;
+	//s->speed[1] *= 0.98;
+	s->speed[2] *= 0.98;
 	
 }
 
@@ -278,7 +278,7 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 	//	s->pos[0], s->pos[1], s->pos[2],
 	//	0.0, 1.0, 0.0);
 
-	*cam_matrix = lookAt(s->pos[0]-80, s->pos[1], s->pos[2],
+	*cam_matrix = lookAt(s->pos[0]-400, s->pos[1]+300, s->pos[2],
 		s->pos[0], s->pos[1], s->pos[2],
 		0.0, 1.0, 0.0);
 

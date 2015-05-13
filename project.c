@@ -209,7 +209,7 @@ Model* GenerateTerrain(TextureData *tex, int side)
 	for (x = 0; x < tex->width; x++)
 		for (z = 0; z < tex->height; z++)
 		{
-			float height = 100 * OctavePerlin(x / (256.0 * 16 * 4 * 4), z / (256.0 * 16 * 4 * 4), 0, 10, 10.0) - 50;
+			float height = 10 * OctavePerlin(x / (256.0 * 16 ), z / (256.0 * 16 ), 0, 10, 10.0) - 5;
 
 			if (height > highest.y)
 			{
@@ -237,9 +237,9 @@ Model* GenerateTerrain(TextureData *tex, int side)
 				b2 = M_PI / 2;
 			float a2 = M_PI / 2 - b2;
 			
-			vertexArray[(x + z * tex->width) * 3 + 0] = r*cos(a1)*sin(a2) +height*cos(a1)*sin(a2) ;
-			vertexArray[(x + z * tex->width) * 3 + 1] = r*(sin(a2)*sin(a1) - 1) +height*sin(a2)*sin(a1);
-			vertexArray[(x + z * tex->width) * 3 + 2] = r*cos(a2);// +height*cos(a2) / 10;
+			vertexArray[(x + z * tex->width) * 3 + 0] = 100*(r*cos(a1)*sin(a2) +height*cos(a1)*sin(a2)) ;
+			vertexArray[(x + z * tex->width) * 3 + 1] = 100*(r*(sin(a2)*sin(a1) - 1) +height*sin(a2)*sin(a1));
+			vertexArray[(x + z * tex->width) * 3 + 2] = 100*(r*cos(a2));// +height*cos(a2) / 10;
 
 			// Normal vectors. You need to calculate these.
 			calc_normal(vertexArray, x, z, tex->width, &tmp_normal);
@@ -264,8 +264,8 @@ Model* GenerateTerrain(TextureData *tex, int side)
 			
 
 		// Texture coordinates. You may want to scale them.
-			texCoordArray[(x + z * tex->width)*2 + 0] = x/20.0; // (float)x / tex->width;
-			texCoordArray[(x + z * tex->width)*2 + 1] = z/20.0; // (float)z / tex->height;
+			texCoordArray[(x + z * tex->width)*2 + 0] = x/2.0; // (float)x / tex->width;
+			texCoordArray[(x + z * tex->width)*2 + 1] = z/2.0; // (float)z / tex->height;
 		}
 	for (x = 0; x < tex->width-1; x++)
 		for (z = 0; z < tex->height-1; z++)
@@ -365,7 +365,7 @@ void init(void)
 	//glEnable(GL_BLEND);
 	printError("GL inits");
 
-	projectionMatrix = frustum(-0.15, 0.15, -0.1, 0.1, 0.2, 750.0);
+	projectionMatrix = frustum(-0.15, 0.15, -0.1, 0.1, 0.2, 75000.0);
 
 	// Load and compile shader
 	program = loadShaders("terrain.vert", "terrain.frag");
@@ -469,7 +469,7 @@ void display(void)
 	*/
 	
 	//draw terrain with water etc
-	mat4 total = T(0,128,0);
+	mat4 total = T(0,12800,0);
 	glUniform1i(glGetUniformLocation(program, "water"), 1);
 	glBindTexture(GL_TEXTURE_2D, ground_tex);		// Bind Our Texture
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
@@ -477,7 +477,7 @@ void display(void)
 	
 	mat4 mirror = IdentityMatrix();
 	mirror.m[0] = -1;
-	total = Mult(T(0,-254+128,0), Mult(mirror,Rz(M_PI)));
+	total = Mult(T(0,(-254+128)*100,0), Mult(mirror,Rz(M_PI)));
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	DrawModel(tm[1], program, "inPosition", "inNormal", "inTexCoord");
 	/*

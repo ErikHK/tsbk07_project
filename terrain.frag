@@ -67,7 +67,7 @@ void draw_shadow()
 {
 	if((spaceship_pos.x-testpos.x)*(spaceship_pos.x-testpos.x) +
 	(spaceship_pos.z-testpos.z)*(spaceship_pos.z-testpos.z) < 
-	min(100, (spaceship_pos.y-testpos.y)*6))
+	min(1000, (spaceship_pos.y-testpos.y)*60))
 	{
 		//if(testpos.y > .2)
 			colors -= vec4(0.5,0.5,0.5,0)*texture(tex, texCoord);
@@ -75,6 +75,15 @@ void draw_shadow()
 			//outColor = vec4(0,0,0.1,1);
 			//colors -= vec4(0,0,0.1,0);
 	}
+}
+
+float dist(vec3 p1, vec3 p2)
+{
+	float xx = pow(p1.x-p2.x, 2);
+	float yy = pow(p1.y-p2.y, 2);
+	float zz = pow(p1.z-p2.z, 2);
+
+	return sqrt(xx+yy+zz);
 }
 
 void main(void)
@@ -85,8 +94,8 @@ void main(void)
 	colors = vec4(0, 0, 0, 0);
 
 	n = normalize(exNormal);
-	//s = normalize(lightCamMatrix*cam_vector);
-	s = vec3(0,1,0);
+	s = normalize(lightCamMatrix*cam_vector);
+	//s = vec3(0,1,0);
 
     float lambert = pow(dot(n,s),2)-.001;
 
@@ -155,20 +164,23 @@ void main(void)
 			}
 		}
 
-		/*
-		if(testpos.y < 0.2 && water==1)
+		
+		//if(testpos.y < 0.2 && water==1)
+		if(length(testpos+vec3(0,12800,0)) < 12800 && water==1)
 		{
 			float f = smoothstep(.1,.3,testpos.y);
-			vec4 pixcol = texture2D(tex, texCoord/20.0);
+			vec4 pixcol = texture(tex, texCoord/20.0);
 			pixcol.rgb = (pixcol.rgb-0.5)*max(pixcol.rgb*2,0)+.5;
-			vec4 col1 = vec4(0, 0.2+sin(testpos.x/3+time)/30.0, 0.5, 1)
+			vec4 col1 = vec4(0, 0.2+sin(testpos.x/60+time)/30.0, 0.5, 1)
 			+pixcol/2.0;
 			vec4 col2 = vec4(1,1,1,1);
 			colors = mix(vec4(col1.x-.3,col1.y-.3,col1.z, 1),col2,f);
-		}else if(testpos.y < .5 && water==1){
+		}
+		//else if(testpos.y < .5 && water==1){
+		else if(length(testpos+vec3(0,12800,0)) < 12810 && water==1){
 			float f = smoothstep(.1,.8,testpos.y);
 			colors = mix(vec4(1,1,1,1), vec4(1,1,1,.1), f);
-		}*/
+		}
 		else{ //ground
 			
 		
