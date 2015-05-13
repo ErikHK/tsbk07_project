@@ -30,7 +30,7 @@ void create_spaceship(spaceship * s)
 	s->thrust = 0.02;
 
 	s->pos[0] = 0;
-	s->pos[1] = 40;
+	s->pos[1] = 40+150;
 	s->pos[2] = 80;
 	s->gravity = -0.006;
 	
@@ -282,7 +282,7 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 	//	s->pos[0], s->pos[1], s->pos[2],
 	//	0.0, 1.0, 0.0);
 
-	*cam_matrix = lookAt(-300, 0, 0,
+	*cam_matrix = lookAt(-400, 0, 0,
 		1,1,1,
 		0.0, 1.0, 0.0);
 

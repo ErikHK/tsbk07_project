@@ -227,15 +227,23 @@ Model* GenerateTerrain(TextureData *tex, int side)
 			float nz = z - 128;
 
 			float r = 128;
-			float b1 = atan(nx / r);
+			float b1 = asin(nx / r);
+			float y = cos(b1);
+			b1 = atan2(nx / r, y);
+			if (b1 > M_PI /2)
+				b1 = M_PI /2 ;
 			float a1 = M_PI / 2 - b1;
 
-			float b2 = atan(nz / r);
+			float b2 = asin(nz/r);
+			y = cos(b2);
+			b2 = atan2(nz / r, y);
+			if (b2 > M_PI)
+				b2 = M_PI;
 			float a2 = M_PI / 2 - b2;
 			
 			
-			vertexArray[(x + z * tex->width) * 3 + 0] = r*cos(a1)*sin(a2);// +height*cos(a1)*sin(a2) / 10;
-			vertexArray[(x + z * tex->width) * 3 + 1] = r*(sin(a2)*sin(a1) - 1);// +height*sin(a2)*sin(a1)*cos(a2);
+			vertexArray[(x + z * tex->width) * 3 + 0] = r*cos(a1)*sin(a2) +height*cos(a1)*sin(a2) / 10;
+			vertexArray[(x + z * tex->width) * 3 + 1] = r*(sin(a2)*sin(a1) - 1) +height*sin(a2)*sin(a1);
 			vertexArray[(x + z * tex->width) * 3 + 2] = r*cos(a2);// +height*cos(a2) / 10;
 
 			// Normal vectors. You need to calculate these.
@@ -456,18 +464,19 @@ void display(void)
 	total = Mult(camMatrix, modelView);
 	//glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 
+	/*
 	mat4 total = T(0, 0, 0);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	
 	glBindTexture(GL_TEXTURE_2D, ground_tex);		// Bind Our Texture
 	DrawModel(moon, program, "inPosition", "inNormal", "inTexCoord");
-
-	/*
+	*/
+	
 	//draw terrain with water etc
 	glUniform1i(glGetUniformLocation(program, "water"), 1);
 	glBindTexture(GL_TEXTURE_2D, ground_tex);		// Bind Our Texture
 	DrawModel(tm[0], program, "inPosition", "inNormal", "inTexCoord");
-
+	/*
 	mat4 total = Mult(T(0,-128,128), Rx(M_PI / 2));
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	DrawModel(tm[1], program, "inPosition", "inNormal", "inTexCoord");
@@ -532,7 +541,7 @@ void handle_collisions()
 {
 
 	//float h = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
-	float h = 56;
+	float h = 120;
 
 	float xx = pow(s.pos[0] - 0, 2);
 	float yy = pow(s.pos[1] - 0, 2);
@@ -626,7 +635,7 @@ void timer(int i)
 	glUniform1f(glGetUniformLocation(program, "world_angle1"), s.world_angle[1]);
 
 	
-	handle_collisions();
+	//handle_collisions();
 	
 	//looks at the spaceship
 	update_cam_matrix(&s, &camMatrix, &cam);
