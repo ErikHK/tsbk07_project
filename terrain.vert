@@ -18,6 +18,8 @@ uniform int fire;
 uniform float time;
 uniform float randwater;
 uniform int hud;
+uniform float world_angle0;
+uniform float world_angle1;
 
 uniform mat4 projMatrix;
 uniform mat4 mdlMatrix;
@@ -55,7 +57,7 @@ void main(void)
 		vec4(inPosition.x+sin(inPosition.x*time*20), inPosition.y*.8 +inPosition.y*.2*sin(60*time), inPosition.z+sin(50*time), 1.0);
 	}else
 		//gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition, 1.0);
-		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, inPosition.y+texture(tex, inTexCoord).y*10, inPosition.z, 1.0);
+		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, inPosition.y+texture(tex, inTexCoord).y*10*sin(world_angle0), inPosition.z+texture(tex, inTexCoord).y*10*cos(world_angle0), 1.0);
 
 	}
 

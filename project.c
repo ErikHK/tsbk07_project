@@ -455,7 +455,7 @@ void display(void)
 	total = Mult(camMatrix, modelView);
 	//glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 
-	mat4 total = T(0, -128, 0);
+	mat4 total = T(0, 0, 0);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	
 	glBindTexture(GL_TEXTURE_2D, ground_tex);		// Bind Our Texture
@@ -611,6 +611,9 @@ void timer(int i)
 	//upload random variable for water noise
 	//glUniform1f(glGetUniformLocation(program, "randwater"), (GLfloat)random());
 	glUniform1f(glGetUniformLocation(program, "randwater"), random());
+
+	glUniform1f(glGetUniformLocation(program, "world_angle0"), s.world_angle[0]);
+	glUniform1f(glGetUniformLocation(program, "world_angle1"), s.world_angle[1]);
 
 	
 	//handle_collisions();
