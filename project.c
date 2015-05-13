@@ -42,7 +42,7 @@ GLfloat *vertexArray;
 int texwidth;
 
 // terrain object
-Model *tm, *tm2;
+Model *tm[6];
 Model *skybox;
 Model *ground;
 //spaceship object
@@ -217,9 +217,9 @@ Model* GenerateTerrain(TextureData *tex, int side)
 			float a2 = M_PI / 2 - b2;
 			
 			
-			vertexArray[(x + z * tex->width) * 3 + 0] = r*cos(a1)*sin(a2);// + height*cos(a1);
-			vertexArray[(x + z * tex->width) * 3 + 1] = r*(sin(a2)*sin(a1) - 1);// +height*sin(a2)*sin(a1);
-			vertexArray[(x + z * tex->width) * 3 + 2] = r*cos(a2);// + height*cos(a2);	
+			vertexArray[(x + z * tex->width) * 3 + 0] = r*cos(a1)*sin(a2);// +height*cos(a1)*sin(a2) / 10;
+			vertexArray[(x + z * tex->width) * 3 + 1] = r*(sin(a2)*sin(a1) - 1);// +height*sin(a2)*sin(a1)*cos(a2);
+			vertexArray[(x + z * tex->width) * 3 + 2] = r*cos(a2);// +height*cos(a2) / 10;
 
 			// Normal vectors. You need to calculate these.
 			calc_normal(vertexArray, x, z, tex->width, &tmp_normal);
@@ -360,8 +360,17 @@ void init(void)
 	// Load terrain data
 	LoadTGATextureData("fft-terrain.tga", &ttex);
 	//LoadTGATextureData("SkyBox512.tga", &ttex);
-	tm = GenerateTerrain(&ttex, 0);
-	tm2 = GenerateTerrain(&ttex, 0);
+	tm[0] = GenerateTerrain(&ttex, 0);
+	init_perlin();
+	tm[1] = GenerateTerrain(&ttex, 0);
+	init_perlin();
+	tm[2] = GenerateTerrain(&ttex, 0);
+	init_perlin();
+	tm[3] = GenerateTerrain(&ttex, 0);
+	init_perlin();
+	tm[4] = GenerateTerrain(&ttex, 0);
+	init_perlin();
+	tm[5] = GenerateTerrain(&ttex, 0);
 	printError("init terrain");
 
 	vec3 rand_pos = { random() * 256, 0, random() * 256 };
@@ -413,11 +422,32 @@ void display(void)
 	//draw terrain with water etc
 	glUniform1i(glGetUniformLocation(program, "water"), 1);
 	glBindTexture(GL_TEXTURE_2D, ground_tex);		// Bind Our Texture
-	DrawModel(tm, program, "inPosition", "inNormal", "inTexCoord");
+	DrawModel(tm[0], program, "inPosition", "inNormal", "inTexCoord");
 
 	mat4 total = Mult(T(0,-128,128), Rx(M_PI / 2));
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
-	DrawModel(tm2, program, "inPosition", "inNormal", "inTexCoord");
+	DrawModel(tm[1], program, "inPosition", "inNormal", "inTexCoord");
+
+	total = Mult(T(0, -128, -128), Mult(Rx(M_PI / 2), Rz(M_PI)));
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	DrawModel(tm[2], program, "inPosition", "inNormal", "inTexCoord");
+
+	total = Mult(T(0, -256, 0), Rx(M_PI));
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	DrawModel(tm[3], program, "inPosition", "inNormal", "inTexCoord");
+
+	
+	total = Mult(T(-128, -128, 0), Rz(M_PI/2));
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	DrawModel(tm[4], program, "inPosition", "inNormal", "inTexCoord");
+	
+	/*
+	total = Mult(T(0, -256, 0), Rx(M_PI));
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	DrawModel(tm[5], program, "inPosition", "inNormal", "inTexCoord");
+	*/
+
+
 	//glBindTexture(GL_TEXTURE_2D, ground_tex);		// Bind Our Texture
 	//DrawModel(ground, program, "inPosition", "inNormal", "inTexCoord");
 	glUniform1i(glGetUniformLocation(program, "water"), 0);
