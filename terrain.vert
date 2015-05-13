@@ -24,6 +24,8 @@ uniform mat4 mdlMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 camMatrix;
 
+uniform sampler2D tex, tex2;
+
 
 mat3 normalMatrix = mat3(camMatrix * mdlMatrix);
 vec3 transformedNormal = normalMatrix * inNormal;
@@ -53,6 +55,7 @@ void main(void)
 		vec4(inPosition.x+sin(inPosition.x*time*20), inPosition.y*.8 +inPosition.y*.2*sin(60*time), inPosition.z+sin(50*time), 1.0);
 	}else
 		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition, 1.0);
+		//gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, inPosition.y+texture(tex, inTexCoord).x*100, inPosition.z, 1.0);
 
 	}
 
