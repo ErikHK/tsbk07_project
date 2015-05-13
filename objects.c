@@ -58,6 +58,7 @@ void create_hud(hud *h)
 	h->fuel_bar = LoadModelPlus("cube.obj");
 	h->game_over_sign = LoadModelPlus("game_over.obj");
 	h->you_win_sign = LoadModelPlus("you_win.obj");
+	h->enter_to_restart_sign = LoadModelPlus("enter_to_restart.obj");
 	LoadTGATextureSimple("spaceship/spaceship_uvw_body.tga", &(h->game_over_sign_tex));
 }
 
@@ -146,6 +147,15 @@ void draw_game_over(hud * h, GLuint program)
 	glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
 	DrawModel(h->game_over_sign, program, "inPosition", "inNormal", "inTexCoord");
 	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 0);
+
+	total = Mult(Mult(T(0, -1, -8), S(.04, .04, .04)), Ry(.1));
+
+	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 1);
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
+	DrawModel(h->enter_to_restart_sign, program, "inPosition", "inNormal", "inTexCoord");
+
+
 	glUniform1i(glGetUniformLocation(program, "hud"), 0);
 
 	
@@ -165,6 +175,15 @@ void draw_you_win(hud * h, GLuint program)
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
 	DrawModel(h->you_win_sign, program, "inPosition", "inNormal", "inTexCoord");
+
+	total = Mult(Mult(T(0, -1, -8), S(.04, .04, .04)), Ry(.1));
+
+	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 1);
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
+	DrawModel(h->enter_to_restart_sign, program, "inPosition", "inNormal", "inTexCoord");
+
+
 	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 0);
 	glUniform1i(glGetUniformLocation(program, "hud"), 0);
 
