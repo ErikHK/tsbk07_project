@@ -294,6 +294,31 @@ void draw_skybox()
 	glUniform1i(glGetUniformLocation(program, "skybox"), 0);
 }
 
+void randomize_landing_point()
+{
+	vec3 rand_pos = { random() * 256, 0, random() * 256 };
+	rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth) + 8;
+
+	while (!(rand_pos.x > 20 && rand_pos.z > 20 && rand_pos.z < texwidth - 20 && rand_pos.x < texwidth - 20 && rand_pos.y > 1))
+	{
+		rand_pos.x = random() * 256;
+		rand_pos.z = random() * 256;
+		rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth) + 8;
+	}
+
+	set_landing_point(&lp, rand_pos);
+}
+
+void restart()
+{
+	game_over = 0;
+	finished = 0;
+	init_perlin();
+	tm = GenerateTerrain(&ttex);
+	create_spaceship(&s);
+	randomize_landing_point();
+}
+
 void init(void)
 {
 	//LoadTGATextureSimple("SkyBox512.tga", &tex1);
@@ -351,18 +376,9 @@ void init(void)
 	tm = GenerateTerrain(&ttex);
 	printError("init terrain");
 
-	vec3 rand_pos = { random() * 256, 0, random() * 256 };
-	rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth) + 8;
 	
-	while (!(rand_pos.x > 20 && rand_pos.z > 20 && rand_pos.z < texwidth - 20 && rand_pos.x < texwidth - 20 && rand_pos.y > 1))
-	{
-		rand_pos.x = random() * 256;
-		rand_pos.z = random() * 256;
-		rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth) + 8;
-	}
+	randomize_landing_point();
 	
-	set_landing_point(&lp, rand_pos);
-
 	//upload highest point to shader
 	glUniform3f(glGetUniformLocation(program, "highest"), highest.x, highest.y, highest.z);
 }
@@ -506,12 +522,16 @@ void timer(int i)
 	if (game_over)
 	{
 		//run game over handler here!
+		if (keyIsDown(VK_RETURN))
+			restart();
 		return;
 	}
 
 	if (finished)
 	{
 		//run finished handler here!
+		if (keyIsDown(VK_RETURN))
+			restart();
 		return;
 	}
 
