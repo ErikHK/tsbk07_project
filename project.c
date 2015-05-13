@@ -174,7 +174,6 @@ void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 		vec1.z = vertexArray[(x-1 + z * width)*3 + 2] - 
 		vertexArray[(x + z * width)*3 + 2];
 
-
 		vec2.x = vertexArray[(x + (z+1) * width)*3 + 0] - 
 		vertexArray[(x + z * width)*3 + 0];
 
@@ -183,10 +182,8 @@ void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 
 		vec2.z = vertexArray[(x + (z+1) * width)*3 + 2] - 
 		vertexArray[(x + z * width)*3 + 2];
-
 		
 		*normal = Normalize(CrossProduct(vec2, vec1));
-
 	}
 }
 
@@ -208,7 +205,6 @@ Model* GenerateTerrain(TextureData *tex, int side)
 	//Point3D tmp_normal;
 	vec3 tmp_normal;
 
-
 	printf("bpp %d\n", tex->bpp);
 	for (x = 0; x < tex->width; x++)
 		for (z = 0; z < tex->height; z++)
@@ -223,26 +219,25 @@ Model* GenerateTerrain(TextureData *tex, int side)
 			}
 			
 			//trying out spherical mapping
-			float nx = x - 128;
-			float nz = z - 128;
+			float nx = x - 127;
+			float nz = z - 127;
 
-			float r = 128;
+			float r = 127;
 			float b1 = asin(nx / r);
 			float y = cos(b1);
 			b1 = atan2(nx / r, y);
-			if (b1 > M_PI /2)
-				b1 = M_PI /2 ;
+			if (b1 >= M_PI /2)
+				b1 = M_PI /2;
 			float a1 = M_PI / 2 - b1;
 
-			float b2 = asin(nz/r);
+			float b2 = asin(nz / r);
 			y = cos(b2);
 			b2 = atan2(nz / r, y);
-			if (b2 > M_PI)
-				b2 = M_PI;
+			if (b2 >= M_PI / 2)
+				b2 = M_PI / 2;
 			float a2 = M_PI / 2 - b2;
 			
-			
-			vertexArray[(x + z * tex->width) * 3 + 0] = r*cos(a1)*sin(a2) +height*cos(a1)*sin(a2) / 10;
+			vertexArray[(x + z * tex->width) * 3 + 0] = r*cos(a1)*sin(a2) +height*cos(a1)*sin(a2) ;
 			vertexArray[(x + z * tex->width) * 3 + 1] = r*(sin(a2)*sin(a1) - 1) +height*sin(a2)*sin(a1);
 			vertexArray[(x + z * tex->width) * 3 + 2] = r*cos(a2);// +height*cos(a2) / 10;
 
@@ -379,9 +374,9 @@ void init(void)
 	
 	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_TRUE, projectionMatrix.m);
 	glUniform1i(glGetUniformLocation(program, "tex"), 0); // Texture unit 0
-	//LoadTGATextureSimple("sand.tga", &ground_tex);
+	LoadTGATextureSimple("sand.tga", &ground_tex);
 	//LoadTGATextureSimple("fft-terrain.tga", &ground_tex);
-	LoadTGATextureSimple("checkered3.tga", &ground_tex);
+	//LoadTGATextureSimple("checkered3.tga", &ground_tex);
 	//LoadTGATextureSimple("water_text.tga", &water_tex);
 	
 	// Load terrain data
@@ -389,6 +384,7 @@ void init(void)
 	//LoadTGATextureData("SkyBox512.tga", &ttex);
 	
 	tm[0] = GenerateTerrain(&ttex, 0);
+	tm[1] = GenerateTerrain(&ttex, 0);
 
 	moon = LoadModel("moon.obj");
 	
@@ -473,14 +469,18 @@ void display(void)
 	*/
 	
 	//draw terrain with water etc
+	mat4 total = T(0,128,0);
 	glUniform1i(glGetUniformLocation(program, "water"), 1);
 	glBindTexture(GL_TEXTURE_2D, ground_tex);		// Bind Our Texture
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	DrawModel(tm[0], program, "inPosition", "inNormal", "inTexCoord");
-	/*
-	mat4 total = Mult(T(0,-128,128), Rx(M_PI / 2));
+	
+	mat4 mirror = IdentityMatrix();
+	mirror.m[0] = -1;
+	total = Mult(T(0,-254+128,0), Mult(mirror,Rz(M_PI)));
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	DrawModel(tm[1], program, "inPosition", "inNormal", "inTexCoord");
-
+	/*
 	total = Mult(T(0, -128, -128), Mult(Rx(M_PI / 2), Rz(M_PI)));
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	DrawModel(tm[2], program, "inPosition", "inNormal", "inTexCoord");
