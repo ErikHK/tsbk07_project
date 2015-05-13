@@ -27,14 +27,14 @@ uniform mat4 viewMatrix;
 uniform mat4 camMatrix;
 
 uniform sampler2D tex, tex2;
-
+float v_angle;
 
 mat3 normalMatrix = mat3(camMatrix * mdlMatrix);
 vec3 transformedNormal = normalMatrix * inNormal;
 
 void main(void)
 {
-
+	v_angle = atan(inPosition.y, inPosition.z);
 	//NormalTex = inNormal;
 
 	exNormal = transformedNormal;
@@ -56,8 +56,8 @@ void main(void)
 		gl_Position = projMatrix * camMatrix * mdlMatrix *
 		vec4(inPosition.x+sin(inPosition.x*time*20), inPosition.y*.8 +inPosition.y*.2*sin(60*time), inPosition.z+sin(50*time), 1.0);
 	}else
-		//gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition, 1.0);
-		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, inPosition.y+texture(tex, inTexCoord).y*10*sin(world_angle0), inPosition.z+texture(tex, inTexCoord).y*10*cos(world_angle0), 1.0);
+		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition, 1.0);
+		//gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, inPosition.y+texture(tex, inTexCoord).y*20*sin(v_angle), inPosition.z+texture(tex, inTexCoord).y*20*cos(v_angle), 1.0);
 
 	}
 

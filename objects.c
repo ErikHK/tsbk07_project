@@ -29,7 +29,7 @@ void create_spaceship(spaceship * s)
 
 	s->thrust = 0.02;
 
-	s->pos[0] = 90;
+	s->pos[0] = 0;
 	s->pos[1] = 40;
 	s->pos[2] = 80;
 	s->gravity = -0.006;
@@ -175,6 +175,7 @@ void draw_you_win(hud * h, GLuint program)
 void move_spaceship(spaceship * s, GLuint program)
 {
 	s->world_angle[0] = atan2(s->pos[2] / 256.0, (s->pos[1] ) / 256.0);
+	s->world_angle[1] = atan2(s->pos[2] / 256.0, (s->pos[0]) / 256.0);
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -259,13 +260,12 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 	if (!(s && cam_matrix && cam_pos))
 		return;
 
-	
 
 	if (keyIsDown('c') || keyIsDown('C'))
 	{
 
-		*cam_matrix = lookAt(0, 300, 0,
-			128, 0, 128,
+		*cam_matrix = lookAt(0, 200, 0,
+			1, 1, 1,
 			0.0, 1.0, 0.0);
 		return;
 	}
@@ -278,13 +278,13 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 	//	s->pos[0], s->pos[1], s->pos[2],
 	//	0.0, 1.0, 0.0);
 
-	*cam_matrix = lookAt(s->pos[0]-200, s->pos[1], s->pos[2],
-		s->pos[0], s->pos[1], s->pos[2],
-		0.0, 1.0, 0.0);
-
-	//*cam_matrix = lookAt(-300, -128, 0,
-	//	0,-128,0,
+	//*cam_matrix = lookAt(s->pos[0]-200, s->pos[1], s->pos[2],
+	//	s->pos[0], s->pos[1], s->pos[2],
 	//	0.0, 1.0, 0.0);
+
+	*cam_matrix = lookAt(-300, 0, 0,
+		1,1,1,
+		0.0, 1.0, 0.0);
 
 	float angle = atan2(s->pos[2] / 256.0, (s->pos[1]) / 256.0);
 	float angle2 = atan(s->pos[0] / 256.0);

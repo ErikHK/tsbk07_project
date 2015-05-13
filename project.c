@@ -372,7 +372,8 @@ void init(void)
 	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_TRUE, projectionMatrix.m);
 	glUniform1i(glGetUniformLocation(program, "tex"), 0); // Texture unit 0
 	//LoadTGATextureSimple("sand.tga", &ground_tex);
-	LoadTGATextureSimple("fft-terrain.tga", &ground_tex);
+	//LoadTGATextureSimple("fft-terrain.tga", &ground_tex);
+	LoadTGATextureSimple("checkered3.tga", &ground_tex);
 	//LoadTGATextureSimple("water_text.tga", &water_tex);
 	
 	// Load terrain data
@@ -530,7 +531,16 @@ void display(void)
 void handle_collisions()
 {
 
-	float h = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
+	//float h = calc_height(vertexArray, s.pos[0], s.pos[2], texwidth);
+	float h = 56;
+
+	float xx = pow(s.pos[0] - 0, 2);
+	float yy = pow(s.pos[1] - 0, 2);
+	float zz = pow(s.pos[2] - 0, 2);
+	float dist = sqrt(xx + yy + zz);
+	if (dist < h)
+		game_over = 1;
+	/*
 	if (s.pos[1] < 0.0)
 		game_over = 1;
 
@@ -565,7 +575,7 @@ void handle_collisions()
 			return;
 
 		}
-		
+		*/
 		//else, game over!
 		//finished = 1;
 		/*
@@ -576,10 +586,10 @@ void handle_collisions()
 		s.angle_speed[1] = 0;
 		s.landed = 1;
 		*/
-	}
-	else{
-		s.landed = 0;
-	}
+	//}
+	//else{
+	//	s.landed = 0;
+	//}
 
 }
 
@@ -616,7 +626,7 @@ void timer(int i)
 	glUniform1f(glGetUniformLocation(program, "world_angle1"), s.world_angle[1]);
 
 	
-	//handle_collisions();
+	handle_collisions();
 	
 	//looks at the spaceship
 	update_cam_matrix(&s, &camMatrix, &cam);
