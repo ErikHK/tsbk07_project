@@ -480,7 +480,7 @@ void handle_collisions()
 		if (distance_to_target(&s, &lp.pos) < 15)
 		{
 			//check if the spaceship is not straight!
-			if (fabs(s.angle[0]) < .15 || fabs(s.angle[1]) < .15)
+			if (fabs(s.angle[0]) < .15 && fabs(s.angle[1]) < .15)
 			{
 				//s.pos[1] = lp.pos.y;
 				finished = 1;
