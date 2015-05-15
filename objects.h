@@ -70,6 +70,7 @@ typedef struct moon_t
 	Model * bottom_half;
 	float angle[2];
 	mat4 matrix[2];
+	GLuint tex;
 } moon;
 
 typedef struct cloud_t

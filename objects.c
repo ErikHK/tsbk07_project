@@ -173,7 +173,7 @@ void draw_you_win(hud * h, GLuint program)
 }
 
 
-void move_spaceship(spaceship * s, GLuint program)
+void move_spaceship(spaceship * s, moon * m, GLuint program)
 {
 	s->world_angle[0] = atan2(s->pos[2] / 256.0, (s->pos[1] ) / 256.0);
 	s->world_angle[1] = atan2(s->pos[2] / 25600.0, (s->pos[0]) / 25600.0);
@@ -185,8 +185,18 @@ void move_spaceship(spaceship * s, GLuint program)
 
 		s->pos[i] += s->speed[i];
 	}
-	s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), 
+	//s->body_matrix = Mult(T(s->pos[0], s->pos[1], s->pos[2]), 
+	//	Mult(Mult( Mult( Rx(s->angle[0]), Rz(s->angle[1])), Ry(2)), S(1, 1, 1)));
+
+	s->body_matrix = Mult(T(0, s->pos[1], 0), 
 		Mult(Mult( Mult( Rx(s->angle[0]), Rz(s->angle[1])), Ry(2)), S(1, 1, 1)));
+
+	/*
+	float pos[3];
+	pos[0] = s->pos[0];
+	pos[2] = s->pos[2];
+	move_moon(m, pos);
+	*/
 
 	if (keyIsDown(VK_SPACE) && s->fuel >= 0)
 	{
@@ -403,6 +413,8 @@ void create_moon(moon * m)
 	mirror.m[0] = -1;
 	m->matrix[1] = Mult(T(0, (-254 + 128) * 100, 0), Mult(mirror, Rz(M_PI)));
 
+	LoadTGATextureSimple("sand.tga", &m->tex);
+
 	//m->top_half = LoadModel("moon.obj");
 	/*
 	glGenVertexArrays(1, &m->top_half->vao);
@@ -415,25 +427,29 @@ void create_moon(moon * m)
 	ReloadModelData(m);
 	*/
 
-
-
 }
 
-void move_moon(moon * m)
+void move_moon(spaceship * s, moon * m)
 {
-
+	m->angle[0] += s->speed[0]/3000.0;
+	m->angle[1] += s->speed[2]/3000.0;
+	m->matrix[0] = Mult(Mult(Rz(m->angle[0]), Rx(-m->angle[1])), T(0, 12800, 0));
+	mat4 mirror = IdentityMatrix();
+	mirror.m[0] = -1;
+	m->matrix[1] = Mult(Mult(Rz(m->angle[0]), Rx(-m->angle[1])) , Mult(T(0, (-254 + 128) * 100, 0), Mult(mirror, Rz(M_PI))));
+	//m->matrix[1] = Mult(Mult(Rz(-m->angle[0]), Rx(-m->angle[1])), T(0, (-254 + 128) * 100, 0));
 }
 
 void draw_moon(moon *m, GLuint program)
 {
 	mat4 total = m->matrix[0];
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
-	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
+	glBindTexture(GL_TEXTURE_2D, m->tex);
 	DrawModel(m->top_half, program, "inPosition", "inNormal", "inTexCoord");
 
 	total = m->matrix[1];
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
-	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
+	glBindTexture(GL_TEXTURE_2D, m->tex);
 	DrawModel(m->top_half, program, "inPosition", "inNormal", "inTexCoord");
 
 

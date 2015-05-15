@@ -94,8 +94,8 @@ void main(void)
 	colors = vec4(0, 0, 0, 0);
 
 	n = normalize(exNormal);
-	s = normalize(lightCamMatrix*cam_vector);
-	//s = vec3(0,1,0);
+	//s = normalize(lightCamMatrix*cam_vector);
+	s = vec3(0,1,0);
 
     float lambert = pow(dot(n,s),2)-.001;
 

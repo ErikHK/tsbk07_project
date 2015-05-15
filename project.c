@@ -371,6 +371,7 @@ void display(void)
 
 	//takes care of button presses and movement of spaceship
 	move_spaceship(&s, program);
+	move_moon(&s, &m, program);
 
 	//draw the landing point
 	draw_landing_point(&lp, program);
@@ -540,6 +541,7 @@ int main(int argc, char **argv)
 	
 		glutTimerFunc(20, &timer, 0);
 	init ();
+	update_cam_matrix(&s, &camMatrix, &cam);
 	initKeymapManager();
 	
 	glutMainLoop();
