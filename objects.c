@@ -1,4 +1,5 @@
 #include "objects.h"
+#include "generate_terrain.h"
 #include <time.h>
 #include <stdlib.h>
 
@@ -390,4 +391,50 @@ float distance_to_target(spaceship *s, vec3 *target_pos)
 	float xx = pow(s->pos[0] - target_pos->x, 2);
 	float zz = pow(s->pos[2] - target_pos->z, 2);
 	return sqrt(xx + zz);
+}
+
+void create_moon(moon * m)
+{
+	m->top_half = GenerateTerrain();
+	
+	m->matrix[0] = T(0, 12800, 0);
+
+	mat4 mirror = IdentityMatrix();
+	mirror.m[0] = -1;
+	m->matrix[1] = Mult(T(0, (-254 + 128) * 100, 0), Mult(mirror, Rz(M_PI)));
+
+	//m->top_half = LoadModel("moon.obj");
+	/*
+	glGenVertexArrays(1, &m->top_half->vao);
+	glGenBuffers(1, &m->top_half->vb);
+	glGenBuffers(1, &m->top_half->ib);
+	glGenBuffers(1, &m->top_half->nb);
+	if (m->top_half->texCoordArray != NULL)
+		glGenBuffers(1, &m->top_half->tb);
+	//add_noise_to_moon();
+	ReloadModelData(m);
+	*/
+
+
+
+}
+
+void move_moon(moon * m)
+{
+
+}
+
+void draw_moon(moon *m, GLuint program)
+{
+	mat4 total = m->matrix[0];
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
+	DrawModel(m->top_half, program, "inPosition", "inNormal", "inTexCoord");
+
+	total = m->matrix[1];
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
+	DrawModel(m->top_half, program, "inPosition", "inNormal", "inTexCoord");
+
+
 }

@@ -64,6 +64,14 @@ typedef struct tree_t
 
 } tree;
 
+typedef struct moon_t
+{
+	Model * top_half;
+	Model * bottom_half;
+	float angle[2];
+	mat4 matrix[2];
+} moon;
+
 typedef struct cloud_t
 {
 	Model * spheres[10];
@@ -100,3 +108,7 @@ void draw_you_win();
 void set_landing_point();
 float spaceship_total_speed();
 float distance_to_target();
+
+void create_moon();
+void move_moon();
+void draw_moon();

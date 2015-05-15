@@ -45,7 +45,7 @@ int texwidth;
 Model *tm[6];
 Model *skybox;
 Model *ground;
-Model *moon;
+//Model *moon;
 //spaceship object
 spaceship s;
 //test cloud object
@@ -54,6 +54,7 @@ cloud c[NUM_CLOUDS];
 hud h;
 //landing point
 landing_point lp;
+moon m;
 
 Point3D lightSourcesColorsArr[] = { { 1.0f, 0.0f, 1.0f },
 { 1.0f, 1.0f, 1.0f },
@@ -79,22 +80,6 @@ GLfloat vertices[] =
 	0.5f, -0.5f, 0
 };
 */
-
-add_noise_to_moon()
-{
-	for (int i = 0; i < 50;i++)
-	{
-		for (int j = 0; j < 50; j++)
-		{
-			moon->vertexArray[(i + j * 50) * 3 + 1] += 10 * OctavePerlin(i / 60.0, j / 60.0, 0, 10, 10.0);
-			//moon->vertexArray[i * j+2] += 10 * OctavePerlin(i/60.0, j/60.0, 0, 10, 10.0);
-		}
-		
-
-	}
-
-}
-
 
 //calculate height of terrain
 float calc_height(GLfloat *vertexArray, float x, float z, int width)
@@ -187,115 +172,6 @@ void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 	}
 }
 
-Model* GenerateTerrain(TextureData *tex, int side)
-{
-	//init_perlin();
-	//tex->width = 512;
-	//tex->height = 512;
-	texwidth = tex->width;
-	
-	int vertexCount = tex->width * tex->height;
-	int triangleCount = (tex->width-1) * (tex->height-1) * 2;
-	int x, z;
-	
-	vertexArray = malloc(sizeof(GLfloat) * 3 * vertexCount);
-	GLfloat *normalArray = malloc(sizeof(GLfloat) * 3 * vertexCount);
-	GLfloat *texCoordArray = malloc(sizeof(GLfloat) * 2 * vertexCount);
-	GLuint *indexArray = malloc(sizeof(GLuint) * triangleCount*3);
-	//Point3D tmp_normal;
-	vec3 tmp_normal;
-
-	printf("bpp %d\n", tex->bpp);
-	for (x = 0; x < tex->width; x++)
-		for (z = 0; z < tex->height; z++)
-		{
-			float height = 10 * OctavePerlin(x / (256.0 * 16 ), z / (256.0 * 16 ), 0, 10, 10.0) - 5;
-
-			if (height > highest.y)
-			{
-				highest.x = x;
-				highest.z = z;
-				highest.y = height;
-			}
-			
-			//trying out spherical mapping
-			float nx = x - 127;
-			float nz = z - 127;
-
-			float r = 127;
-			float b1 = asin(nx / r);
-			float y = cos(b1);
-			b1 = atan2(nx / r, y);
-			if (b1 >= M_PI /2)
-				b1 = M_PI /2;
-			float a1 = M_PI / 2 - b1;
-
-			float b2 = asin(nz / r);
-			y = cos(b2);
-			b2 = atan2(nz / r, y);
-			if (b2 >= M_PI / 2)
-				b2 = M_PI / 2;
-			float a2 = M_PI / 2 - b2;
-			
-			vertexArray[(x + z * tex->width) * 3 + 0] = 100*(r*cos(a1)*sin(a2) +height*cos(a1)*sin(a2)) ;
-			vertexArray[(x + z * tex->width) * 3 + 1] = 100*(r*(sin(a2)*sin(a1) - 1) +height*sin(a2)*sin(a1));
-			vertexArray[(x + z * tex->width) * 3 + 2] = 100*(r*cos(a2));// +height*cos(a2) / 10;
-
-			// Normal vectors. You need to calculate these.
-			calc_normal(vertexArray, x, z, tex->width, &tmp_normal);
-			//printf("%f %f %f\n", tmp_normal.x, tmp_normal.y, tmp_normal.z);
-
-			normalArray[(x + z * tex->width)*3 + 0] = tmp_normal.x;
-			normalArray[(x + z * tex->width)*3 + 1] = tmp_normal.y;
-			normalArray[(x + z * tex->width)*3 + 2] = tmp_normal.z;
-			
-			/*
-			vec3 up = { 0, -1, 0 };
-			float dot;
-			
-			dot = DotProduct(tmp_normal, up);
-			if (fabs(dot) < .1 && height > 0.0 && x > 2 && z > 2 && x < tex->width-2 && z < tex->width-2)
-			//if (fabs(dot) < .1 && fabs(dot) <= 1)
-			{
-				highest.x = x;
-				highest.z = z;
-				highest.y = height;
-			}*/
-			
-
-		// Texture coordinates. You may want to scale them.
-			texCoordArray[(x + z * tex->width)*2 + 0] = x/2.0; // (float)x / tex->width;
-			texCoordArray[(x + z * tex->width)*2 + 1] = z/2.0; // (float)z / tex->height;
-		}
-	for (x = 0; x < tex->width-1; x++)
-		for (z = 0; z < tex->height-1; z++)
-		{
-		// Triangle 1
-			indexArray[(x + z * (tex->width-1))*6 + 0] = x + z * tex->width;
-			indexArray[(x + z * (tex->width-1))*6 + 1] = x + (z+1) * tex->width;
-			indexArray[(x + z * (tex->width-1))*6 + 2] = x+1 + z * tex->width;
-		// Triangle 2
-			indexArray[(x + z * (tex->width-1))*6 + 3] = x+1 + z * tex->width;
-			indexArray[(x + z * (tex->width-1))*6 + 4] = x + (z+1) * tex->width;
-			indexArray[(x + z * (tex->width-1))*6 + 5] = x+1 + (z+1) * tex->width;
-		}
-	
-	// End of terrain generation
-	
-	// Create Model and upload to GPU:
-
-	Model* model = LoadDataToModel(
-			vertexArray,
-			normalArray,
-			texCoordArray,
-			NULL,
-			indexArray,
-			vertexCount,
-			triangleCount*3);
-
-	return model;
-}
-
 void draw_skybox()
 {
 
@@ -335,6 +211,7 @@ void init(void)
 	create_hud(&h);
 	//init landing point
 	create_landing_point(&lp);
+	create_moon(&m);
 
 	//init clouds
 	for (int i = 0; i < NUM_CLOUDS; i++)
@@ -382,21 +259,6 @@ void init(void)
 	// Load terrain data
 	LoadTGATextureData("fft-terrain.tga", &ttex);
 	//LoadTGATextureData("SkyBox512.tga", &ttex);
-	
-	tm[0] = GenerateTerrain(&ttex, 0);
-	tm[1] = GenerateTerrain(&ttex, 0);
-
-	moon = LoadModel("moon.obj");
-	
-	glGenVertexArrays(1, &moon->vao);
-	glGenBuffers(1, &moon->vb);
-	glGenBuffers(1, &moon->ib);
-	glGenBuffers(1, &moon->nb);
-	if (moon->texCoordArray != NULL)
-		glGenBuffers(1, &moon->tb);
-	//add_noise_to_moon();
-	ReloadModelData(moon);
-
 
 	
 	//glGenVertexArrays(1, &moon->vao);
@@ -418,12 +280,14 @@ void init(void)
 	vec3 rand_pos = { random() * 256, 0, random() * 256 };
 	rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth) + 8;
 	
+	/*
 	while (!(rand_pos.x > 20 && rand_pos.z > 20 && rand_pos.z < texwidth - 20 && rand_pos.x < texwidth - 20 && rand_pos.y > 1))
 	{
 		rand_pos.x = random() * 256;
 		rand_pos.z = random() * 256;
 		rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth) + 8;
 	}
+	*/
 	
 	set_landing_point(&lp, rand_pos);
 
@@ -513,6 +377,8 @@ void display(void)
 
 	//draw the spaceship
 	draw_spaceship(&s, program);
+
+	draw_moon(&m, program);
 
 	draw_fuel_bar(&h, &s.fuel, program);
 
