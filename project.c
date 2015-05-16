@@ -297,7 +297,8 @@ void init(void)
 
 void display(void)
 {
-	glUniform3f(glGetUniformLocation(program, "cam_vector"), s.pos[0] - cam.x, s.pos[1] - cam.y, s.pos[2] - cam.z);
+	//glUniform3f(glGetUniformLocation(program, "cam_vector"), -s.pos[0] - cam.x, -s.pos[1] - cam.y, -s.pos[2] - cam.z);
+	glUniform3f(glGetUniformLocation(program, "cam_vector"), cos(m.angle[1]), sin(m.angle[1]), 0);
 	
 	draw_skybox();
 

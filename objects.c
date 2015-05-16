@@ -289,17 +289,18 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 	//	s->pos[0], s->pos[1], s->pos[2],
 	//	0.0, 1.0, 0.0);
 
-	*cam_matrix = lookAt(s->pos[0]-400, s->pos[1]+300, s->pos[2],
-		s->pos[0], s->pos[1], s->pos[2],
+	*cam_matrix = lookAt(0-400, s->pos[1]+300, 0,
+		0, s->pos[1], 0,
 		0.0, 1.0, 0.0);
 
+	
 	//*cam_matrix = lookAt(-300, 0, 0,
 	//	1,1,1,
 	//	0.0, 1.0, 0.0);
 
-	float angle = atan2(s->pos[2] / 256.0, (s->pos[1]) / 256.0);
-	float angle2 = atan(s->pos[0] / 256.0);
-	*cam_matrix =  Mult(Rz(angle), *cam_matrix);
+	//float angle = atan2(s->pos[2] / 256.0, (s->pos[1]) / 256.0);
+	//float angle2 = atan(s->pos[0] / 256.0);
+	//*cam_matrix =  Mult(Rz(angle), *cam_matrix);
 
 
 }

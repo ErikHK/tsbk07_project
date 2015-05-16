@@ -65,9 +65,12 @@ float rand(vec2 co){
 
 void draw_shadow()
 {
-	if((spaceship_pos.x-testpos.x)*(spaceship_pos.x-testpos.x) +
-	(spaceship_pos.z-testpos.z)*(spaceship_pos.z-testpos.z) < 
+	if((-spaceship_pos.x-testpos.x)*(-spaceship_pos.x-testpos.x) +
+	(-spaceship_pos.z-testpos.z)*(-spaceship_pos.z-testpos.z) < 
 	min(1000, (spaceship_pos.y-testpos.y)*60))
+	//if((testpos.x)*(testpos.x) +
+	//(testpos.z)*(testpos.z) < 
+	//min(1000, (testpos.y)*60))
 	{
 		//if(testpos.y > .2)
 			colors -= vec4(0.5,0.5,0.5,0)*texture(tex, texCoord);
@@ -94,8 +97,8 @@ void main(void)
 	colors = vec4(0, 0, 0, 0);
 
 	n = normalize(exNormal);
-	//s = normalize(lightCamMatrix*cam_vector);
-	s = vec3(0,1,0);
+	s = normalize(lightCamMatrix*cam_vector);
+	//s = vec3(0,1,0);
 
     float lambert = pow(dot(n,s),2)-.001;
 
