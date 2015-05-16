@@ -176,7 +176,7 @@ void draw_you_win(hud * h, GLuint program)
 void move_spaceship(spaceship * s, moon * m, GLuint program)
 {
 	s->world_angle[0] = atan2(s->pos[2] / 256.0, (s->pos[1] ) / 256.0);
-	s->world_angle[1] = atan2(s->pos[2] / 25600.0, (s->pos[0]) / 25600.0);
+	s->world_angle[1] = atan2(s->pos[2] / 256.0, (s->pos[0]) / 256.0);
 
 	for (int i = 0; i < 3; i++)
 	{

@@ -143,7 +143,7 @@ float calc_height(GLfloat *vertexArray, float x, float z, int width)
 }
 
 //calculate normals of terrain
-void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
+void calc_normal(GLfloat *vertexArray, int x, int z, int width, vec3 *normal)
 {
 	//Point3D vec1, vec2;
 	vec3 vec1, vec2;
@@ -169,6 +169,11 @@ void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 		vertexArray[(x + z * width)*3 + 2];
 		
 		*normal = Normalize(CrossProduct(vec2, vec1));
+
+		//normal->x = normal->x*cos(m.angle[1]) - normal->y*sin(m.angle[1]);
+		//normal->y = normal->x*sin(m.angle[1]) + normal->y*cos(m.angle[1]);
+		//normal->z = normal->z*cos(m.angle[1]);
+		//*normal = Normalize(*normal);
 	}
 }
 
@@ -297,8 +302,8 @@ void init(void)
 
 void display(void)
 {
-	//glUniform3f(glGetUniformLocation(program, "cam_vector"), -s.pos[0] - cam.x, -s.pos[1] - cam.y, -s.pos[2] - cam.z);
-	glUniform3f(glGetUniformLocation(program, "cam_vector"), cos(m.angle[1]), sin(m.angle[1]), 0);
+	glUniform3f(glGetUniformLocation(program, "cam_vector"), -s.pos[0] - cam.x, -s.pos[1] - cam.y, -s.pos[2] - cam.z);
+	//glUniform3f(glGetUniformLocation(program, "cam_vector"), sin(m.angle[1]), cos(m.angle[1]), 0);
 	
 	draw_skybox();
 
