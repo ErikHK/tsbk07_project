@@ -26,6 +26,10 @@ uniform int exhaust;
 uniform int fire;
 uniform vec3 highest;
 
+uniform float world_angle0;
+uniform float world_angle1;
+
+
 uniform float time;
 uniform float randwater;
 
@@ -96,11 +100,15 @@ void main(void)
 	//colors = vec3(0,0,0);
 	colors = vec4(0, 0, 0, 0);
 
-	n = normalize(exNormal);
-	s = normalize(lightCamMatrix*cam_vector);
-	//s = vec3(0,1,0);
+	n = normalize(mat3(mdlMatrix)*exNormal);
+	//s = normalize(lightCamMatrix*cam_vector);
+	//s = normalize(lightCamMatrix*vec3(0,1,0));
+	//s = vec3(cos(world_angle1),sin(world_angle1),0);
+	//s = normalize(spaceship_pos);
+	//s = normalize(vec3(cos(world_angle0)*sin(world_angle1),sin(world_angle0)*sin(world_angle1),cos(world_angle1)));
 
-    float lambert = pow(dot(n,s),2)-.001;
+    //float lambert = pow(dot(n,s),2)-.001;
+	float lambert = dot(n,s)-.001;
 
 
 	if(skybox==1)

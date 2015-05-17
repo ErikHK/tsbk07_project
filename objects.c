@@ -169,7 +169,6 @@ void draw_you_win(hud * h, GLuint program)
 	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 0);
 	glUniform1i(glGetUniformLocation(program, "hud"), 0);
 
-
 }
 
 

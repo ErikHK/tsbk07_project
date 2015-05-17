@@ -37,8 +37,8 @@ void main(void)
 	v_angle = atan(inPosition.y, inPosition.z);
 	//NormalTex = inNormal;
 
-	//exNormal = transformedNormal;
-	exNormal = inNormal;
+	exNormal = transformedNormal;
+	//exNormal = inNormal;
 
 	mat3 normalMatrix1 = mat3(mdlMatrix);
 	texCoord = inTexCoord;
