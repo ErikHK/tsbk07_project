@@ -371,7 +371,8 @@ void init(void)
 	//glEnable(GL_BLEND);
 	printError("GL inits");
 
-	projectionMatrix = frustum(-0.15, 0.15, -0.1, 0.1, 0.2, 750.0);
+	float ratio = glutGet(GLUT_SCREEN_WIDTH) / glutGet(GLUT_SCREEN_HEIGHT);
+	projectionMatrix = frustum(-0.1*ratio*2, 0.1*ratio*2, -0.1, 0.1, 0.2, 750.0);
 
 	// Load and compile shader
 	program = loadShaders("terrain.vert", "terrain.frag");
@@ -542,6 +543,9 @@ void timer(int i)
 	if (keyIsDown(VK_RETURN))
 		start = 1;
 
+	if (keyIsDown(VK_ESCAPE))
+		glutExit();
+
 	if (!start)
 		return;
 
@@ -595,6 +599,7 @@ int main(int argc, char **argv)
 	glutInitContextVersion(3, 2);
 	glutInitWindowSize (900, 600);
 	glutCreateWindow ("TSBK07 - Project");
+	glutFullScreen();
 	glutDisplayFunc(display);
 
 	//init GLEW if windows
