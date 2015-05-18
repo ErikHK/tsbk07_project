@@ -306,7 +306,7 @@ void randomize_landing_point()
 	rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, CWIDTH) + 8;
 	float dist_to_target = distance_to_target(&s, &rand_pos);
 	while (!(rand_pos.x > 20 && rand_pos.z > 20 && rand_pos.z < CWIDTH - 20 && rand_pos.x < CWIDTH - 20 && rand_pos.y > 1 &&
-		dist_to_target < 60))
+		dist_to_target > 60))
 	{
 		rand_pos.x = random() * CWIDTH;
 		rand_pos.z = random() * CWIDTH;
@@ -481,7 +481,7 @@ void handle_collisions()
 		s.pos[1] = h + 1.5;
 
 		float tot_speed = fabs(spaceship_total_speed(&s));
-		if (tot_speed > .3)
+		if (tot_speed > .03)
 		{
 			game_over = 1;
 			return;
@@ -495,14 +495,22 @@ void handle_collisions()
 		if (distance_to_target(&s, &lp.pos) < 15)
 		{
 			//check if the spaceship is not straight!
-			if (fabs(s.angle[0]) < .15 && fabs(s.angle[1]) < .15)
+			if (fabs(s.angle[0]) > .15 && fabs(s.angle[1]) > .15)
 			{
 				//s.pos[1] = lp.pos.y;
-				finished = 1;
+				//if (fabs(spaceship_total_speed(&s)) < .03)
+				//	finished = 1;
+				game_over = 1;
+				return;
+			}
+			if (fabs(spaceship_total_speed(&s)) > .2)
+			{
+				game_over = 1;
 				return;
 			}
 			//too skewed
-			game_over = 1;
+			//game_over = 1;
+			finished = 1;
 			return;
 
 		}

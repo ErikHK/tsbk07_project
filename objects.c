@@ -98,7 +98,6 @@ void draw_spaceship(spaceship * s, GLuint program)
   glUniform1i(glGetUniformLocation(program, "fire"), 0);
   }
   
-  
 
   //draw fins
   for (int i = 0; i < 3;i++)
@@ -265,9 +264,9 @@ void move_spaceship(spaceship * s, GLuint program)
 		else
 			s->angle[1] *= .995;
 	}
-	s->speed[0] *= 0.96;
+	s->speed[0] *= 0.97;
 	//s->speed[1] *= 0.9;
-	s->speed[2] *= 0.96;
+	s->speed[2] *= 0.97;
 	
 }
 
