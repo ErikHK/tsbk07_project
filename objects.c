@@ -116,7 +116,10 @@ void draw_fuel_bar(hud * h, float * fuel, GLuint program)
 {
 	float fuel_scale = *fuel / 1000.0;
 	mat4 scale = S(fuel_scale*2, .04, .05);
-	mat4 trans = T(1, .9, -2);
+	float ww = glutGet(GLUT_SCREEN_WIDTH);
+	float hh = glutGet(GLUT_SCREEN_HEIGHT);
+	float ratio = ww / hh-.6;
+	mat4 trans = T(ratio, .9, -2);
 	mat4 total = Mult(trans, Mult(scale, T(1,0,0)));
 	glUniform1i(glGetUniformLocation(program, "hud"), 1);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
@@ -126,7 +129,7 @@ void draw_fuel_bar(hud * h, float * fuel, GLuint program)
 	glUniform1i(glGetUniformLocation(program, "fuel_full"), 1);
 
 	scale = S(.2, .04, .05);
-	trans = T(1, .9, -2);
+	trans = T(ratio, .9, -2);
 	total = Mult(trans, Mult(scale, T(1, 0, 0)));
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	//glBindTexture(GL_TEXTURE_2D, s->body_tex);

@@ -156,9 +156,13 @@ void main(void)
 		if(landing_point==1)
 		{
 			vec4 pixcol1 = vec4(.8,.5,.5,1);
-        	vec4 pixcol2 = vec4(.6,.3,.3,1);
+        	vec4 pixcol2 = vec4(.5,.2,.2,1);
 
-			colors = mix(pixcol1, pixcol2, f)*texture(tex,texCoord);
+			float texr = texture(tex,texCoord/8).r;
+			float texg = texture(tex,texCoord/8).g;
+			float texb = texture(tex,texCoord/8).b;
+
+			colors = mix(pixcol1, pixcol2, f)*vec4(texr, pow(texg,8),pow(texb,8),1);
 			if((spaceship_pos.x-landing_point_pos.x-testpos.x)*(spaceship_pos.x-landing_point_pos.x-testpos.x) + 
 			(spaceship_pos.z-landing_point_pos.z-testpos.z)*(spaceship_pos.z-landing_point_pos.z-testpos.z) < 60)
 				colors -= vec4(.4,.4,.4,0);

@@ -371,8 +371,10 @@ void init(void)
 	//glEnable(GL_BLEND);
 	printError("GL inits");
 
-	float ratio = glutGet(GLUT_SCREEN_WIDTH) / glutGet(GLUT_SCREEN_HEIGHT);
-	projectionMatrix = frustum(-0.1*ratio*2, 0.1*ratio*2, -0.1, 0.1, 0.2, 750.0);
+	float w = glutGet(GLUT_SCREEN_WIDTH);
+	float h = glutGet(GLUT_SCREEN_HEIGHT);
+	float ratio = w / h;
+	projectionMatrix = frustum(-0.1*ratio, 0.1*ratio, -0.1, 0.1, 0.2, 750.0);
 
 	// Load and compile shader
 	program = loadShaders("terrain.vert", "terrain.frag");
