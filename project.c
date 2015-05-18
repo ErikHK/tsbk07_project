@@ -304,13 +304,19 @@ void randomize_landing_point()
 	rand_pos.x = random()*CWIDTH;
 	rand_pos.z = random()*CWIDTH;
 	rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, CWIDTH) + 8;
-
-	while (!(rand_pos.x > 20 && rand_pos.z > 20 && rand_pos.z < CWIDTH - 20 && rand_pos.x < CWIDTH - 20 && rand_pos.y > 1))
+	float dist_to_target = distance_to_target(&s, &rand_pos);
+	while (!(rand_pos.x > 20 && rand_pos.z > 20 && rand_pos.z < CWIDTH - 20 && rand_pos.x < CWIDTH - 20 && rand_pos.y > 1 &&
+		dist_to_target > 10))
 	{
 		rand_pos.x = random() * CWIDTH;
 		rand_pos.z = random() * CWIDTH;
 		rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth) + 8;
+		dist_to_target = distance_to_target(&s, &rand_pos);
 	}
+	
+	
+	s.fuel_use = 3 / sqrt(dist_to_target);
+	
 
 	set_landing_point(&lp, rand_pos);
 }

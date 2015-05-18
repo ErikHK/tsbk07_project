@@ -9,6 +9,7 @@
 
 void create_spaceship(spaceship * s)
 {
+	s->fuel_use = .2;
 	//has not yet landed
 	s->landed = 0;
 	s->fuel = 100.0;
@@ -31,9 +32,9 @@ void create_spaceship(spaceship * s)
 
 	s->thrust = 0.02;
 
-	s->pos[0] = 90;
+	s->pos[0] = 40;
 	s->pos[1] = 40;
-	s->pos[2] = 80;
+	s->pos[2] = 40;
 	s->gravity = -0.006;
 	
 	s->acc[1] = s->gravity;	//y acc, gravity
@@ -208,7 +209,7 @@ void move_spaceship(spaceship * s, GLuint program)
 
 	if (keyIsDown(VK_SPACE) && s->fuel >= 0)
 	{
-		s->fuel -= .2;
+		s->fuel -= s->fuel_use;
 		glUniform1i(glGetUniformLocation(program, "fire"), 1);
 		s->fire_visible = 1;
 		s->acc[2] = s->thrust*sin(s->angle[0]);
