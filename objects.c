@@ -282,6 +282,7 @@ void freeze_spaceship(spaceship * s)
 	s->speed[0] = 0;
 	s->speed[1] = 0;
 	s->speed[2] = 0;
+	s->landed = 1;
 }
 
 void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)

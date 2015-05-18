@@ -18,6 +18,7 @@ uniform int fire;
 uniform float time;
 uniform float randwater;
 uniform int hud;
+uniform int game_over_sign;
 
 uniform mat4 projMatrix;
 uniform mat4 mdlMatrix;
@@ -41,8 +42,12 @@ void main(void)
 
 	if(hud==1)
 	{
-		gl_Position = projMatrix * mdlMatrix * vec4(inPosition, 1.0);
-	}else{
+		if(game_over_sign==1)
+			gl_Position = projMatrix * mdlMatrix * vec4(inPosition.x, inPosition.y, inPosition.z+10*sin(time*3), 1.0);
+		else
+			gl_Position = projMatrix * mdlMatrix * vec4(inPosition, 1.0);
+	}
+	else{
 
 	if(water==1 && inPosition.y < 0.2)
 		gl_Position = projMatrix * camMatrix * mdlMatrix * vec4(inPosition.x, 2*sin(inPosition.x/6+time)/2, inPosition.z, 1.0);

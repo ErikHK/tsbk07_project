@@ -109,7 +109,7 @@ void main(void)
 			float lambert = dot(n,vec3(0,0,1));
 			float f = smoothstep(.1, .8, lambert);
 			vec4  pixcolor1 = vec4(.2, .2, .2, 1);
-			vec4  pixcolor2 = vec4(.7,.7,.7,1);
+			vec4  pixcolor2 = vec4(.7, .7, .7, 1);
 			colors += mix(pixcolor1, pixcolor2, f);
 		}
 		else if(you_win_sign==1)
