@@ -157,19 +157,9 @@ void main(void)
 		{
 			vec4 pixcol1 = vec4(.8,.5,.5,1);
         	vec4 pixcol2 = vec4(.6,.3,.3,1);
-			
-			/*
-			if((landing_point_pos.x-spaceship_pos.x-10)*(landing_point_pos.x-spaceship_pos.x-10) + 
-			(landing_point_pos.z-spaceship_pos.z-10)*(landing_point_pos.z-spaceship_pos.z-10) < 300)
-			{
-				colors = vec4(.2,.2,.2,1)*texture(tex, texCoord);
-			}else{
-				colors = mix(pixcol1, pixcol2, f)*texture(tex,texCoord);
-			}
-			*/
 
 			colors = mix(pixcol1, pixcol2, f)*texture(tex,texCoord);
-			if((spaceship_pos.x-landing_point_pos.x-testpos.x)*(spaceship_pos.x-landing_point_pos.x-testpos.y) + 
+			if((spaceship_pos.x-landing_point_pos.x-testpos.x)*(spaceship_pos.x-landing_point_pos.x-testpos.x) + 
 			(spaceship_pos.z-landing_point_pos.z-testpos.z)*(spaceship_pos.z-landing_point_pos.z-testpos.z) < 60)
 				colors -= vec4(.4,.4,.4,0);
 
