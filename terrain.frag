@@ -21,6 +21,8 @@ uniform int skybox;
 uniform int hud;
 uniform int fuel_full;
 uniform int game_over_sign;
+uniform int enter_to_restart_sign;
+uniform int you_win_sign;
 uniform int water;
 uniform int exhaust;
 uniform int fire;
@@ -101,6 +103,7 @@ void main(void)
 	{
 		if(fuel_full==1)
 			colors += vec4(.1,.1,.1,.6);
+			
 		else if(game_over_sign==1)
 		{
 			float lambert = dot(n,vec3(0,0,1));
@@ -108,6 +111,18 @@ void main(void)
 			vec4  pixcolor1 = vec4(.2, .2, .2, 1);
 			vec4  pixcolor2 = vec4(.7,.7,.7,1);
 			colors += mix(pixcolor1, pixcolor2, f);
+		}
+		else if(you_win_sign==1)
+		{
+			float lambert = dot(n,vec3(1,0,0));
+			float f = smoothstep(.1, .8, lambert);
+			vec4  pixcolor2 = vec4(.7,0,.7,1) + .4*vec4(cos(testpos.x/10+testpos.y/10+time*4), cos(testpos.x/10+time*4), cos(testpos.x/10+time*4), 0);
+			vec4  pixcolor1 = vec4(.7,0,.7,1);
+			colors += mix(pixcolor1, pixcolor2, f);
+		}
+		else if(enter_to_restart_sign==1)
+		{
+			colors += vec4(.1,.1,.1,1);
 		}
 		else
 			colors += vec4(.7,.1,.1,1);

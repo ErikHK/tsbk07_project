@@ -152,11 +152,11 @@ void draw_game_over(hud * h, GLuint program)
 
 	total = Mult(Mult(T(0, -1, -8), S(.04, .04, .04)), Ry(.1));
 
-	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 1);
+	glUniform1i(glGetUniformLocation(program, "enter_to_restart_sign"), 1);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
 	DrawModel(h->enter_to_restart_sign, program, "inPosition", "inNormal", "inTexCoord");
-	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 0);
+	glUniform1i(glGetUniformLocation(program, "enter_to_restart_sign"), 0);
 
 	glUniform1i(glGetUniformLocation(program, "hud"), 0);
 
@@ -173,20 +173,21 @@ void draw_you_win(hud * h, GLuint program)
 
 	mat4 total = Mult(Mult(T(0, 1, -8), S(.1, .1, .1)), Ry(.3));
 
-	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 1);
+	glUniform1i(glGetUniformLocation(program, "you_win_sign"), 1);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
 	DrawModel(h->you_win_sign, program, "inPosition", "inNormal", "inTexCoord");
 
 	total = Mult(Mult(T(0, -1, -8), S(.04, .04, .04)), Ry(.1));
-
-	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 1);
+	glUniform1i(glGetUniformLocation(program, "you_win_sign"), 0);
+	
+	glUniform1i(glGetUniformLocation(program, "enter_to_restart_sign"), 1);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
 	DrawModel(h->enter_to_restart_sign, program, "inPosition", "inNormal", "inTexCoord");
+	glUniform1i(glGetUniformLocation(program, "enter_to_restart_sign"), 0);
 
-
-	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 0);
+	
 	glUniform1i(glGetUniformLocation(program, "hud"), 0);
 
 

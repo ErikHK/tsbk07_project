@@ -546,6 +546,7 @@ void timer(int i)
 	{
 		freeze_spaceship(&s);
 		glutPostRedisplay();
+
 		//run finished handler here!
 		if (keyIsDown(VK_RETURN))
 			restart();
