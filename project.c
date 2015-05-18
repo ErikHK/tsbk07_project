@@ -345,19 +345,11 @@ void init(void)
 	//init clouds
 	for (int i = 0; i < NUM_CLOUDS; i++)
 	{
-		vec3 init_pos = { random()*256, 70+random()*15, random()*256 };
+		vec3 init_pos = { random()*CWIDTH, 70+random()*15, random()*CWIDTH };
 		create_cloud(&c[i], init_pos);
 	}
 
-	/*
-	vec3 init_pos = { 80+40, 69, 90 };
-	create_cloud(&c[0], init_pos);
-	vec3 init_pos2 = { 95, 69, 90+20 };
-	create_cloud(&c[1], init_pos2);
-	vec3 init_pos3 = { 65, 79, 90 - 30 };
-	create_cloud(&c[2], init_pos3);
-	*/
-	ground = LoadModelPlus("ground.obj");
+	//ground = LoadModelPlus("ground.obj");
 	skybox = LoadModelPlus("sphere.obj");
 
 	// GL inits
@@ -439,9 +431,7 @@ void display(void)
 	//DrawModel(ground, program, "inPosition", "inNormal", "inTexCoord");
 	glUniform1i(glGetUniformLocation(program, "water"), 0);
 
-	//takes care of button presses and movement of spaceship
-	move_spaceship(&s, program);
-
+	
 	//draw the landing point
 	draw_landing_point(&lp, program);
 
@@ -535,11 +525,21 @@ void handle_collisions()
 
 }
 
+void draw_welcome_screen()
+{
+	//draw_you_win(&h, program);
+	camMatrix = T(0, 0, 0);
+	s.fire_visible = 1;
+	s.body_matrix = Mult(T(70, -40, -300), Mult(Mult(Rx(.5),Rz(-.5)),Ry(.5)));
+	draw_spaceship(&s, program);
+	s.fire_visible = 0;
+}
+
 void timer(int i)
 {
 	glutTimerFunc(20, &timer, i);
 	//upload time to shaders
-	GLfloat t = (GLfloat)glutGet(GLUT_ELAPSED_TIME) / 1000;
+	GLfloat t = (GLfloat)glutGet(GLUT_ELAPSED_TIME) / 1000.0;
 	glUniform1f(glGetUniformLocation(program, "time"), t);
 
 	if (keyIsDown(VK_RETURN))
@@ -549,7 +549,13 @@ void timer(int i)
 		glutExit();
 
 	if (!start)
+	{
+		draw_welcome_screen();
+		glutSwapBuffers();
+		//glutPostRedisplay();
+		
 		return;
+	}
 
 	if (game_over)
 	{
@@ -572,6 +578,9 @@ void timer(int i)
 			restart();
 		return;
 	}
+
+	//takes care of button presses and movement of spaceship
+	move_spaceship(&s, program);
 
 	//upload random variable for water noise
 	//glUniform1f(glGetUniformLocation(program, "randwater"), (GLfloat)random());
@@ -601,7 +610,7 @@ int main(int argc, char **argv)
 	glutInitContextVersion(3, 2);
 	glutInitWindowSize (900, 600);
 	glutCreateWindow ("TSBK07 - Project");
-	glutFullScreen();
+	//glutFullScreen();
 	glutDisplayFunc(display);
 
 	//init GLEW if windows
@@ -617,9 +626,10 @@ int main(int argc, char **argv)
 		}
 	#endif
 	
-		glutTimerFunc(20, &timer, 0);
+
 	init ();
 	initKeymapManager();
+	glutTimerFunc(20, &timer, 0);
 	
 	glutMainLoop();
 	exit(0);
