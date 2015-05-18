@@ -96,7 +96,8 @@ void main(void)
 	if(skybox==1)
 	{
 		//color gradient, blue sky
-		colors += vec4(0.7*(1-testpos.y*.5)+.2,(1-testpos.y*.5)+.2,1,1);
+		//colors += vec4(0.7*(1-testpos.y*.5)+.2,(1-testpos.y*.5)+.2,1,1);
+		colors += vec4((1-testpos.y)*.5,(1-testpos.y)*.5,1,1);
 
 	}
 	else if(hud==1)
