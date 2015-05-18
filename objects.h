@@ -39,7 +39,8 @@ typedef struct spaceship_t
 typedef struct landing_point_t
 {
 	Model * landing_point_model;
-	vec3 pos;
+	//vec3 pos;
+	float pos[3];
 
 } landing_point;
 

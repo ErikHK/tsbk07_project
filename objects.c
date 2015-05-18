@@ -324,15 +324,17 @@ void create_landing_point(landing_point * lp)
 
 }
 
-void set_landing_point(landing_point * lp, vec3 pos)
+void set_landing_point(landing_point * lp, float pos[3])
 {
-	lp->pos = pos;
+	lp->pos[0] = pos[0];
+	lp->pos[1] = pos[1];
+	lp->pos[2] = pos[2];
 }
 
 void draw_landing_point(landing_point * lp, GLuint program)
 {
 	glUniform1i(glGetUniformLocation(program, "landing_point"), 1);
-	mat4 total = T(lp->pos.x, lp->pos.y, lp->pos.z);
+	mat4 total = T(lp->pos[0], lp->pos[1], lp->pos[2]);
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	//glBindTexture(GL_TEXTURE_2D, s->body_tex);
 	DrawModel(lp->landing_point_model, program, "inPosition", "inNormal", "inTexCoord");

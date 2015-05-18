@@ -306,7 +306,7 @@ void randomize_landing_point()
 	rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, CWIDTH) + 8;
 	float dist_to_target = distance_to_target(&s, &rand_pos);
 	while (!(rand_pos.x > 20 && rand_pos.z > 20 && rand_pos.z < CWIDTH - 20 && rand_pos.x < CWIDTH - 20 && rand_pos.y > 1 &&
-		dist_to_target > 10))
+		dist_to_target < 60))
 	{
 		rand_pos.x = random() * CWIDTH;
 		rand_pos.z = random() * CWIDTH;
@@ -317,8 +317,8 @@ void randomize_landing_point()
 	
 	s.fuel_use = 3 / sqrt(dist_to_target);
 	
-
-	set_landing_point(&lp, rand_pos);
+	float test[3] = { rand_pos.x, rand_pos.y, rand_pos.z };
+	set_landing_point(&lp, test);
 }
 
 void restart()
@@ -418,7 +418,7 @@ void display(void)
 	
 	//upload spaceship position to shader for shadow calculation
 	glUniform3f(glGetUniformLocation(program, "spaceship_pos"), s.pos[0], s.pos[1], s.pos[2]);
-	glUniform3f(glGetUniformLocation(program, "landing_point_pos"), lp.pos.x, lp.pos.y, lp.pos.z);
+	glUniform3f(glGetUniformLocation(program, "landing_point_pos"), lp.pos[0], lp.pos[1], (float)lp.pos[2]);
 
 	//upload cam matrix
 	glUniformMatrix4fv(glGetUniformLocation(program, "camMatrix"), 1, GL_TRUE, camMatrix.m);
@@ -487,7 +487,7 @@ void handle_collisions()
 			return;
 		}
 	}
-	if (s.pos[1] <= lp.pos.y+2)
+	if (s.pos[1] <= lp.pos[1]+2)
 	{
 		//s.gravity = 0;
 		
