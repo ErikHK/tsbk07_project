@@ -14,6 +14,9 @@
 #define NUM_CLOUDS 8
 #define VK_RETURN 0x0D
 
+#define CWIDTH 384
+#define CHEIGHT 384
+
 //scale for terrain, higher means higher mountains 
 #define SCALE 0.1
 
@@ -176,8 +179,8 @@ void calc_normal(GLfloat *vertexArray, int x, int z, int width, Point3D *normal)
 Model* GenerateTerrain(TextureData *tex)
 {
 	//init_perlin();
-	//tex->width = 512;
-	//tex->height = 512;
+	//tex->width *= 1.5;
+	//tex->height *= 1.5;
 	texwidth = tex->width;
 	
 	int vertexCount = tex->width * tex->height;
@@ -296,13 +299,16 @@ void draw_skybox()
 
 void randomize_landing_point()
 {
-	vec3 rand_pos = { random() * 256, 0, random() * 256 };
-	rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth) + 8;
+	vec3 rand_pos = { 0, 0, 0 };
+	//vec3 rand_pos = {random()*WIDTH, 0, random()*WIDTH};
+	rand_pos.x = random()*CWIDTH;
+	rand_pos.z = random()*CWIDTH;
+	rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, CWIDTH) + 8;
 
-	while (!(rand_pos.x > 20 && rand_pos.z > 20 && rand_pos.z < texwidth - 20 && rand_pos.x < texwidth - 20 && rand_pos.y > 1))
+	while (!(rand_pos.x > 20 && rand_pos.z > 20 && rand_pos.z < CWIDTH - 20 && rand_pos.x < CWIDTH - 20 && rand_pos.y > 1))
 	{
-		rand_pos.x = random() * 256;
-		rand_pos.z = random() * 256;
+		rand_pos.x = random() * CWIDTH;
+		rand_pos.z = random() * CWIDTH;
 		rand_pos.y = calc_height(vertexArray, rand_pos.x, rand_pos.z, texwidth) + 8;
 	}
 
@@ -317,6 +323,7 @@ void restart()
 	tm = GenerateTerrain(&ttex);
 	create_spaceship(&s);
 	randomize_landing_point();
+	glutPostRedisplay();
 }
 
 void init(void)
@@ -372,6 +379,8 @@ void init(void)
 	
 	// Load terrain data
 	LoadTGATextureData("fft-terrain.tga", &ttex);
+	ttex.width *= 1.5;
+	ttex.height *= 1.5;
 	//LoadTGATextureData("SkyBox512.tga", &ttex);
 	tm = GenerateTerrain(&ttex);
 	printError("init terrain");
@@ -512,6 +521,9 @@ void handle_collisions()
 void timer(int i)
 {
 	glutTimerFunc(20, &timer, i);
+	//upload time to shaders
+	GLfloat t = (GLfloat)glutGet(GLUT_ELAPSED_TIME) / 1000;
+	glUniform1f(glGetUniformLocation(program, "time"), t);
 
 	if (keyIsDown(VK_RETURN))
 		start = 1;
@@ -521,6 +533,9 @@ void timer(int i)
 
 	if (game_over)
 	{
+		freeze_spaceship(&s);
+		glutPostRedisplay();
+
 		//run game over handler here!
 		if (keyIsDown(VK_RETURN))
 			restart();
@@ -529,15 +544,14 @@ void timer(int i)
 
 	if (finished)
 	{
+		freeze_spaceship(&s);
+		glutPostRedisplay();
 		//run finished handler here!
 		if (keyIsDown(VK_RETURN))
 			restart();
 		return;
 	}
 
-	//upload time to shaders
-	GLfloat t = (GLfloat)glutGet(GLUT_ELAPSED_TIME) / 1000;
-	glUniform1f(glGetUniformLocation(program, "time"), t);
 	//upload random variable for water noise
 	//glUniform1f(glGetUniformLocation(program, "randwater"), (GLfloat)random());
 	glUniform1f(glGetUniformLocation(program, "randwater"), random());

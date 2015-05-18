@@ -5,6 +5,8 @@
 #define VK_SPACE 0x20
 #define VK_RETURN 0x0D
 
+#define CWIDTH 384
+
 void create_spaceship(spaceship * s)
 {
 	//has not yet landed
@@ -154,7 +156,7 @@ void draw_game_over(hud * h, GLuint program)
 	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
 	glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
 	DrawModel(h->enter_to_restart_sign, program, "inPosition", "inNormal", "inTexCoord");
-
+	glUniform1i(glGetUniformLocation(program, "game_over_sign"), 0);
 
 	glUniform1i(glGetUniformLocation(program, "hud"), 0);
 
@@ -267,6 +269,20 @@ void move_spaceship(spaceship * s, GLuint program)
 	
 }
 
+void freeze_spaceship(spaceship * s)
+{
+	s->angle_acc[0] = 0;
+	s->angle_acc[1] = 0;
+	s->angle_speed[0] = 0;
+	s->angle_speed[1] = 0;
+	s->acc[0] = 0;
+	s->acc[1] = 0;
+	s->acc[2] = 0;
+	s->speed[0] = 0;
+	s->speed[1] = 0;
+	s->speed[2] = 0;
+}
+
 void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 {
 	if (!(s && cam_matrix && cam_pos))
@@ -277,8 +293,8 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 	if (keyIsDown('c') || keyIsDown('C'))
 	{
 
-		*cam_matrix = lookAt(0, 300, 0,
-			128, 0, 128,
+		*cam_matrix = lookAt(0, 400, 0,
+			CWIDTH/2-50, 0, CWIDTH/2-50,
 			0.0, 1.0, 0.0);
 		return;
 	}
@@ -291,7 +307,7 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 	//	s->pos[0], s->pos[1], s->pos[2],
 	//	0.0, 1.0, 0.0);
 
-	*cam_matrix = lookAt(s->pos[0]-80, cam_pos->y, s->pos[2],
+	*cam_matrix = lookAt(s->pos[0]-80, s->pos[1]+30, s->pos[2],
 		s->pos[0], s->pos[1], s->pos[2],
 		0.0, 1.0, 0.0);
 

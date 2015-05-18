@@ -101,3 +101,4 @@ void draw_you_win();
 void set_landing_point();
 float spaceship_total_speed();
 float distance_to_target();
+void freeze_spaceship();
