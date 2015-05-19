@@ -631,7 +631,7 @@ int main(int argc, char **argv)
 	//init with antialiasing (multisample)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GL_MULTISAMPLE);
 	glutInitContextVersion(3, 2);
-	glutInitWindowSize (900, 600);
+	glutInitWindowSize (1080, 600);
 	glutCreateWindow ("TSBK07 - Project");
 	//glutFullScreen();
 	glutDisplayFunc(display);
