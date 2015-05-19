@@ -62,6 +62,8 @@ void create_hud(hud *h)
 	h->game_over_sign = LoadModelPlus("game_over.obj");
 	h->you_win_sign = LoadModelPlus("you_win.obj");
 	h->enter_to_restart_sign = LoadModelPlus("enter_to_restart.obj");
+	h->enter_to_start_sign = LoadModelPlus("enter_to_start.obj");
+	h->lunar_lander_sign = LoadModelPlus("lunar_lander.obj");
 	LoadTGATextureSimple("spaceship/spaceship_uvw_body.tga", &(h->game_over_sign_tex));
 }
 

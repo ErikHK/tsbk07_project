@@ -530,9 +530,29 @@ void draw_welcome_screen()
 	//draw_you_win(&h, program);
 	camMatrix = T(0, 0, 0);
 	s.fire_visible = 1;
-	s.body_matrix = Mult(T(70, -40, -300), Mult(Mult(Rx(.5),Rz(-.5)),Ry(.5)));
+	s.body_matrix = Mult(T(110, -80, -300), Mult(Mult(Rx(.5),Rz(-.5)),Ry(.5)));
 	draw_spaceship(&s, program);
 	s.fire_visible = 0;
+
+
+	glUniform1i(glGetUniformLocation(program, "hud"), 1);
+	//draw lunar lander sign
+	mat4 total = Mult(Mult(T(0, 2, -8), S(.01, .01, .003)), Rx(.3));
+
+	glUniform1i(glGetUniformLocation(program, "lunar_lander_sign"), 1);
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	//glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
+	DrawModel(h.lunar_lander_sign, program, "inPosition", "inNormal", "inTexCoord");
+	glUniform1i(glGetUniformLocation(program, "lunar_lander_sign"), 0);
+
+	total = Mult(Mult(T(0, -1, -8), S(.1, .1, .003)), Rx(-.1));
+	glUniform1i(glGetUniformLocation(program, "enter_to_start_sign"), 1);
+	glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
+	//glBindTexture(GL_TEXTURE_2D, h->game_over_sign_tex);
+	DrawModel(h.enter_to_start_sign, program, "inPosition", "inNormal", "inTexCoord");
+	glUniform1i(glGetUniformLocation(program, "enter_to_start_sign"), 0);
+
+	glUniform1i(glGetUniformLocation(program, "hud"), 0);
 }
 
 void timer(int i)

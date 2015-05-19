@@ -21,7 +21,9 @@ uniform int skybox;
 uniform int hud;
 uniform int fuel_full;
 uniform int game_over_sign;
+uniform int enter_to_start_sign;
 uniform int enter_to_restart_sign;
+uniform int lunar_lander_sign;
 uniform int you_win_sign;
 uniform int water;
 uniform int exhaust;
@@ -121,6 +123,19 @@ void main(void)
 		{
 			colors += vec4(.1,.1,.1,1);
 		}
+		else if(enter_to_start_sign==1)
+		{
+			colors += vec4(.1,.1,.1,1);
+		}
+		else if(lunar_lander_sign==1)
+		{
+			float lambert = dot(n,vec3(1,0,0));
+			float f = smoothstep(.1, .8, lambert);
+			vec4  pixcolor2 = vec4(.4,.4,.4,1);
+			vec4  pixcolor1 = vec4(1,1,1,1);
+			colors += mix(pixcolor1, pixcolor2, f);
+		}
+
 		else
 			colors += vec4(.7,.1,.1,1);
 	}

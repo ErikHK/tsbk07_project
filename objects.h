@@ -50,8 +50,9 @@ typedef struct hud_t
 	Model *fuel_bar;
 	Model *game_over_sign;
 	Model *you_win_sign;
-	Model *enter_to_restart_sign;
 	Model *enter_to_start_sign;
+	Model *enter_to_restart_sign;
+	Model *lunar_lander_sign;
 	GLuint game_over_sign_tex;
 
 } hud;
