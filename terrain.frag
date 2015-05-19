@@ -99,13 +99,15 @@ void main(void)
 	//vec4 test = (mdlMatrix)*vec4(outPosition.x, outPosition.y, outPosition.z, 1);
 	//colors = vec3(0,0,0);
 	colors = vec4(0, 0, 0, 0);
-
-	n = normalize(mat3(mdlMatrix)*exNormal);
+	n = normalize(exNormal);
+	//n = normalize(mat3(mdlMatrix)*exNormal);
 	//s = normalize(lightCamMatrix*cam_vector);
 	//s = normalize(lightCamMatrix*vec3(0,1,0));
 	//s = vec3(cos(world_angle1),sin(world_angle1),0);
 	//s = normalize(spaceship_pos);
 	//s = normalize(vec3(cos(world_angle0)*sin(world_angle1),sin(world_angle0)*sin(world_angle1),cos(world_angle1)));
+	//s = normalize(vec3(sin(-world_angle1), cos(-world_angle1),0));
+	s = vec3(0,1,0);
 
     //float lambert = pow(dot(n,s),2)-.001;
 	float lambert = dot(n,s)-.001;

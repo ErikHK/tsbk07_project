@@ -274,7 +274,7 @@ void update_cam_matrix(spaceship * s, mat4 * cam_matrix, vec3 * cam_pos)
 	if (keyIsDown('c') || keyIsDown('C'))
 	{
 
-		*cam_matrix = lookAt(0, 400, 0,
+		*cam_matrix = lookAt(0, 26000, 0,
 			1, 1, 1,
 			0.0, 1.0, 0.0);
 		return;
