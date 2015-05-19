@@ -17,6 +17,7 @@ uniform mat4 mdlMatrix;
 
 
 uniform int landing_point;
+uniform int welcome_screen;
 uniform int skybox;
 uniform int hud;
 uniform int fuel_full;
@@ -90,15 +91,16 @@ void main(void)
 
     float lambert = pow(dot(n,s),2)-.001;
 
-
 	if(skybox==1)
 	{
 		//color gradient, blue sky
 		//colors += vec4(0.7*(1-testpos.y*.5)+.2,(1-testpos.y*.5)+.2,1,1);
-		colors += vec4((1-testpos.y)*.5,(1-testpos.y)*.5,1,1);
-
+		if(welcome_screen==1)
+			colors += vec4(.2,.2,.8,1);
+		else
+			colors += vec4((1-testpos.y)*.5,(1-testpos.y)*.5,1,1);
 	}
-	else if(hud==1)
+	if(hud==1)
 	{
 		if(fuel_full==1)
 			colors += vec4(.1,.1,.1,.6);
@@ -135,7 +137,6 @@ void main(void)
 			vec4  pixcolor1 = vec4(1,1,1,1);
 			colors += mix(pixcolor1, pixcolor2, f);
 		}
-
 		else
 			colors += vec4(.7,.1,.1,1);
 	}

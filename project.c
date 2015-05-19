@@ -527,6 +527,8 @@ void handle_collisions()
 
 void draw_welcome_screen()
 {
+	glUniform1i(glGetUniformLocation(program, "welcome_screen"), 1);
+	draw_skybox();
 	//draw_you_win(&h, program);
 	camMatrix = T(0, 0, 0);
 	s.fire_visible = 1;
@@ -553,6 +555,7 @@ void draw_welcome_screen()
 	glUniform1i(glGetUniformLocation(program, "enter_to_start_sign"), 0);
 
 	glUniform1i(glGetUniformLocation(program, "hud"), 0);
+	glUniform1i(glGetUniformLocation(program, "welcome_screen"), 0);
 }
 
 void timer(int i)
