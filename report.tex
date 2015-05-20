@@ -1,0 +1,101 @@
+
+\documentclass[11pt]{article}
+\usepackage{tabularx}% Loads the array package
+
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper}
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+
+\usepackage{graphicx} % support the \includegraphics
+
+\title{TSBK07 --- Project report}
+\author{Erik Håkansson Kjellman -- eriha181 \and Klara Wingstedt -- klawi021}
+%\date{} % Activate to display a given date or no date (if empty),
+         % otherwise the current date is printed 
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+The specification for the project was as follows: \\
+
+\begin{minipage}[t]{0.5\textwidth}
+--Will do:
+\begin{itemize}
+\item Lunar lander 3D model with textures
+\item First person camera
+\item Terrain
+\item Light
+\item Skybox
+\item Goal position
+\item Water
+\end{itemize}
+\end{minipage}
+\begin{minipage}[t]{0.5\textwidth}
+--Might do:
+\begin{itemize}
+\item Particle system (fire, explosions?)
+\item Auto-generated terrain
+\item Trees
+\item Sun(s)
+\item Score
+\item Highscore list
+\item Welcome screen
+\item Sound
+\item Auto-generated textures (filtered perlin noise etc)
+\item Third person camera (fixed on terrain)
+\item Craters
+\item Fishes!
+\item Under 64K
+\end{itemize}
+\end{minipage}
+\newpage
+All of the "will do" items were implemented, as well as a few from the "might do" list, namely auto-generated terrain,
+welcome screen, auto-generated textures and third person camera. 
+
+\section{Background information}
+We wanted to make most of the elements of the game auto-generated or a slight bit random, partly to make the game more fun and natural, but also as a challenge. 
+\section{Implementation}
+The project was implemented in C with some helpful code given from the lab series, mainly VectorUtils3 and loadobj.
+The spaceship was modeled in 3D Studio Max, the text models were made using Inkscape and OpenSCAD, and most of the textures were made in Inkscape.\\
+
+Most of visual objects in the game are described as structs in the code, although the fuel bar, welcome screen, game over or win screen are bundled together in a struct called HUD as in heads-up display.
+The game loop is run 50 times a second, and updates the graphics and all movement code, as well as uploading variables to the shaders.
+\section{Problems}
+Each cloud in the game is made up by 10 spheres which are randomly placed close to each other, they are also randomly scaled in all axes. This proved to be very nice looking but also very GPU intensive. This could have been solved by using LOD and/or billboards further away.
+The terrain was generated with perlin noise, which came out nicely, however it took a while to get it working and scaling it properly for our purposes. 
+Shader programming was new to us before this course, so that paradigm took a while to get used to. After a while it became very intuitive and easy to work with, especially with how quickly you could get nice looking results.
+\section{Conclusions}
+We are quite happy with the result, our main wish would be to implement a real spherical moon that you can actually circumnavigate. We started on an implementation like this, but were unhappy with the result of that.
+
+\section{Images}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{screenshots/ingame_2.png}
+\caption{This is what the game looks like when you start it.}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{screenshots/ingame_1.png}
+\caption{This is an overview which you get by holding down 'c', used for finding the target.}
+\end{figure}
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{screenshots/game_over_sand.png}
+\caption{Game over screen.}
+\end{figure}
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{screenshots/you_win.png}
+\caption{Winning screen.}
+\end{figure}
+
+
+\end{document}
